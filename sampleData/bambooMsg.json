@@ -1,0 +1,43 @@
+{
+  "__query_params": {},
+  "employees": [
+    {
+      "changedFields": [
+        "Status"
+      ],
+      "fields": {
+        "Birth Date": "1985-11-12",
+        "Country": "United States",
+        "Department": "Information Technology",
+        "Division": "Headquarters",
+        "Effective Date": "2020-10-18",
+        "Eligible for Rehire": null,
+        "Employee #": "10929",
+        "Employee photo": "1327-0",
+        "Employment Status": "Regular Full-Time",
+        "First Name": "Aleksa",
+        "First name Last name": "Aleksa Krolls",
+        "First name Middle initial": "Aleksa G",
+        "Hire Date": "2020-10-20",
+        "Home Email": "aleksa@test.com",
+        "Job Title": "Director, Global Business Solutions",
+        "Last Name": "Krolls",
+        "LinkedIn URL": "linkedin.com/in/AleksaK",
+        "Location": "Washington, DC",
+        "Middle Name": "Gaisma",
+        "Middle initial": "G",
+        "Mobile Phone": "200-511-8111",
+        "Preferred Name": null,
+        "Status": "Active",
+        "Supervisor ID": "10546",
+        "Supervisor email": "mtest@womenforwomen.org",
+        "Supervisor name": "Test, Matias",
+        "Termination Date": null,
+        "Twitter Feed": null,
+        "Work Email": "AKrolls@womenforwomen.org",
+        "Work Phone": "12015990000"
+      },
+      "id": "1327"
+    }
+  ]
+}
