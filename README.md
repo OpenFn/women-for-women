@@ -8,7 +8,7 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directy
 OpenFn has developed the adaptor `language-XXX` to connect with the Microsoft Graph API. 
 
 1. We are authorizing with Azure AD `on behalf of a user` - [see docs here](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph/api/1.0)
-2. To enabled this, Admin users needs to grant `Delegated Permissions` via the API Permissions menu item in the (Azure AD Portal)[https://portal.azure.com/?feature.checklist=true#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/a699c0b6-e5c2-4d12-9350-5f5f13154a06/isMSAApp/]
+2. To enabled this, Admin users needs to grant `Delegated Permissions` via the API Permissions menu item in the [Azure AD Portal](https://portal.azure.com/?feature.checklist=true#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/a699c0b6-e5c2-4d12-9350-5f5f13154a06/isMSAApp/)
 
 ## Data Flows
 ### Phase 1
