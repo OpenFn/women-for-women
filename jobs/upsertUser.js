@@ -301,19 +301,24 @@ each(
   alterState(state => {
     const { api } = state.configuration;
     const work_email = state.data.fields['Work Email'];
-    //const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
-    const userPrincipalName = 'aleksa_openfn.org%23EXT%23@w4wtest.onmicrosoft.com'; // TO REMOVE once we know how to capture statusCode.
+    const userPrincipalName = work_email.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+    //const userPrincipalName = 'aleksa_openfn.org%23EXT%23@w4wtest.onmicrosoft.com'; // TO REMOVE once we know how to capture statusCode.
     return get(
       `${api}/users/${userPrincipalName}`,
       {
         headers: {
           authorization: `Bearer ${state.access_token}`,
         },
+        options: {
+          successCodes: [200, 201, 202, 203, 204, 404],
+        },
       },
       state => {
-        const { fields } = state.employees[0];
-        //  console.log(fields['First name Last name']);
-        if (state.data) {
+        if (!state.data.error) {
+          // We are updating
+          console.log('Updating user information...');
+          const { fields } = state.employees[0];
+
           const data = {
             accountEnabled: fields.Status === 'Active' ? true : false,
             employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
@@ -328,7 +333,7 @@ each(
               fields['Middle initial'] +
               fields['Last Name'] +
               '@womenforwomen.org', //TODO: Transform to AGKrolls@womenforwomen.org */
-            userPrincipalName: fields['Work email'],
+            userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
             givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
             mail: fields['Work email'],
             birthday: fields.Birthday,
@@ -349,14 +354,16 @@ each(
             //profilePhoto  //TODO: DISCUSS step with Engineers
             //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
           };
-
-          console.log(JSON.stringify(data));
+          //console.log(JSON.stringify(data));
           return patch(
             `${api}/users/${state.data.id}`,
             {
               headers: {
                 authorization: `Bearer ${state.access_token}`,
                 'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
               },
               body: data,
             },
@@ -365,7 +372,63 @@ each(
             }
           )(state);
         } else {
-          // That is when we POST a new user
+          // We are updating
+          console.log('Creating a new user...');
+          const { fields } = state.employees[0];
+
+          const data = {
+            accountEnabled: fields.Status === 'Active' ? true : false,
+            employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+            userType: 'Member',
+            passwordProfile: {
+              // ---------Insufficient privileges---------
+              forceChangePasswordNextSignIn: true,
+              forceChangePasswordNextSignInWithMfa: false,
+              password: 'opWWK6$8b&', //Q: choose default password?
+            },
+            mailNickname:
+              fields['First Name'].substring(0, 1) +
+              fields['Middle initial'] +
+              fields['Last Name'] 
+              , //TODO: Transform to AGKrolls@womenforwomen.org
+            userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+            givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
+            mail: fields['Work email'],
+            birthday: fields.Birthday,
+            department: fields.Department,
+            officeLocation: fields.Division,
+            employeeId: fields['Employee #'],
+            displayName: fields['First name Last name'],
+            //hireDate: fields['Hire Date'], // ---------Request not supported---------
+            //otherMails: fields['Home Email'], // ---------Problem with JSON reader---------
+            jobTitle: fields['Job Title'],
+            surname: fields['Last Name'],
+            usageLocation: state.stateMap[fields.Location], //TODO: Compare countries with Bamboo list
+            //middleName: fields['Middle Name'], // ---------Property invalid---------
+            //mobilePhone: fields['Mobile Phone'], // ---------Insufficient privileges---------
+            //businessPhones: [fields['Work Phone']], // ---------Insufficient privileges---------
+            //preferredName: fields['Preferred Name'], // ---------Request not supported---------
+            givenName: fields['First Name'],
+            //profilePhoto  //TODO: DISCUSS step with Engineers
+            //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
+          };
+          //console.log(JSON.stringify(data));
+          return post(
+            `${api}/users`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: data,
+            },
+            state => {
+              console.log(state);
+            }
+          )(state);
         }
       }
     )(state);
