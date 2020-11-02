@@ -309,7 +309,6 @@ alterState(state => {
 });
 
 //FOR EVERY NEW EMPLOYEE SENT VIA BAMBOO...
-
 each(
   '$.employees[*]',
 
@@ -318,7 +317,6 @@ each(
     const { api } = state.configuration;
     const work_email = state.data.fields['Work Email'];
     const userPrincipalName = work_email.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-    //const userPrincipalName = 'aleksa_openfn.org%23EXT%23@w4wtest.onmicrosoft.com'; // TO REMOVE once we know how to capture statusCode.
     return get(
       `${api}/users/${userPrincipalName}`,
       {
@@ -370,8 +368,7 @@ each(
             //profilePhoto  //TODO: DISCUSS step with Engineers
             //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
           };
-          //console.log(JSON.stringify(data));
-          const { id } = state.data;
+          const { id } = state.data; // Employee ID
           return patch(
             `${api}/users/${id}`,
             {
@@ -445,6 +442,51 @@ each(
   })
 );
 
+// 1.2 Assign user to manager
+alterState(state => {
+  const { fields } = state.employees[0];
+  const supervisorEmail = fields['Supervisor email'];
+  const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+  const { api } = state.configuration;
+  return get(
+    `${api}/users/${userPrincipalName}`,
+    {
+      headers: {
+        authorization: `Bearer ${state.access_token}`,
+      },
+      options: {
+        successCodes: [200, 201, 202, 203, 204, 404],
+      },
+    },
+    state => {
+      if (!state.data.error) {
+        const { id } = state.data.body;
+        const data = {
+          '@odata.id': `${api}/users/${state.id}`,
+        };
+        console.log('Assigning user to manager...');
+        return put(
+          `${api}/users/${id}/manager/$ref`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+            body: data,
+          },
+          state => {}
+        )(state);
+      } else {
+        console.log('Manager not found...');
+        return state;
+      }
+    }
+  )(state);
+});
+
 // 1.3 Add user as member to administrative unit
 alterState(state => {
   const { api } = state.configuration;
@@ -470,7 +512,7 @@ alterState(state => {
       if (!value.includes(administrativeUnitID)) {
         console.log('Adding member to the administrative units...');
         const data = {
-          '@odata.id': `https://graph.microsoft.com/v1.0/directoryObjects/${state.id}`,
+          '@odata.id': `${api}/directoryObjects/${state.id}`,
         };
         return post(
           `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
@@ -489,7 +531,7 @@ alterState(state => {
           }
         )(state);
       } else {
-        console.log('User is already a member...');
+        console.log('User is already a member of this administrative unit...');
         return state;
       }
     }
@@ -521,7 +563,7 @@ alterState(state => {
       if (!value.includes(groupID)) {
         console.log('Adding member to the group...');
         const data = {
-          '@odata.id': `https://graph.microsoft.com/v1.0/directoryObjects/${state.id}`,
+          '@odata.id': `${api}/directoryObjects/${state.id}`,
         };
         return post(
           `${api}/groups/${groupID}/members/$ref`,
@@ -540,7 +582,7 @@ alterState(state => {
           }
         )(state);
       } else {
-        console.log('User is already a member...');
+        console.log('User is already a member of this group...');
         return state;
       }
     }
