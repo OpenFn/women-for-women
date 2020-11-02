@@ -445,7 +445,7 @@ each(
   })
 );
 
-// 1.4 Add user as member to administrative unit
+// 1.3 Add user as member to administrative unit
 alterState(state => {
   const { api } = state.configuration;
   const idsValue = Object.values(state.administrativeUnitsMap);
@@ -489,7 +489,59 @@ alterState(state => {
           }
         )(state);
       } else {
-        console.log('Administrative unit already added...');
+        console.log('User is already a member...');
+        return state;
+      }
+    }
+  )(state);
+});
+
+// 1.4 Add user as member to group
+alterState(state => {
+  const { api } = state.configuration;
+  const idsValue = Object.values(state.groupMap);
+  // (a) First we make a request to see if the user is not already a member...
+  return post(
+    `${api}/users/${state.id}/checkMemberObjects`,
+    {
+      headers: {
+        authorization: `Bearer ${state.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      options: {
+        successCodes: [200, 201, 202, 203, 204, 404],
+      },
+      body: { ids: idsValue },
+    },
+    state => {
+      const { value } = state.data.body;
+      const { fields } = state.employees[0];
+      const groupID = state.groupMap[fields['Core System Needs']]; // Mapping group name to ID
+      // ... (b) if he is not we add him.
+      if (!value.includes(groupID)) {
+        console.log('Adding member to the group...');
+        const data = {
+          '@odata.id': `https://graph.microsoft.com/v1.0/directoryObjects/${state.id}`,
+        };
+        return post(
+          `${api}/groups/${groupID}/members/$ref`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+            body: data,
+          },
+          state => {
+            //console.log(state);
+          }
+        )(state);
+      } else {
+        console.log('User is already a member...');
+        return state;
       }
     }
   )(state);
