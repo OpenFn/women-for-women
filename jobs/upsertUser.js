@@ -1,5 +1,21 @@
 //**Sample job to creating users in AzureAD when new BambooHR employees registered**//
 alterState(state => {
+  const administrativeUnitsMap = {
+    Afghanistan: 'a6ea8828-6a06-450e-84ea-126967bb5468',
+    Headquarters: '61c87b53-b995-43ab-ba5a-1b9d62c893f3',
+    Iraq: '1f4492b8-32bf-4363-8a91-21eaecc6814e',
+    Nigeria: '194d1892-e2e7-4d0c-bcf4-b6902faff574',
+    Rwanda: 'b4c8cf51-f8e2-413a-ad4f-f466a180956f',
+    'South Sudan': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
+    'The Democratic Republic of the Congo': '487422cb-09bc-4607-87e1-9e817498d47e',
+    WOC: '8406e250-1202-4c15-815e-0b4ae118c548',
+  };
+
+  const groupMap = {
+    'Full User': 'eb4a88b5-a02c-4ae9-abb8-cd9b082aae15',
+    'Mobile Only': '4e19592a-345b-461b-9058-ff6e21164bbd',
+  };
+
   const stateMap = {
     //Table for matching countries with ISO codes
     Afghanistan: 'AF',
@@ -262,7 +278,7 @@ alterState(state => {
   ];
 
   state.employees = state.data.employees;
-  return { ...state, stateMap, EmploymentStatus };
+  return { ...state, stateMap, EmploymentStatus, administrativeUnitsMap, groupMap };
 });
 
 // GET TOKEN
@@ -355,8 +371,9 @@ each(
             //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
           };
           //console.log(JSON.stringify(data));
+          const { id } = state.data;
           return patch(
-            `${api}/users/${state.data.id}`,
+            `${api}/users/${id}`,
             {
               headers: {
                 authorization: `Bearer ${state.access_token}`,
@@ -367,12 +384,10 @@ each(
               },
               body: data,
             },
-            state => {
-              console.log('Updated!');
-            }
+            state => ({ ...state, id })
           )(state);
         } else {
-          // We are updating
+          // We are creating a new user
           console.log('Creating a new user...');
           const { fields } = state.employees[0];
 
@@ -386,11 +401,7 @@ each(
               forceChangePasswordNextSignInWithMfa: false,
               password: 'opWWK6$8b&', //Q: choose default password?
             },
-            mailNickname:
-              fields['First Name'].substring(0, 1) +
-              fields['Middle initial'] +
-              fields['Last Name'] 
-              , //TODO: Transform to AGKrolls@womenforwomen.org
+            mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //TODO: Transform to AGKrolls@womenforwomen.org
             userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
             givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
             mail: fields['Work email'],
@@ -413,6 +424,7 @@ each(
             //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
           };
           //console.log(JSON.stringify(data));
+          const { id } = state.data.body;
           return post(
             `${api}/users`,
             {
@@ -425,12 +437,60 @@ each(
               },
               body: data,
             },
-            state => {
-              console.log(state);
-            }
+            state => ({ ...state, id })
           )(state);
         }
       }
     )(state);
   })
 );
+
+// 1.4 Add user as member to administrative unit
+alterState(state => {
+  const { api } = state.configuration;
+  const idsValue = Object.values(state.administrativeUnitsMap);
+  // (a) First we make a request to see if the user is not already a member...
+  return post(
+    `${api}/users/${state.id}/checkMemberObjects`,
+    {
+      headers: {
+        authorization: `Bearer ${state.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      options: {
+        successCodes: [200, 201, 202, 203, 204, 404],
+      },
+      body: { ids: idsValue },
+    },
+    state => {
+      const { value } = state.data.body;
+      const { fields } = state.employees[0];
+      const administrativeUnitID = state.administrativeUnitsMap[fields.Division]; // Mapping AU name to ID
+      // ... (b) if he is not we add him.
+      if (!value.includes(administrativeUnitID)) {
+        console.log('Adding member to the administrative units...');
+        const data = {
+          '@odata.id': `https://graph.microsoft.com/v1.0/directoryObjects/${state.id}`,
+        };
+        return post(
+          `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+            body: data,
+          },
+          state => {
+            //console.log(state);
+          }
+        )(state);
+      } else {
+        console.log('Administrative unit already added...');
+      }
+    }
+  )(state);
+});
