@@ -399,7 +399,7 @@ each(
               passwordProfile: {
                 forceChangePasswordNextSignIn: true,
                 forceChangePasswordNextSignInWithMfa: false,
-                password: 'opWWK6$8b&', //Q: choose default password?
+                password: 'You\'ll Never Walk Alone!', 
               },
               mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
@@ -421,7 +421,6 @@ each(
               //preferredName: fields['Preferred Name'], // ---------Request not supported---------
               givenName: fields['First Name'],
               //profilePhoto  //TODO: DISCUSS step with Engineers
-              //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
             };
             return post(
               `${api}/users`,
