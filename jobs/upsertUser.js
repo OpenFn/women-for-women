@@ -345,11 +345,11 @@ each(
               accountEnabled: fields.Status === 'Active' ? true : false,
               employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
               userType: 'Member',
-              /*    mailNickname:
+              mailNickname:
               fields['First Name'].substring(0, 1) +
               fields['Middle initial'] +
-              fields['Last Name'] +
-              '@womenforwomen.org', //TODO: Transform to AGKrolls@womenforwomen.org */
+              fields['Last Name'], /*+
+              '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
               mail: fields['Work email'],
@@ -369,7 +369,6 @@ each(
               //preferredName: fields['Preferred Name'], // ---------Request not supported---------
               givenName: fields['First Name'],
               //profilePhoto  //TODO: DISCUSS step with Engineers
-              //supervisorID  //TODO: CONFIRM if we can link to directoryObject with supervisor Email
             };
             const { id } = state.data; // Employee ID
             return patch(
@@ -402,7 +401,7 @@ each(
                 forceChangePasswordNextSignInWithMfa: false,
                 password: 'opWWK6$8b&', //Q: choose default password?
               },
-              mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //TODO: Transform to AGKrolls@womenforwomen.org
+              mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
               mail: fields['Work email'],
