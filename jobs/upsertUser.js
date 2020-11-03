@@ -315,7 +315,9 @@ each(
   // STEP 1: Get User
   alterState(state => {
     const { api } = state.configuration;
-    const work_email = state.data.fields['Work Email'];
+    const employee = state.data;
+    //const work_email = state.data.fields['Work Email'];
+    const work_email = employee.fields['Work Email'];
     const userPrincipalName = work_email.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
     return get(
       `${api}/users/${userPrincipalName}`,
@@ -331,7 +333,8 @@ each(
         if (!state.data.error) {
           // We are updating
           console.log('Updating user information...');
-          const { fields } = state.employees[0];
+          //const { fields } = state.employees[0];
+          const { fields } = employee;
 
           const data = {
             accountEnabled: fields.Status === 'Active' ? true : false,
@@ -386,8 +389,9 @@ each(
         } else {
           // We are creating a new user
           console.log('Creating a new user...');
-          const { fields } = state.employees[0];
+          //const { fields } = state.employees[0];
 
+          const { fields } = employee;
           const data = {
             accountEnabled: fields.Status === 'Active' ? true : false,
             employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
@@ -438,153 +442,145 @@ each(
           )(state);
         }
       }
-    )(state);
+    )(state).then(state => {
+      // 1.2 Assign user to manager
+      //const { fields } = state.employees[0];
+      const supervisorEmail = employee.fields['Supervisor email'];
+      const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+      const { api } = state.configuration;
+      get(
+        `${api}/users/${userPrincipalName}`,
+        {
+          headers: {
+            authorization: `Bearer ${state.access_token}`,
+          },
+          options: {
+            successCodes: [200, 201, 202, 203, 204, 404],
+          },
+        },
+        state => {
+          if (!state.data.error) {
+            const { id } = state.data.body;
+            const data = {
+              '@odata.id': `${api}/users/${state.id}`,
+            };
+            console.log('Assigning user to manager...');
+            return put(
+              `${api}/users/${id}/manager/$ref`,
+              {
+                headers: {
+                  authorization: `Bearer ${state.access_token}`,
+                  'Content-Type': 'application/json',
+                },
+                options: {
+                  successCodes: [200, 201, 202, 203, 204, 404],
+                },
+                body: data,
+              },
+              state => {}
+            )(state);
+          } else {
+            console.log('Manager not found...');
+            return state;
+          }
+        }
+      )(state);
+
+      // 1.3 Add user as member to administrative unit
+      const idsValue = Object.values(state.administrativeUnitsMap);
+      // (a) First we make a request to see if the user is not already a member...
+      post(
+        `${api}/users/${state.id}/checkMemberObjects`,
+        {
+          headers: {
+            authorization: `Bearer ${state.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          options: {
+            successCodes: [200, 201, 202, 203, 204, 404],
+          },
+          body: { ids: idsValue },
+        },
+        state => {
+          const { value } = state.data.body;
+          const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to ID
+          // ... (b) if he is not we add him.
+          if (!value.includes(administrativeUnitID)) {
+            console.log('Adding member to the administrative units...');
+            const data = {
+              '@odata.id': `${api}/directoryObjects/${state.id}`,
+            };
+            return post(
+              `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+              {
+                headers: {
+                  authorization: `Bearer ${state.access_token}`,
+                  'Content-Type': 'application/json',
+                },
+                options: {
+                  successCodes: [200, 201, 202, 203, 204, 404],
+                },
+                body: data,
+              },
+              state => {
+                //console.log(state);
+              }
+            )(state);
+          } else {
+            console.log('User is already a member of this administrative unit...');
+            return state;
+          }
+        }
+      )(state);
+
+      // 1.4 Add user as member to group
+      const groupIdsValue = Object.values(state.groupMap);
+      // (a) First we make a request to see if the user is not already a member...
+      post(
+        `${api}/users/${state.id}/checkMemberObjects`,
+        {
+          headers: {
+            authorization: `Bearer ${state.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          options: {
+            successCodes: [200, 201, 202, 203, 204, 404],
+          },
+          body: { ids: groupIdsValue },
+        },
+        state => {
+          const { value } = state.data.body;
+          const groupID = state.groupMap[employee.fields['Core System Needs']]; // Mapping group name to ID
+          // ... (b) if he is not we add him.
+          if (!value.includes(groupID)) {
+            console.log('Adding member to the group...');
+            const data = {
+              '@odata.id': `${api}/directoryObjects/${state.id}`,
+            };
+            return post(
+              `${api}/groups/${groupID}/members/$ref`,
+              {
+                headers: {
+                  authorization: `Bearer ${state.access_token}`,
+                  'Content-Type': 'application/json',
+                },
+                options: {
+                  successCodes: [200, 201, 202, 203, 204, 404],
+                },
+                body: data,
+              },
+              state => {
+                //console.log(state);
+              }
+            )(state);
+          } else {
+            console.log('User is already a member of this group...');
+            return state;
+          }
+        }
+      )(state);
+
+      return state;
+    });
   })
 );
-
-// 1.2 Assign user to manager
-alterState(state => {
-  const { fields } = state.employees[0];
-  const supervisorEmail = fields['Supervisor email'];
-  const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-  const { api } = state.configuration;
-  return get(
-    `${api}/users/${userPrincipalName}`,
-    {
-      headers: {
-        authorization: `Bearer ${state.access_token}`,
-      },
-      options: {
-        successCodes: [200, 201, 202, 203, 204, 404],
-      },
-    },
-    state => {
-      if (!state.data.error) {
-        const { id } = state.data.body;
-        const data = {
-          '@odata.id': `${api}/users/${state.id}`,
-        };
-        console.log('Assigning user to manager...');
-        return put(
-          `${api}/users/${id}/manager/$ref`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: data,
-          },
-          state => {}
-        )(state);
-      } else {
-        console.log('Manager not found...');
-        return state;
-      }
-    }
-  )(state);
-});
-
-// 1.3 Add user as member to administrative unit
-alterState(state => {
-  const { api } = state.configuration;
-  const idsValue = Object.values(state.administrativeUnitsMap);
-  // (a) First we make a request to see if the user is not already a member...
-  return post(
-    `${api}/users/${state.id}/checkMemberObjects`,
-    {
-      headers: {
-        authorization: `Bearer ${state.access_token}`,
-        'Content-Type': 'application/json',
-      },
-      options: {
-        successCodes: [200, 201, 202, 203, 204, 404],
-      },
-      body: { ids: idsValue },
-    },
-    state => {
-      const { value } = state.data.body;
-      const { fields } = state.employees[0];
-      const administrativeUnitID = state.administrativeUnitsMap[fields.Division]; // Mapping AU name to ID
-      // ... (b) if he is not we add him.
-      if (!value.includes(administrativeUnitID)) {
-        console.log('Adding member to the administrative units...');
-        const data = {
-          '@odata.id': `${api}/directoryObjects/${state.id}`,
-        };
-        return post(
-          `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: data,
-          },
-          state => {
-            //console.log(state);
-          }
-        )(state);
-      } else {
-        console.log('User is already a member of this administrative unit...');
-        return state;
-      }
-    }
-  )(state);
-});
-
-// 1.4 Add user as member to group
-alterState(state => {
-  const { api } = state.configuration;
-  const idsValue = Object.values(state.groupMap);
-  // (a) First we make a request to see if the user is not already a member...
-  return post(
-    `${api}/users/${state.id}/checkMemberObjects`,
-    {
-      headers: {
-        authorization: `Bearer ${state.access_token}`,
-        'Content-Type': 'application/json',
-      },
-      options: {
-        successCodes: [200, 201, 202, 203, 204, 404],
-      },
-      body: { ids: idsValue },
-    },
-    state => {
-      const { value } = state.data.body;
-      const { fields } = state.employees[0];
-      const groupID = state.groupMap[fields['Core System Needs']]; // Mapping group name to ID
-      // ... (b) if he is not we add him.
-      if (!value.includes(groupID)) {
-        console.log('Adding member to the group...');
-        const data = {
-          '@odata.id': `${api}/directoryObjects/${state.id}`,
-        };
-        return post(
-          `${api}/groups/${groupID}/members/$ref`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: data,
-          },
-          state => {
-            //console.log(state);
-          }
-        )(state);
-      } else {
-        console.log('User is already a member of this group...');
-        return state;
-      }
-    }
-  )(state);
-});
