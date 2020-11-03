@@ -345,11 +345,6 @@ each(
               accountEnabled: fields.Status === 'Active' ? true : false,
               employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
               userType: 'Member',
-              /* passwordProfile: { // ---------Insufficient privileges---------
-              forceChangePasswordNextSignIn: true,
-              forceChangePasswordNextSignInWithMfa: false,
-              password: 'opWWK6$8b&', //Q: choose default password?
-            }, */
               /*    mailNickname:
               fields['First Name'].substring(0, 1) +
               fields['Middle initial'] +
