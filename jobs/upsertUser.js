@@ -346,10 +346,12 @@ each(
               employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
               userType: 'Member',
               mailNickname:
-              fields['First Name'].substring(0, 1) +
-              fields['Middle initial'] +
-              fields['Last Name'], /*+
-              '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */
+                fields['First Name'].substring(0, 1) +
+                fields['Middle initial'] +
+                fields[
+                  'Last Name'
+                ] /*+
+              '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
               mail: fields['Work email'],
@@ -399,7 +401,7 @@ each(
               passwordProfile: {
                 forceChangePasswordNextSignIn: true,
                 forceChangePasswordNextSignInWithMfa: false,
-                password: 'You\'ll Never Walk Alone!', 
+                password: "You'll Never Walk Alone!",
               },
               mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
@@ -445,138 +447,141 @@ each(
       )(state).then(response => {
         // 1.2 ASSIGN USER TO MANAGER
         const supervisorEmail = employee.fields['Supervisor email'];
-        const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-        // We (1) make a get to fetch the supervisor id.
-        get(
-          `${api}/users/${userPrincipalName}`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
+        if (supervisorEmail) {
+          const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+          // We (1) make a get to fetch the supervisor id.
+          get(
+            `${api}/users/${userPrincipalName}`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-          },
-          state => {
-            if (!state.data.error) {
-              // (2) if we find it,
-              const { id } = state.data.body;
-              const data = {
-                '@odata.id': `${api}/users/${employee.id}`,
-              };
-              console.log('Assigning user to manager...');
-              return put(
-                `${api}/users/${id}/manager/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
+            state => {
+              if (!state.data.error) {
+                // (2) if we find it,
+                const { id } = state.data.body;
+                const data = {
+                  '@odata.id': `${api}/users/${employee.id}`,
+                };
+                console.log('Assigning user to manager...');
+                return put(
+                  `${api}/users/${id}/manager/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
+                    body: data,
                   },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
-            } else {
-              console.log('Manager not found...');
-              return state;
+                  state => {}
+                )(state);
+              } else {
+                console.log('Manager not found...');
+                return state;
+              }
             }
-          }
-        )(state);
-
-        // 1.3 ADD USER AS MEMEBER TO ADMINISTRATIVE UNIT
+          )(state);
+        }
+        // 1.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
         const idsValue = Object.values(state.administrativeUnitsMap);
-        // (a) First we make a request to see if the employee is not already a member...
-        post(
-          `${api}/users/${employee.id}/checkMemberObjects`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
+        const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
+        if (administrativeUnitID) {
+          // (a) First we make a request to see if the employee is not already a member...
+          post(
+            `${api}/users/${employee.id}/checkMemberObjects`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: { ids: idsValue },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: { ids: idsValue },
-          },
-          state => {
-            const { value } = state.data.body;
-            
-            const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
-            // ... (b) if he is not we add him.
-            if (!value.includes(administrativeUnitID)) {
-              console.log('Adding member to the administrative units...');
-              const data = {
-                '@odata.id': `${api}/directoryObjects/${employee.id}`,
-              };
-              return post(
-                `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
-            } else {
-              console.log('Employee is already a member of this administrative unit...');
-              return state;
-            }
-          }
-        )(state);
+            state => {
+              const { value } = state.data.body;
 
+              // ... (b) if he is not we add him.
+              if (!value.includes(administrativeUnitID)) {
+                console.log('Adding member to the administrative units...');
+                const data = {
+                  '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                };
+                return post(
+                  `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
+                    body: data,
+                  },
+                  state => {}
+                )(state);
+              } else {
+                console.log('Employee is already a member of this administrative unit...');
+                return state;
+              }
+            }
+          )(state);
+        }
         // 1.4 ADD USER AS MEMBER TO GROUP.
         const groupIdsValue = Object.values(state.groupMap);
-        // (a) First we make a request to see if the employee is not already a member...
-        post(
-          `${api}/users/${employee.id}/checkMemberObjects`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
+        const groupID = state.groupMap[employee.fields['Core System Needs']]; // Mapping group name to correct ID
+        if (groupID) {
+          // (a) First we make a request to see if the employee is not already a member...
+          post(
+            `${api}/users/${employee.id}/checkMemberObjects`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: { ids: groupIdsValue },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: { ids: groupIdsValue },
-          },
-          state => {
-            const { value } = state.data.body;
-            const groupID = state.groupMap[employee.fields['Core System Needs']]; // Mapping group name to correct ID
-            // ... (b) if he is not we add him.
-            if (!value.includes(groupID)) {
-              console.log('Adding member to the group...');
-              const data = {
-                '@odata.id': `${api}/directoryObjects/${employee.id}`,
-              };
-              return post(
-                `${api}/groups/${groupID}/members/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
+            state => {
+              const { value } = state.data.body;
+              // ... (b) if he is not we add him.
+              if (!value.includes(groupID)) {
+                console.log('Adding member to the group...');
+                const data = {
+                  '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                };
+                return post(
+                  `${api}/groups/${groupID}/members/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
+                    body: data,
                   },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
-            } else {
-              console.log('Employee is already a member of this group...');
-              return state;
+                  state => {}
+                )(state);
+              } else {
+                console.log('Employee is already a member of this group...');
+                return state;
+              }
             }
-          }
-        )(state);
-
+          )(state);
+        }
         return state;
       });
     } else {
