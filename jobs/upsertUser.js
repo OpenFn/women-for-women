@@ -538,7 +538,7 @@ each(
         }
         // 1.4 ADD USER AS MEMBER TO GROUP.
         const groupIdsValue = Object.values(state.groupMap);
-        const groupID = state.groupMap[employee.fields['Core System Needs']]; // Mapping group name to correct ID
+        const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
         if (groupID) {
           // (a) First we make a request to see if the employee is not already a member...
           post(
