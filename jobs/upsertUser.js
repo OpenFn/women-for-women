@@ -360,17 +360,17 @@ each(
               officeLocation: fields.Division,
               employeeId: fields['Employee #'],
               displayName: fields['First name Last name'],
-              //hireDate: fields['Hire Date'], // ---------Request not supported---------
-              //otherMails: fields['Home Email'], // ---------Problem with JSON reader---------
+              //hireDate: fields['Hire Date'], // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+              //otherMails: [fields['Home Email']], // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
               jobTitle: fields['Job Title'],
               surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location], //TODO: Compare countries with Bamboo list
-              //middleName: fields['Middle Name'], // ---------Property invalid---------
-              //mobilePhone: fields['Mobile Phone'], // ---------Insufficient privileges---------
-              //businessPhones: [fields['Work Phone']], // ---------Insufficient privileges---------
-              //preferredName: fields['Preferred Name'], // ---------Request not supported---------
+              usageLocation: state.stateMap[fields.Location], 
+              //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+              mobilePhone: fields['Mobile Phone'], 
+              //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
+              //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
-              //profilePhoto  //TODO: DISCUSS step with Engineers
+              //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
             const { id } = state.data; // Employee ID
             return patch(
@@ -412,17 +412,17 @@ each(
               officeLocation: fields.Division,
               employeeId: fields['Employee #'],
               displayName: fields['First name Last name'],
-              //hireDate: fields['Hire Date'], // ---------Request not supported---------
-              //otherMails: fields['Home Email'], // ---------Problem with JSON reader---------
+              //hireDate: fields['Hire Date'], // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+              //otherMails: [fields['Home Email']], // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
               jobTitle: fields['Job Title'],
               surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location], //TODO: Compare countries with Bamboo list
-              //middleName: fields['Middle Name'], // ---------Property invalid---------
-              //mobilePhone: fields['Mobile Phone'], // ---------Insufficient privileges---------
-              //businessPhones: [fields['Work Phone']], // ---------Insufficient privileges---------
-              //preferredName: fields['Preferred Name'], // ---------Request not supported---------
+              usageLocation: state.stateMap[fields.Location], 
+              //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+              mobilePhone: fields['Mobile Phone'], 
+              //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
+              //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
-              //profilePhoto  //TODO: DISCUSS step with Engineers
+              //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
             return post(
               `${api}/users`,
