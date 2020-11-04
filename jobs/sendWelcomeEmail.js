@@ -1,21 +1,27 @@
-//Using Mailgun adaptor
+//-- Using Mailgun adaptor --
 alterState(state => {
-  const employee = state.data.employee[0].fields; 
-  const workEmail = employee['Work Email'];
-  const name = employee['First Name']+' '+employee['Last Name'];
+  const employee = state.data.employees[0]; //update to handle array of employees
+  state.workEmail = employee.fields['Work Email'];
+  state.name = employee.fields['First name Last name'];
+  console.log(state.name, state.workEmail);
   return state;
 });
-
 //FOR EVERY NEW EMPLOYEE SENT VIA BAMBOO...
-each(
-  '$.employees[*]',
-  send(
+//each( //update to handle multiple employees
+//  '$.employees[*]',
+
+//-- SEND WELCOME EMAIl --
+send(
     fields(
-      field('from', 'notifier@womenforwomen.openfn.org'),
-      field('to', 'aleksa@openfn.org'),//dataValue('fields.Work Email')),
-      //field('cc', dataValue('fields.Supervisor email')),
-      field('subject', `Welcome to Women for Women, ${state.data.name}!`),
-      field('html', state => { 
+      field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
+      field('to', 'MAverbuj@womenforwomen.org'), //dataValue('fields.Work Email')), --> harcoding while testing
+      field('cc', 'aleksa@openfn.org, jed@openfn.org'),//dataValue('fields.Supervisor email')), --> commenting out while testing
+      field('subject', state => {
+        var sub = `Welcome to Women for Women, ${state.name}!`;
+        console.log(sub);
+        return sub;
+      }),
+      field('html', state => { //WfW welcome template
         var msg = `<style type="text/css">
         @media screen and (max-width: 600px) {
         #main-table {width:100%!important;border:0!important;}
@@ -52,11 +58,11 @@ each(
                                        <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
                                          <tr>
                                            <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Name:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.data.name}</td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.name}</td>
                                          </tr>
                                          <tr>
                                            <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Email:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.data.workEmail} </td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.workEmail} </td>
                                          </tr>
                                          <tr>
                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Temporary Password</strong></td>
@@ -103,5 +109,4 @@ each(
         return msg;
       })
     )
-  )
 );
