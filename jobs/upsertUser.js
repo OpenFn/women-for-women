@@ -17,7 +17,7 @@ alterState(state => {
   };
 
   const stateMap = {
-    //Table for matching countries with ISO codes
+    // Table for matching countries with ISO codes
     Afghanistan: 'AF',
     Albania: 'AL',
     Algeria: 'DZ',
