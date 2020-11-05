@@ -14,7 +14,7 @@ alterState(state => {
   //each( //update to handle multiple employees
   //  '$.employees[*]',
   
-  //--- SEND WELCOME EMAIl ---
+  //-- SEND WELCOME EMAIl --
   send(
       fields(
         field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
