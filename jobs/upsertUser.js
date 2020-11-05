@@ -354,19 +354,19 @@ each(
               '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-              mail: fields['Work email'],
+              mail: fields['Work Email'],
               birthday: fields.Birthday,
               department: fields.Department,
               officeLocation: fields.Division,
               employeeId: fields['Employee #'],
               displayName: fields['First name Last name'],
-              //hireDate: fields['Hire Date'], // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-              //otherMails: [fields['Home Email']], // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+              //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+              otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
               jobTitle: fields['Job Title'],
               surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location], 
+              usageLocation: state.stateMap[fields.Location],
               //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-              mobilePhone: fields['Mobile Phone'], 
+              mobilePhone: fields['Mobile Phone'],
               //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
               //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
@@ -406,19 +406,19 @@ each(
               mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-              mail: fields['Work email'],
+              mail: fields['Work Email'],
               birthday: fields.Birthday,
               department: fields.Department,
               officeLocation: fields.Division,
               employeeId: fields['Employee #'],
               displayName: fields['First name Last name'],
-              //hireDate: fields['Hire Date'], // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-              //otherMails: [fields['Home Email']], // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+              //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+              otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
               jobTitle: fields['Job Title'],
               surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location], 
+              usageLocation: state.stateMap[fields.Location],
               //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-              mobilePhone: fields['Mobile Phone'], 
+              mobilePhone: fields['Mobile Phone'],
               //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
               //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
