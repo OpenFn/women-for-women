@@ -367,7 +367,7 @@ each(
               usageLocation: state.stateMap[fields.Location],
               //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
               mobilePhone: fields['Mobile Phone'],
-              //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
+              businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
               //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
@@ -419,7 +419,7 @@ each(
               usageLocation: state.stateMap[fields.Location],
               //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
               mobilePhone: fields['Mobile Phone'],
-              //businessPhones: fields['Work Phone'] , // don't map if blank; do not return empty array`[]` or will hit error
+              businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
               //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
