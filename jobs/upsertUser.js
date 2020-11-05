@@ -463,13 +463,13 @@ each(
             state => {
               if (!state.data.error) {
                 // (2) if we find it,
-                const { id } = state.data.body;
+                const { id } = state.data;
                 const data = {
-                  '@odata.id': `${api}/users/${employee.id}`,
+                  '@odata.id': `${api}/users/${id}`,
                 };
                 console.log('Assigning user to manager...');
                 return put(
-                  `${api}/users/${id}/manager/$ref`,
+                  `${api}/users/${employee.id}/manager/$ref`,
                   {
                     headers: {
                       authorization: `Bearer ${state.access_token}`,
