@@ -493,7 +493,7 @@ each(
         const idsValue = Object.values(state.administrativeUnitsMap);
         const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
         if (administrativeUnitID) {
-          // (a) First we make a request to see if the employee is not already a member...
+          // (a) First we make a request to see if the employee has membership to any administrative unit...
           post(
             `${api}/users/${employee.id}/checkMemberObjects`,
             {
@@ -508,9 +508,44 @@ each(
             },
             state => {
               const { value } = state.data.body;
-
-              // ... (b) if he is not we add him.
-              if (!value.includes(administrativeUnitID)) {
+              // ... (b1) if he has, we remove him from the administrative unit...
+              if (value.length > 0) {
+                console.log('Removing member from the administrative unit...');
+                return del(
+                  `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
+                  },
+                  state => {}
+                )(state).then(response => {
+                  // ... (c) We add him to the new administrative unit.
+                  console.log('Adding member to the administrative units...');
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  return post(
+                    `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
+                    },
+                    state => {}
+                  )(state);
+                });
+              } else {
+                // ... (b2) if he has not, we add him still.
                 console.log('Adding member to the administrative units...');
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
@@ -529,9 +564,6 @@ each(
                   },
                   state => {}
                 )(state);
-              } else {
-                console.log('Employee is already a member of this administrative unit...');
-                return state;
               }
             }
           )(state);
