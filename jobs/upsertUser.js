@@ -540,7 +540,7 @@ each(
         const groupIdsValue = Object.values(state.groupMap);
         const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
         if (groupID) {
-          // (a) First we make a request to see if the employee is not already a member...
+          // (a) First we make a request to see if the employee has membership to any group...
           post(
             `${api}/users/${employee.id}/checkMemberObjects`,
             {
@@ -555,8 +555,44 @@ each(
             },
             state => {
               const { value } = state.data.body;
-              // ... (b) if he is not we add him.
-              if (!value.includes(groupID)) {
+              // ... (b1) if he has, we remove him from the group...
+              if (value.length > 0) {
+                console.log('Removing member from the group...');
+                return del(
+                  `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
+                  },
+                  state => {}
+                )(state).then(response => {
+                  // ... (c) We add him to the new group.
+                  console.log('Adding member to the new group...');
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  return post(
+                    `${api}/groups/${groupID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
+                    },
+                    state => {}
+                  )(state);
+                });
+              } else {
+                // ... (b2) if he has not, we add him still.
                 console.log('Adding member to the group...');
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
@@ -575,9 +611,6 @@ each(
                   },
                   state => {}
                 )(state);
-              } else {
-                console.log('Employee is already a member of this group...');
-                return state;
               }
             }
           )(state);
@@ -585,7 +618,7 @@ each(
         return state;
       });
     } else {
-      console.log('nothing to do');
+      console.log('Nothing to do');
     }
   })
 );
