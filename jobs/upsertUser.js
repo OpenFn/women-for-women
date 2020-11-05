@@ -283,6 +283,7 @@ alterState(state => {
 
 // GET TOKEN
 alterState(state => {
+  // destructuring configuration elements
   const { host, userName, password, scope, client_secret, client_id, tenant_id, grant_type } = state.configuration;
 
   const data = {
