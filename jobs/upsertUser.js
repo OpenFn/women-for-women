@@ -320,7 +320,7 @@ each(
     const employee = state.data; // We get the current employee
     const { fields } = employee;
     if (
-      employee.changedFields.includes('Status') &&
+      //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
       fields.Status === 'Active' &&
       state.EmploymentStatus.includes(fields['Employment Status'])
     ) {
