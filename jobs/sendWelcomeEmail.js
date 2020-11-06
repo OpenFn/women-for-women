@@ -57,20 +57,20 @@ send(
                                        <p>We are honored to welcome you to the organization and we look forward to working with you. In order to get your onboarding process started, we first need to setup your official account. Here is a summary of your new logon information and proceed to setup a new password.</p>
                                        <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
                                          <tr>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Name:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.name}</td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:10px;line-height:0.5;"><strong>Name:</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.5;">${state.name}</td>
                                          </tr>
                                          <tr>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Email:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.workEmail} </td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:10px;line-height:0.5;"><strong>Email:</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.5;">${state.workEmail} </td>
                                          </tr>
                                          <tr>
-                                          <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Temporary Password</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">"You'll Never Walk Alone!"</td>
+                                          <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:10px;line-height:0.5;"><strong>Temporary Password</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.5;">"You'll Never Walk Alone!"</td>
                                          </tr>
                                          <tr>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#D88C02;text-decoration:none">CLICK HERE</a></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14x;padding:10px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#D88C02;text-decoration:none">CLICK HERE</a></td>
                                          </tr>
                                        </table>
                                        <p style="text-align:center;font-size:18px;"><strong>IMPORTANT: The above password is your temporary logon to WfWI, which should be changed to a new password using our password portal immediately. If this is not done within 48 hours, your account will be disabled!</strong> </p>
@@ -78,12 +78,12 @@ send(
                                        <p style="text-align:center;font-size:18px;color:#D88C02"><strong>Other important Links:</strong></p>
                                        <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
                                          <tr>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.2;"><strong>Email Logon:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.0;"><a href="https://www.office.com/" style="font-weight:bold;color:#D88C02;text-decoration:none">https://www.office.com/</a></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:10px;line-height:0.2;"><strong>Email Logon:</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.0;"><a href="https://www.office.com/" style="font-weight:bold;color:#D88C02;text-decoration:none">https://www.office.com/</a></td>
                                          </tr>
                                          <tr>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.0;"><strong>Our Help Center:</strong></td>
-                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.2;"><a href="https://help.womenforwomen.org" style="font-weight:bold;color:#D88C02;text-decoration:none">https://help.womenforwomen.org</a></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:10px;line-height:0.0;"><strong>Our Help Center:</strong></td>
+                                           <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:20px;line-height:0.2;"><a href="https://help.womenforwomen.org" style="font-weight:bold;color:#D88C02;text-decoration:none">https://help.womenforwomen.org</a></td>
                                          </tr>
                                        </table>
                                        <p>If you have any questions, do not hesitate to contact us at <a href="mailto:#" style="font-weight:bold;color:#D88C02;text-decoration:none">???@womenforwomen.org</a>.</p>
