@@ -6,7 +6,7 @@ alterState(state => {
     state.division = employee.fields['Division'];
     state.supervisor = employee.fields['Supervisor name'];
     state.superEmail = employee.fields['Supervisor email'];
-    state.EndDate = employee.fields['Termination Date'];
+    state.endDate = employee.fields['Termination Date'];
     console.log(state.name, state.workEmail, state.division, state.endDate, state.supervisor, state.superEmail);
     return state;
   });
