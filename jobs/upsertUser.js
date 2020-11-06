@@ -373,6 +373,7 @@ each(
               givenName: fields['First Name'],
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
+            console.log(data);
             const { id } = state.data; // Employee ID
             return patch(
               `${api}/users/${id}`,
@@ -425,6 +426,7 @@ each(
               givenName: fields['First Name'],
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
+            console.log(data);
             return post(
               `${api}/users`,
               {
@@ -468,7 +470,7 @@ each(
                 const data = {
                   '@odata.id': `${api}/users/${id}`,
                 };
-                console.log('Assigning user to manager...');
+                console.log(`Assigning ${fields['First name Last name']} to manager ${supervisorEmail} ...`);
                 return put(
                   `${api}/users/${employee.id}/manager/$ref`,
                   {
@@ -511,7 +513,7 @@ each(
               const { value } = state.data.body;
               // ... (b1) if he has, we remove him from the administrative unit...
               if (value.length > 0) {
-                console.log('Removing member from the administrative unit...');
+                console.log(`Removing member from the administrative unit ${value[0]}...`);
                 return del(
                   `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
                   {
@@ -526,7 +528,7 @@ each(
                   state => {}
                 )(state).then(response => {
                   // ... (c) We add him to the new administrative unit.
-                  console.log('Adding member to the administrative units...');
+                  console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
                   const data = {
                     '@odata.id': `${api}/directoryObjects/${employee.id}`,
                   };
@@ -547,7 +549,7 @@ each(
                 });
               } else {
                 // ... (b2) if he has not, we add him still.
-                console.log('Adding member to the administrative units...');
+                console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
@@ -590,7 +592,7 @@ each(
               const { value } = state.data.body;
               // ... (b1) if he has, we remove him from the group...
               if (value.length > 0) {
-                console.log('Removing member from the group...');
+                console.log(`Removing member from the group ${value[0]}...`);
                 return del(
                   `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
                   {
@@ -605,7 +607,7 @@ each(
                   state => {}
                 )(state).then(response => {
                   // ... (c) We add him to the new group.
-                  console.log('Adding member to the new group...');
+                  console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
                   const data = {
                     '@odata.id': `${api}/directoryObjects/${employee.id}`,
                   };
@@ -626,7 +628,7 @@ each(
                 });
               } else {
                 // ... (b2) if he has not, we add him still.
-                console.log('Adding member to the group...');
+                console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
