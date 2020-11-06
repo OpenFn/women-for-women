@@ -1,6 +1,6 @@
 //-- Using Mailgun adaptor --
 alterState(state => {
-    const employee = state.data.employees[0]; //update to handle array of employees
+    const employee = state.data.employees[0]; //Q: do we need to handle for multiple employee updates at once?
     state.workEmail = employee.fields['Work Email'];
     state.name = employee.fields['First name Last name'];
     state.division = employee.fields['Division'];
@@ -10,10 +10,7 @@ alterState(state => {
     console.log(state.name, state.workEmail, state.division, state.endDate, state.supervisor, state.superEmail);
     return state;
   });
-  //FOR EVERY NEW EMPLOYEE SENT VIA BAMBOO...
-  //each( //update to handle multiple employees
-  //  '$.employees[*]',
-  
+
   //-- SEND INACTIVE EMAIl --
   send(
       fields(
