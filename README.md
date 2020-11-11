@@ -9,10 +9,13 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 Summarize how it works and link to data flows...
 
 ## BambooHR Webhook Notification
-BambooHR has a webhook notification service that will send OpenFn real-time notifications when changes are made to employee records in Bamboo. 
+BambooHR has a webhook notification service that will send OpenFn real-time notifications when changes are made to employee records in Bamboo. The fields included in this notification & how they map to Azure are listed in [this mapping specification](post-link-here). 
 
-The fields included in this notification & how they map to Azure are listed in [this mapping specification](post-link-here). 
-
+## Administrator Notes
+Depending on the Employment Status, different actions may be taken beyond Azure user record updates. 
+1. New Employees --> Sent a "Welcome Email"
+2. Terminated Employees --> Helpdesk sent an email 
+3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting ...?
 
 # 2. Technical Overview
 ## Data Flow
@@ -21,6 +24,9 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
 2. Assign a `manager`
 3. Add `user` as a member to `administrativeUnits`
 4. Add `user` as a member to `groups` (and thereby assign licenses)
+
+## OpenFn Logs & Errors
+List...
 
 ## Authorization with Azure
 OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft Graph API. 
