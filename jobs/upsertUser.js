@@ -1,4 +1,3 @@
-//**Sample job to creating users in AzureAD when new BambooHR employees registered**//
 alterState(state => {
   const administrativeUnitsMap = {
     Afghanistan: 'a6ea8828-6a06-450e-84ea-126967bb5468',
@@ -284,7 +283,7 @@ alterState(state => {
 // GET TOKEN
 alterState(state => {
   // destructuring configuration elements
-  const { host, userName, password, scope, client_secret, client_id, tenant_id, grant_type } = state.configuration;
+  const { host, userName, password, scope, client_secret, client_id, tenant_id, grant_type, api } = state.configuration;
 
   const data = {
     grant_type,
@@ -307,248 +306,121 @@ alterState(state => {
       console.log('Authentication done...');
       return { ...state, access_token: state.data.access_token };
     }
-  )(state);
+  )(state).then(state => {
+    // STEP 1. Get all users
+    return get(
+      `${api}/users?$select=employeeId,userPrincipalName,id`, // We select employeeId and upn
+      {
+        headers: {
+          authorization: `Bearer ${state.access_token}`,
+        },
+        options: {
+          successCodes: [200, 201, 202, 203, 204, 404],
+        },
+      },
+      state => {
+        return { ...state, users: state.data.value };
+      }
+    )(state);
+  });
 });
 
 //FOR EVERY NEW EMPLOYEE SENT VIA BAMBOO...
 each(
   '$.employees[*]',
 
-  // STEP 1: Get User
   alterState(state => {
     const { api } = state.configuration;
     const employee = state.data; // We get the current employee
     const { fields } = employee;
-    if (
-      //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
-      fields.Status === 'Active' &&
-      state.EmploymentStatus.includes(fields['Employment Status'])
-    ) {
-      const work_email = employee.fields['Work Email'];
-      const userPrincipalName = work_email.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-      return get(
-        `${api}/users/${userPrincipalName}`,
-        {
-          headers: {
-            authorization: `Bearer ${state.access_token}`,
-          },
-          options: {
-            successCodes: [200, 201, 202, 203, 204, 404],
-          },
-        },
-        state => {
-          if (!state.data.error) {
-            // STEP 2.a: User found, we are updating...
-            console.log('Updating user information...');
-            const { fields } = employee;
+    const userEmployeeIds = state.users.map(val => val.employeeId); // We get users ids
 
-            const data = {
-              accountEnabled: fields.Status === 'Active' ? true : false,
-              employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
-              userType: 'Member',
-              mailNickname:
-                fields['First Name'].substring(0, 1) +
-                fields['Middle initial'] +
-                fields[
-                  'Last Name'
-                ] /*+
-              '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
-              userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
-              givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-              mail: fields['Work Email'],
-              birthday: fields.Birthday,
-              department: fields.Department,
-              officeLocation: fields.Division,
-              employeeId: fields['Employee #'],
-              displayName: fields['First name Last name'],
-              //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-              otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
-              jobTitle: fields['Job Title'],
-              surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location],
-              //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-              mobilePhone: fields['Mobile Phone'],
-              businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
-              //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
-              givenName: fields['First Name'],
-              //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-            };
-            console.log(data);
-            const { id } = state.data; // Employee ID
-            return patch(
-              `${api}/users/${id}`,
-              {
-                headers: {
-                  authorization: `Bearer ${state.access_token}`,
-                  'Content-Type': 'application/json',
-                },
-                options: {
-                  successCodes: [200, 201, 202, 203, 204, 404],
-                },
-                body: data,
-              },
-              state => {
-                employee.id = id;
-                return state;
-              }
-            )(state);
-          } else {
-            // STEP 2.b: User was not found, we are creating a new user.
-            console.log('Creating a new user...');
-            const { fields } = employee;
-            const data = {
-              accountEnabled: fields.Status === 'Active' ? true : false,
-              employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
-              userType: 'Member',
-              passwordProfile: {
-                forceChangePasswordNextSignIn: true,
-                forceChangePasswordNextSignInWithMfa: false,
-                password: "You'll Never Walk Alone!",
-              },
-              mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
-              userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
-              givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-              mail: fields['Work Email'],
-              birthday: fields.Birthday,
-              department: fields.Department,
-              officeLocation: fields.Division,
-              employeeId: fields['Employee #'],
-              displayName: fields['First name Last name'],
-              //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-              otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
-              jobTitle: fields['Job Title'],
-              surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location],
-              //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-              mobilePhone: fields['Mobile Phone'],
-              businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
-              //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
-              givenName: fields['First Name'],
-              //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-            };
-            console.log(data);
-            return post(
-              `${api}/users`,
-              {
-                headers: {
-                  authorization: `Bearer ${state.access_token}`,
-                  'Content-Type': 'application/json',
-                },
-                options: {
-                  successCodes: [200, 201, 202, 203, 204, 404],
-                },
-                body: data,
-              },
-              state => {
-                const { id } = state.data.body;
-                employee.id = id;
-                return state;
-              }
-            )(state);
-          }
-        }
-      )(state).then(response => {
-        // 1.2 ASSIGN USER TO MANAGER
-        const supervisorEmail = employee.fields['Supervisor email'];
-        if (supervisorEmail) {
-          const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-          // We (1) make a get to fetch the supervisor id.
-          get(
-            `${api}/users/${userPrincipalName}`,
-            {
-              headers: {
-                authorization: `Bearer ${state.access_token}`,
-              },
-              options: {
-                successCodes: [200, 201, 202, 203, 204, 404],
-              },
+    function assignManager() {
+      // 1.2 ASSIGN USER TO MANAGER
+      const supervisorEmail = employee.fields['Supervisor email'];
+      if (supervisorEmail) {
+        const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+        // We (1) make a get to fetch the supervisor id.
+        get(
+          `${api}/users/${userPrincipalName}`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
             },
-            state => {
-              if (!state.data.error) {
-                // (2) if we find it,
-                const { id } = state.data;
-                const data = {
-                  '@odata.id': `${api}/users/${id}`,
-                };
-                console.log(`Assigning ${fields['First name Last name']} to manager ${supervisorEmail} ...`);
-                return put(
-                  `${api}/users/${employee.id}/manager/$ref`,
-                  {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
-                    },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
-                    body: data,
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+          },
+          state => {
+            if (!state.data.error) {
+              // (2) if we find it,
+              const { id } = state.data;
+              const data = {
+                '@odata.id': `${api}/users/${id}`,
+              };
+              console.log(`Assigning ${fields['First name Last name']} to manager ${supervisorEmail} ...`);
+              return put(
+                `${api}/users/${employee.id}/manager/$ref`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
                   },
-                  state => {}
-                )(state);
-              } else {
-                console.log('Manager not found...');
-                return state;
-              }
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                  body: data,
+                },
+                state => {}
+              )(state);
+            } else {
+              console.log('Manager not found...');
+              return state;
             }
-          )(state);
-        }
-        // 1.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
-        const idsValue = Object.values(state.administrativeUnitsMap);
-        const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
-        if (administrativeUnitID) {
-          // (a) First we make a request to see if the employee has membership to any administrative unit...
-          post(
-            `${api}/users/${employee.id}/checkMemberObjects`,
-            {
-              headers: {
-                authorization: `Bearer ${state.access_token}`,
-                'Content-Type': 'application/json',
-              },
-              options: {
-                successCodes: [200, 201, 202, 203, 204, 404],
-              },
-              body: { ids: idsValue },
+          }
+        )(state);
+      }
+    }
+
+    function assignAU() {
+      // 1.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+      const idsValue = Object.values(state.administrativeUnitsMap);
+      const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
+      if (administrativeUnitID) {
+        // (a) First we make a request to see if the employee has membership to any administrative unit...
+        post(
+          `${api}/users/${employee.id}/checkMemberObjects`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
+              'Content-Type': 'application/json',
             },
-            state => {
-              const { value } = state.data.body;
-              // ... (b1) if he has, we remove him from the administrative unit...
-              if (value.length > 0) {
-                console.log(`Removing member from the administrative unit ${value[0]}...`);
-                return del(
-                  `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
-                  {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
-                    },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+            body: { ids: idsValue },
+          },
+          state => {
+            console.log('state', state.data);
+            const { value } = state.data.body;
+            // ... (b1) if he has, we remove him from the administrative unit...
+
+            if (value.length > 0) {
+              console.log(`Removing member from the administrative unit ${value[0]}...`);
+              return del(
+                `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
                   },
-                  state => {}
-                )(state).then(response => {
-                  // ... (c) We add him to the new administrative unit.
-                  console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
-                  const data = {
-                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
-                  };
-                  return post(
-                    `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
-                    {
-                      headers: {
-                        authorization: `Bearer ${state.access_token}`,
-                        'Content-Type': 'application/json',
-                      },
-                      options: {
-                        successCodes: [200, 201, 202, 203, 204, 404],
-                      },
-                      body: data,
-                    },
-                    state => {}
-                  )(state);
-                });
-              } else {
-                // ... (b2) if he has not, we add him still.
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                },
+                state => {}
+              )(state).then(response => {
+                // ... (c) We add him to the new administrative unit.
                 console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
@@ -567,68 +439,71 @@ each(
                   },
                   state => {}
                 )(state);
-              }
-            }
-          )(state);
-        }
-        // 1.4 ADD USER AS MEMBER TO GROUP.
-        const groupIdsValue = Object.values(state.groupMap);
-        const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
-        if (groupID) {
-          // (a) First we make a request to see if the employee has membership to any group...
-          post(
-            `${api}/users/${employee.id}/checkMemberObjects`,
-            {
-              headers: {
-                authorization: `Bearer ${state.access_token}`,
-                'Content-Type': 'application/json',
-              },
-              options: {
-                successCodes: [200, 201, 202, 203, 204, 404],
-              },
-              body: { ids: groupIdsValue },
-            },
-            state => {
-              const { value } = state.data.body;
-              // ... (b1) if he has, we remove him from the group...
-              if (value.length > 0) {
-                console.log(`Removing member from the group ${value[0]}...`);
-                return del(
-                  `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
-                  {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
-                    },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
+              });
+            } else {
+              // ... (b2) if he has not, we add him still.
+              console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
+              const data = {
+                '@odata.id': `${api}/directoryObjects/${employee.id}`,
+              };
+              return post(
+                `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
                   },
-                  state => {}
-                )(state).then(response => {
-                  // ... (c) We add him to the new group.
-                  console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
-                  const data = {
-                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
-                  };
-                  return post(
-                    `${api}/groups/${groupID}/members/$ref`,
-                    {
-                      headers: {
-                        authorization: `Bearer ${state.access_token}`,
-                        'Content-Type': 'application/json',
-                      },
-                      options: {
-                        successCodes: [200, 201, 202, 203, 204, 404],
-                      },
-                      body: data,
-                    },
-                    state => {}
-                  )(state);
-                });
-              } else {
-                // ... (b2) if he has not, we add him still.
-                console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                  body: data,
+                },
+                state => {}
+              )(state);
+            }
+          }
+        )(state);
+      }
+    }
+
+    function assignGroup() {
+      // 1.4 ADD USER AS MEMBER TO GROUP.
+      const groupIdsValue = Object.values(state.groupMap);
+      const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
+      if (groupID) {
+        // (a) First we make a request to see if the employee has membership to any group...
+        post(
+          `${api}/users/${employee.id}/checkMemberObjects`,
+          {
+            headers: {
+              authorization: `Bearer ${state.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+            body: { ids: groupIdsValue },
+          },
+          state => {
+            const { value } = state.data.body;
+            // ... (b1) if he has, we remove him from the group...
+            if (value.length > 0) {
+              console.log(`Removing member from the group ${value[0]}...`);
+              return del(
+                `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                },
+                state => {}
+              )(state).then(response => {
+                // ... (c) We add him to the new group.
+                console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
@@ -646,14 +521,179 @@ each(
                   },
                   state => {}
                 )(state);
-              }
+              });
+            } else {
+              // ... (b2) if he has not, we add him still.
+              console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
+              const data = {
+                '@odata.id': `${api}/directoryObjects/${employee.id}`,
+              };
+              return post(
+                `${api}/groups/${groupID}/members/$ref`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                  body: data,
+                },
+                state => {}
+              )(state);
             }
-          )(state);
+          }
+        )(state);
+      }
+    }
+    // We check if the current 'Employee Id' exist in Azure
+    if (userEmployeeIds.includes(fields['Employee #'])) {
+      // We get the upn of that user we matched ... and it's azure id
+      const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);
+
+      const work_email = employee.fields['Work Email'];
+      const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
+
+      // If the user from azure has the upn than the one from bambooHR
+      if (azureEmployee.userPrincipalName === userPrincipalName) {
+        if (
+          //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
+          fields.Status === 'Active' &&
+          state.EmploymentStatus.includes(fields['Employment Status'])
+        ) {
+          // STEP 2.a: User found, we are updating...
+          console.log('Updating user information...');
+          const { fields } = employee;
+
+          const data = {
+            accountEnabled: fields.Status === 'Active' ? true : false,
+            employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+            userType: 'Member',
+            mailNickname:
+              fields['First Name'].substring(0, 1) +
+              fields['Middle initial'] +
+              fields[
+                'Last Name'
+              ] /*+
+              '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
+            userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+            givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
+            mail: fields['Work Email'],
+            birthday: fields.Birthday,
+            department: fields.Department,
+            officeLocation: fields.Division,
+            employeeId: fields['Employee #'],
+            displayName: fields['First name Last name'],
+            //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+            otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+            jobTitle: fields['Job Title'],
+            surname: fields['Last Name'],
+            usageLocation: state.stateMap[fields.Location],
+            //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+            mobilePhone: fields['Mobile Phone'],
+            businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
+            //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
+            givenName: fields['First Name'],
+            //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
+          };
+          console.log(data);
+          const { id } = state.data; // Employee ID
+          console.log(azureEmployee.id);
+          return patch(
+            `${api}/users/${azureEmployee.id}`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: data,
+            },
+            state => {
+              employee.id = azureEmployee.id;
+              return state;
+            }
+          )(state).then(response => {
+            // 2.2 ASSIGN USER TO MANAGER
+            assignManager();
+            // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+            assignAU();
+            // 2.4 ADD USER AS MEMBER TO GROUP.
+            assignGroup();
+            return state;
+          });
+        } else {
+          console.log('Nothing to do');
         }
-        return state;
-      });
+      } else {
+        console.log(
+          'Employee Id and User Principal Name do not match. Please review this user to confirm the Work Email entered in BambooHR.'
+        );
+      }
     } else {
-      console.log('Nothing to do');
+      // Creating new Azure user
+      const work_email = employee.fields['Work Email'];
+      // STEP 2.b: User was not found, we are creating a new user.
+      console.log('Creating a new user...');
+      const { fields } = employee;
+      const data = {
+        accountEnabled: fields.Status === 'Active' ? true : false,
+        employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+        userType: 'Member',
+        passwordProfile: {
+          forceChangePasswordNextSignIn: true,
+          forceChangePasswordNextSignInWithMfa: false,
+          password: "You'll Never Walk Alone!",
+        },
+        mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
+        userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+        givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
+        mail: fields['Work Email'],
+        birthday: fields.Birthday,
+        department: fields.Department,
+        officeLocation: fields.Division,
+        employeeId: fields['Employee #'],
+        displayName: fields['First name Last name'],
+        //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+        otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+        jobTitle: fields['Job Title'],
+        surname: fields['Last Name'],
+        usageLocation: state.stateMap[fields.Location],
+        //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+        mobilePhone: fields['Mobile Phone'],
+        businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
+        //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
+        givenName: fields['First Name'],
+        //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
+      };
+      console.log(data);
+      return post(
+        `${api}/users`,
+        {
+          headers: {
+            authorization: `Bearer ${state.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          options: {
+            successCodes: [200, 201, 202, 203, 204, 404],
+          },
+          body: data,
+        },
+        state => {
+          const { id } = state.data.body;
+          employee.id = id;
+          // 2.2 ASSIGN USER TO MANAGER
+          assignManager();
+          // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+          assignAU();
+          // 2.4 ADD USER AS MEMBER TO GROUP.
+          assignGroup();
+          return state;
+        }
+      )(state);
     }
   })
 );
