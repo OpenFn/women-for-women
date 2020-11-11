@@ -629,9 +629,7 @@ each(
           console.log('Nothing to do');
         }
       } else {
-        console.log(
-          'Employee Id and User Principal Name do not match. Please review this user to confirm the Work Email entered in BambooHR.'
-        );
+        throw new Error('Employee Id and User Principal Name do not match. Please review this user to confirm the Work Email entered in BambooHR.');
       }
     } else {
       // Creating new Azure user
