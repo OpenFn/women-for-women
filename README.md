@@ -18,7 +18,7 @@ BambooHR has a webhook notification service that will send OpenFn real-time noti
 Depending on the Employment Status, different actions may be taken beyond Azure user record updates. 
 1. New Employees --> Sent a "Welcome Email"
 2. Terminated Employees --> Helpdesk sent an email 
-3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting ?
+3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting that "Employment Status does not qualify for integration." 
 
 # 2. Technical Overview
 ## Data Flow
