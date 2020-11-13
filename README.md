@@ -41,7 +41,7 @@ OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft G
 Discussed functionality may include: 
 1. Additional automated actions when a user is terminated
 2. Syncing of profile photos
-3. ...
+3. Two way sync capabilities
 
 ## 3. Questions? 
 Contact support@openfn.org. 
