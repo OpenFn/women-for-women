@@ -6,16 +6,19 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 
 # 1. Solution Overview
 ## Functional Summary
-Summarize how it works and link to data flows...
+This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their BambooHR system and Microsoft Azure AD. 
+OpenFn configured a prototype integration to pilot this data flow by first focusing on automation for new Employee registrations & updates. In subsequent phases, we may expand this automation to handle other employee scenarios (i.e., employee termination, contractor employees, etc.).
+
+Please see this data diagram for a review of the solution: [Data Flow Diagram](https://lucid.app/lucidchart/3da00134-e1d3-4a10-9bed-ada88e89c4fd/edit?page=TDoNVVxjmfJp#?folder_id=home&browser=icon)
 
 ## BambooHR Webhook Notification
-BambooHR has a webhook notification service that will send OpenFn real-time notifications when changes are made to employee records in Bamboo. The fields included in this notification & how they map to Azure are listed in [this mapping specification](post-link-here). 
+BambooHR has a webhook notification service that will send OpenFn real-time notifications when changes are made to employee records in Bamboo. The fields included in this notification & how they map to Azure are listed in [this mapping specification](https://docs.google.com/spreadsheets/d/18WNLa01o5ch2xFqVu_6tlUsvHOas-zqlKgJsi9QYWmU/edit#gid=1713086939). 
 
 ## Administrator Notes
 Depending on the Employment Status, different actions may be taken beyond Azure user record updates. 
 1. New Employees --> Sent a "Welcome Email"
 2. Terminated Employees --> Helpdesk sent an email 
-3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting ...?
+3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting that "Employment Status does not qualify for integration." 
 
 # 2. Technical Overview
 ## Data Flow
@@ -38,7 +41,7 @@ OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft G
 Discussed functionality may include: 
 1. Additional automated actions when a user is terminated
 2. Syncing of profile photos
-3. ...
+3. Two way sync capabilities
 
 ## 3. Questions? 
 Contact support@openfn.org. 
