@@ -303,7 +303,7 @@ alterState(state => {
       form: data,
     },
     state => {
-      console.log('Authentication done...');
+      console.log('Authentication successful');
       return { ...state, access_token: state.data.access_token };
     }
   )(state).then(state => {
@@ -358,7 +358,9 @@ each(
               const data = {
                 '@odata.id': `${api}/users/${id}`,
               };
-              console.log(`Assigning ${fields['First name Last name']} to manager ${supervisorEmail} ...`);
+              console.log(
+                `Assigning ${fields['First name Last name']} (${fields['Employee #']}) to manager ${supervisorEmail} ...`
+              );
               return put(
                 `${api}/users/${employee.id}/manager/$ref`,
                 {
@@ -374,7 +376,7 @@ each(
                 state => {}
               )(state);
             } else {
-              console.log('Manager not found...');
+              console.log(`Manager ${supervisorEmail} not found...`);
               return state;
             }
           }
@@ -563,8 +565,7 @@ each(
           state.EmploymentStatus.includes(fields['Employment Status'])
         ) {
           // STEP 2.a: User found, we are updating...
-          console.log('Updating user information...');
-          const { fields } = employee;
+          console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
 
           const data = {
             accountEnabled: fields.Status === 'Active' ? true : false,
@@ -626,16 +627,23 @@ each(
             return state;
           });
         } else {
-          console.log('Nothing to do');
+          console.log(
+            `No Azure changes made. Employment Status does not qualify for integration.
+            Nothing to update for ${fields['First name Last name']} (${fields['Employee #']} at this time`
+          );
         }
       } else {
-        throw new Error('Employee Id and User Principal Name do not match. Please review this user to confirm the Work Email entered in BambooHR.');
+        throw new Error(
+          `${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
+          (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
+          Please review this employee ${fields['Employee #']} to confirm the email and UPN are correct.`
+        );
       }
     } else {
       // Creating new Azure user
       const work_email = employee.fields['Work Email'];
       // STEP 2.b: User was not found, we are creating a new user.
-      console.log('Creating a new user...');
+      console.log(`Creating a new user for ${fields['First name Last name']}...`);
       const { fields } = employee;
       const data = {
         accountEnabled: fields.Status === 'Active' ? true : false,
