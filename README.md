@@ -29,7 +29,28 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
 4. Add `user` as a member to `groups` (and thereby assign licenses)
 
 ## OpenFn Logs & Errors
-List...
+1.  When POST succeeds: 
+    `Authentication successful`
+2.  When manager assigned:
+    `Assigning ${fields['First name Last name']} (${employee.fields.Employee #} to manager ${supervisorEmail} ...`
+3.  When assigned manager not found:
+    `Manager ${employee.fields['Supervisor email']} not found...`
+4.  When member removed from an administrative unit:
+    `Removing member from the administrative unit ${value[0]}...`
+5.  When member added to an administrative unit:
+    `Adding member to the administrative units ${employee.fields.Division}...`
+6.  When member removed from group:
+    `Removing member from the group ${value[0]}...`
+7.  When member added to group:
+    `Adding member to the new group ${employee.fields['Email User Type']}...`
+8.  When updating a user record:
+    `Updating ${employee.fields.First name Last name} (${employee.fields.Employee #} information...`
+9.  When employment status does not comply with criteria requirements for integration:
+    `No Azure changes made. Employment Status does not qualify for integration. Nothing to update for ${employee.fields.First name Last name} (${employee.fields.Employee #} at      this time.`
+10. When Employee ID and User Principle Name do not match:
+    `${employee.fields.First name Last name} User Principal Name ($UserPrincipalName}) and Bamboo Work Email ({$employee.Work Email}) do not match. Please review this employee      {employee.Employee #} to confirm the email and UPN are correct.`
+11. When a user is not found a new user is created succesfully:
+    `Creating a new user for ${employee.fields.First name Last name} ...`
 
 ## Authorization with Azure
 OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft Graph API. 
