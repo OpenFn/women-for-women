@@ -11,8 +11,8 @@ alterState(state => {
   };
 
   const groupMap = {
-    'Full User': 'eb4a88b5-a02c-4ae9-abb8-cd9b082aae15',
-    'Mobile Only': '4e19592a-345b-461b-9058-ff6e21164bbd',
+    'Full User (paid)': 'eb4a88b5-a02c-4ae9-abb8-cd9b082aae15',
+    'Mobile User (free)': '4e19592a-345b-461b-9058-ff6e21164bbd',
   };
 
   const stateMap = {
