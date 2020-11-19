@@ -641,10 +641,10 @@ each(
       }
     } else {
       // Creating new Azure user
+      const { fields } = employee;
       const work_email = employee.fields['Work Email'];
       // STEP 2.b: User was not found, we are creating a new user.
       console.log(`Creating a new user for ${fields['First name Last name']}...`);
-      const { fields } = employee;
       const data = {
         accountEnabled: fields.Status === 'Active' ? true : false,
         employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
