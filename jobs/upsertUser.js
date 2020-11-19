@@ -549,6 +549,10 @@ each(
         )(state);
       }
     }
+
+    if (!employee.fields['Work Email']) {
+      throw new Error("No Azure actions taken because 'Work Email' not provided.");
+    }
     // We check if the current 'Employee Id' exist in Azure
     if (userEmployeeIds.includes(fields['Employee #'])) {
       // We get the upn of that user we matched ... and it's azure id
