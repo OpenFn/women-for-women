@@ -45,13 +45,13 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
     `Adding member to the group ${employee.fields['Email User Type']}...`
 8.  When upserting a user record, but no work e-mail address provided in BambooHR:
     `No Azure actions taken because 'Work Email' not provided.`
-8.  When updating a user record:
+9.  When updating a user record:
     `Updating ${employee.fields.First name Last name} (${employee.fields.Employee #} information...`
-9.  When employment status does not comply with criteria requirements for integration:
+10.  When employment status does not comply with criteria requirements for integration:
     `No Azure changes made. Employment Status does not qualify for integration. Nothing to update for ${employee.fields.First name Last name} (${employee.fields.Employee #} at      this time.`
-10. When Employee ID and User Principle Name do not match:
+11. When Employee ID and User Principle Name do not match:
     `${employee.fields.First name Last name} User Principal Name ($UserPrincipalName}) and Bamboo Work Email ({$employee.Work Email}) do not match. Please review this employee      {employee.Employee #} to confirm the email and UPN are correct.`
-11. When a user is not found a new user is created succesfully:
+12. When a user is not found a new user is created succesfully:
     `Creating a new user for ${employee.fields.First name Last name} ...`
 
 ## Authorization with Azure
