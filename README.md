@@ -42,7 +42,9 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
 6.  When member removed from group:
     `Removing member from the group ${value[0]}...`
 7.  When member added to group:
-    `Adding member to the new group ${employee.fields['Email User Type']}...`
+    `Adding member to the group ${employee.fields['Email User Type']}...`
+8.  When upserting a user record, but no work e-mail address provided in BambooHR:
+    `No Azure actions taken because 'Work Email' not provided.`
 8.  When updating a user record:
     `Updating ${employee.fields.First name Last name} (${employee.fields.Employee #} information...`
 9.  When employment status does not comply with criteria requirements for integration:
