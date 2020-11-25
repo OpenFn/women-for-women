@@ -62,7 +62,7 @@ OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft G
 
 ## Solution Roadmap 
 Discussed functionality may include: 
-1. Additional automated actions when a user is terminated
+1. Additional automated actions when a user is terminated (consider integration with Jira or Microsoft form to trigger this? 
 2. Syncing of profile photos
 3. Two way sync capabilities
 4. Conversion of special characters
