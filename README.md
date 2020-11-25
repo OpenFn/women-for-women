@@ -65,6 +65,7 @@ Discussed functionality may include:
 1. Additional automated actions when a user is terminated
 2. Syncing of profile photos
 3. Two way sync capabilities
+4. Conversion of special characters
 
 ## 3. Questions? 
 Contact support@openfn.org. 
