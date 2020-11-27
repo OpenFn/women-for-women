@@ -330,10 +330,18 @@ each(
   '$.employees[*]',
 
   alterState(state => {
+    function removeExtraSpace(object) {
+      for (var obj in object) {
+        if (object[obj]) object[obj] = object[obj].replace(/\s{2,}/g, ' ');
+      }
+    }
+
     const { api } = state.configuration;
     const employee = state.data; // We get the current employee
     const { fields } = employee;
     const userEmployeeIds = state.users.map(val => val.employeeId); // We get users ids
+
+    removeExtraSpace(fields);
 
     function assignManager() {
       // 1.2 ASSIGN USER TO MANAGER
