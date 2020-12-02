@@ -1,25 +1,39 @@
 //-- Using Mailgun adaptor --
-alterState(state => {
-  const employee = state.data.employees[0]; //Q: do we need to handle for multiple employee updates at once?
-  state.workEmail = employee.fields['Work Email'];
-  state.name = employee.fields['First name Last name'];
-  console.log(state.name, state.workEmail);
-  return state;
-});
-
 //-- SEND WELCOME EMAIl --
-send(
-    fields(
-      field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
-      field('to', 'MAverbuj@womenforwomen.org'), //dataValue('fields.Work Email')), --> harcoding while testing
-      field('cc', 'aleksa@openfn.org, jed@openfn.org'),//dataValue('fields.Supervisor email')), --> commenting out while testing
-      field('subject', state => {
-        var sub = `Welcome to Women for Women, ${state.name}!`;
-        console.log(sub);
-        return sub;
-      }),
-      field('html', state => { //WfW welcome template
-        var msg = `<style type="text/css">
+
+each(
+  '$.data.employees[*]',
+  alterState(state => {
+    const divisionEmailMap = {
+      Afghanistan: 'AF_HR_Notifications@womenforwomen.org',
+      Headquarters: 'US_HR_Notifications@womenforwomen.org',
+      Iraq: 'IQ_HR_Notifications@womenforwomen.org',
+      Kosovo: 'XK_HR_Notifications@womenforwomen.org',
+      Nigeria: 'NG_HR_Notifications@womenforwomen.org',
+      Rwanda: 'RW_HR_Notifications@womenforwomen.org',
+      'South Sudan': 'SS_HR_Notifications@womenforwomen.org',
+      'The Democratic Republic of the Congo': 'CD_HR_Notifications@womenforwomen.org',
+      WOC: 'WOC_HR_Notifications@womenforwomen.org',
+    };
+
+    const employee = state.data; // We get the current employee
+    state.workEmail = employee.fields['Work Email'];
+    state.name = employee.fields['First name Last name'];
+    console.log(state.name, state.workEmail);
+
+    return send(
+      fields(
+        field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
+        field('to', `${state.workEmail}`), //dataValue('fields.Work Email')), --> harcoding while testing
+        field('cc', `${divisionEmailMap[employee.fields.Division]}`), //dataValue('fields.Supervisor email')), --> commenting out while testing
+        field('subject', state => {
+          var sub = `Welcome to Women for Women, ${state.name}!`;
+          // console.log(sub);
+          return sub;
+        }),
+        field('html', state => {
+          //WfW welcome template
+          var msg = `<style type="text/css">
         @media screen and (max-width: 600px) {
         #main-table {width:100%!important;border:0!important;}
         #logo,#dept,#social-media,#address {width:100%!important;padding:0!important}	
@@ -103,7 +117,9 @@ send(
           </tr>
                                 </tbody>
                             </table>`;
-        return msg;
-      })
-    )
+          return msg;
+        })
+      )
+    )(state);
+  })
 );
