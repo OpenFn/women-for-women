@@ -23,11 +23,11 @@ each(
 
     return send(
       fields(
-        field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
-        field('to', 'MAverbuj@womenforwomen.org'), //'helpdesk-us@womenforwomen.org'),
-        field('cc', 'aleksa@openfn.org, jed@openfn.org'),
-        //field('to', `${state.workEmail}`), //hardcode for testing
-        //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //hardcode while testing
+        field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
+        field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+        field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
+        //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
+        //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
         field('subject', state => {
           var sub = `Welcome to Women for Women, ${state.name}!`;
           // console.log(sub);
