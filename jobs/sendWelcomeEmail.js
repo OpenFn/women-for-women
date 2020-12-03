@@ -24,8 +24,10 @@ each(
     return send(
       fields(
         field('from', 'womenforwomen@irc.openfn.org'), //to update with womenforwomen domain
-        field('to', `${state.workEmail}`), //dataValue('fields.Work Email')), --> harcoding while testing
-        field('cc', `${divisionEmailMap[employee.fields.Division]}`), //dataValue('fields.Supervisor email')), --> commenting out while testing
+        field('to', 'MAverbuj@womenforwomen.org'), //'helpdesk-us@womenforwomen.org'),
+        field('cc', 'aleksa@openfn.org, jed@openfn.org'),
+        //field('to', `${state.workEmail}`), //hardcode for testing
+        //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //hardcode while testing
         field('subject', state => {
           var sub = `Welcome to Women for Women, ${state.name}!`;
           // console.log(sub);
