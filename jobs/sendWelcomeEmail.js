@@ -16,26 +16,29 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
+    const activeDivisions = ['Headquarters']; // Add divisions to turn "on"
+
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
     state.name = employee.fields['First name Last name'];
     console.log(state.name, state.workEmail);
 
-    return send(
-      fields(
-        field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-        field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
-        field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
-        //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
-        //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
-        field('subject', state => {
-          var sub = `Welcome to Women for Women, ${state.name}!`;
-          // console.log(sub);
-          return sub;
-        }),
-        field('html', state => {
-          //WfW welcome template
-          var msg = `<style type="text/css">
+    if (activeDivisions.includes(employee.fields.Division)) {
+      return send(
+        fields(
+          field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
+          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
+          //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
+          //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+          field('subject', state => {
+            var sub = `Welcome to Women for Women, ${state.name}!`;
+            // console.log(sub);
+            return sub;
+          }),
+          field('html', state => {
+            //WfW welcome template
+            var msg = `<style type="text/css">
         @media screen and (max-width: 600px) {
         #main-table {width:100%!important;border:0!important;}
         #logo,#dept,#social-media,#address {width:100%!important;padding:0!important}	
@@ -119,9 +122,13 @@ each(
           </tr>
                                 </tbody>
                             </table>`;
-          return msg;
-        })
-      )
-    )(state);
+            return msg;
+          })
+        )
+      )(state);
+    } else {
+      console.log('Employee not member of activated Division. No automation executed.');
+      return state;
+    }
   })
 );
