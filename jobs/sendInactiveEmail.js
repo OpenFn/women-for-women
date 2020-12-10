@@ -13,7 +13,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = ['Headquarters']; // Add divisions to turn "on"
+    const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
