@@ -276,7 +276,7 @@ alterState(state => {
     'Temporary Staff',
   ];
 
-  const activeDivisions = ['Headquarters']; // Add divisions to turn "on"
+  const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
 
   state.employees = state.data.employees;
   return { ...state, stateMap, EmploymentStatus, administrativeUnitsMap, groupMap, activeDivisions };
@@ -712,6 +712,7 @@ each(
             assignAU();
             // 2.4 ADD USER AS MEMBER TO GROUP.
             assignGroup();
+            console.log(`Azure user updates: ${state.data}`); 
             return state;
           }
         )(state);
