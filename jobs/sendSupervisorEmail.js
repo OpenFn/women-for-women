@@ -31,7 +31,7 @@ each(
           field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L30
           field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L31
           //field('to', `${state.superEmail}`), //TODO: use when ready to send TO Division contact
-          //field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
+          //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contactk
           field('subject', state => {
             var sub = `New Account for: ${state.name} (${state.division})`;
             console.log(sub);
