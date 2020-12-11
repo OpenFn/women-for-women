@@ -20,6 +20,7 @@ each(
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
+    state.firstName = employee.fields['First Name'];
     state.name = employee.fields['First name Last name'];
     console.log(state.name, state.workEmail);
 
@@ -65,7 +66,7 @@ each(
 </td>
 </tr>
 <tr>
-<td style="font-family: Calibri, Arial, sans-serif;font-size:20px;text-transform:uppercase;color:#D88C02;font-weight:bold;text-align:center;padding-top:10px;margin:0;" colspan="2"><p style="margin:0;padding:0;">Dear [[First_Name]], welcome to</p>
+<td style="font-family: Calibri, Arial, sans-serif;font-size:20px;text-transform:uppercase;color:#D88C02;font-weight:bold;text-align:center;padding-top:10px;margin:0;" colspan="2"><p style="margin:0;padding:0;">Dear ${state.firstName}, welcome to</p>
 <p style="font-size:28px;margin:5px auto;line-height:1.2;color:grey;">Women for Women International!</p></td>
 </tr>     
 <tr>
@@ -73,32 +74,32 @@ each(
 <p>This email will help you get your new @womenforwomen.org account ready so you can start accessing the resources you need to begin communicating and collaborating with the rest of the organization. <br/><br/>Following are your credentials to get started and further down you will find the link to portal.office.com to get into your new Outlook account.</p>
 <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Name:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.name}</td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Name:</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.name}</td>
 </tr>
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Email:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">${state.workEmail}</td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Email:</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.workEmail}</td>
 </tr>
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Temporary Password</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;">You'll Never Walk Alone!</td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Temporary Password</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">You'll Never Walk Alone!</td>
 </tr>
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#3CB371;text-decoration:none">START HERE</a></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#3CB371;text-decoration:none">START HERE</a></td>
 </tr>
 </table>
 <p style="text-align:center;font-size:18px;color:#B22222;">IMPORTANT: The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device. This temporary password will expire in 48 hours.</p>
 <p style="text-align:center;font-size:18px;color:#3CB371"><strong>Other links to get started:</strong></p>
 <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.2;"><strong>Microsoft Teams</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.0;"><a href="https://aka.ms/mstfw" style="font-weight:bold;color:#708090;text-decoration:none">https://aka.ms/mstfw</a></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Microsoft Teams</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://aka.ms/mstfw" style="font-weight:bold;color:#708090;text-decoration:none">https://aka.ms/mstfw</a></td>
 </tr>
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.2;"><strong>Outlook Web</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:18px;padding:20px;line-height:0.0;"><a href="https://outlook.office.com/" style="font-weight:bold;color:#708090;text-decoration:none">https://outlook.office.com/</a></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Outlook Web</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://outlook.office.com/" style="font-weight:bold;color:#708090;text-decoration:none">https://outlook.office.com/</a></td>
 </tr>
 </table>
 <p>If you have any questions, do not hesitate to contact our Helpdesk Team via <a href="https://help.womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">live chat</a> or by email to <a href="mailto:helpdesk@womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">helpdesk@womenforwomen.org</a>.</p>
