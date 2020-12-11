@@ -67,7 +67,7 @@ each(
 </tr>
 <tr>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
-<p>Dear ${state.supervisor},<br/><br/>We have setup the new account for  ${state.name} and we have emailed  ${state.workEmail} instructions to get started.<br/><br/>Please, make sure to welcome ${state.firstName} on Teams by <a href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}" style="font-weight:bold;color:#708090;text-decoration:none">clicking here</a>.</p>
+<p>Dear supervisor,<br/><br/>We have setup the new account for  ${state.name} and we have emailed  ${state.workEmail} instructions to get started.<br/><br/>Please, make sure to welcome ${state.firstName} on Teams by <a href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}" style="font-weight:bold;color:#708090;text-decoration:none">clicking here</a>.</p>
 <p>If you have any questions, do not hesitate to contact our Helpdesk Team via <a href="https://help.womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">live chat</a> or by email to <a href="mailto:helpdesk@womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">helpdesk@womenforwomen.org</a>.</p>
 <p>Regards,<br/><br/>
 Your Helpdesk Team at WfWI</p> 
