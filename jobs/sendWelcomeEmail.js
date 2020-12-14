@@ -33,7 +33,7 @@ each(
           //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
           //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
           field('subject', state => {
-            var sub = `Welcome to Women for Women, ${state.name}!`;
+            var sub = `Welcome to Women for Women International, ${state.name}!`;
             console.log(sub);
             return sub;
           }),
