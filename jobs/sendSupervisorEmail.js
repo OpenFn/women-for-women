@@ -33,7 +33,7 @@ each(
           //field('to', `${state.superEmail}`), //TODO: use when ready to send TO Division contact
           //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contactk
           field('subject', state => {
-            var sub = `New Account for: ${state.name} (${state.division})`;
+            var sub = `New Account: ${state.name} (${state.division})`;
             console.log(sub);
             return sub;
           }),
