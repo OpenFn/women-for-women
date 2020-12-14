@@ -564,6 +564,9 @@ each(
       if (!employee.fields['Work Email']) {
         throw new Error("No Azure actions taken because 'Work Email' not provided.");
       }
+      if (employee.fields['Email User Type'] === 'Does not need email account') {
+        console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
+      }
       // We check if the current 'Employee Id' exist in Azure
       if (userEmployeeIds.includes(fields['Employee #'])) {
         // We get the upn of that user we matched ... and it's azure id
