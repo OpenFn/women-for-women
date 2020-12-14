@@ -5,6 +5,9 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 *Note that commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!*
 
 # 1. Solution Overview
+
+[See here](https://www.youtube.com/watch?v=WKgb-UiTcMg&feature=youtu.be&hd=1) for the video walkthrough of the OpenFn setup. 
+
 ## Functional Summary
 This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their BambooHR system and Microsoft Azure AD. 
 OpenFn configured a prototype integration to pilot this data flow by first focusing on automation for new Employee registrations & updates. In subsequent phases, we may expand this automation to handle other employee scenarios (i.e., employee termination, contractor employees, etc.).
@@ -19,6 +22,11 @@ Depending on the Employment Status, different actions may be taken beyond Azure 
 1. New Employees --> Sent a "Welcome Email"
 2. Terminated Employees --> Helpdesk sent an email 
 3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting that "Employment Status does not qualify for integration." 
+4. Only employee records belonging to Divisions specified as **`Active Divisions`** will be processed by the automation flow. Otherwise, the automation will skip over the record and log `No Azure action taken`. Skip to `02:08` in [this video](https://www.youtube.com/watch?v=WKgb-UiTcMg&t=2m8s) for instructions on updating the `activeDivision` list, and please update the following lines in these jobs: 
+a. `1. Upsert Azure User` - [see L279](https://www.openfn.org/projects/2976/jobs/3656) (`const activeDivisions = ['Headquarters', 'Nigeria'];`)
+b. `2A. Send Welcome Email` - [see L20](https://www.openfn.org/projects/2976/jobs/3657)
+c. `2B. Send Supervisor Email` - [see L16](https://www.openfn.org/projects/2976/jobs/3842)
+d. `3. Send Inactive Employee Email` - [see L16](https://www.openfn.org/projects/2976/jobs/3707)
 
 # 2. Technical Overview
 ## Data Flow
