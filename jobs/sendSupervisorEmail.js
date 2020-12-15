@@ -1,6 +1,3 @@
-//-- Using Mailgun adaptor --
-//-- SEND WELCOME EMAIl --
-
 each(
   '$.data.employees[*]',
   alterState(state => {
@@ -20,25 +17,28 @@ each(
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
-    state.firstName = employee.fields['First Name'];
     state.name = employee.fields['First name Last name'];
-    console.log(state.name, state.workEmail);
+    state.firstName = employee.fields['First Name'];
+    state.division = employee.fields['Division'];
+    state.supervisor = employee.fields['Supervisor name'] ? employee.fields['Supervisor name'].split(',')[1] : 'Supervisor';
+    state.superEmail = employee.fields['Supervisor email'];
+    console.log(state.name, state.workEmail, state.firstName, state.division, state.supervisor, state.superEmail);
 
     if (activeDivisions.includes(employee.fields.Division)) {
       return send(
         fields(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
-          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
-          //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
-          //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L30
+          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L31
+          //field('to', `${state.superEmail}`), //TODO: use when ready to send TO Division contact
+          //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contactk
           field('subject', state => {
-            var sub = `Welcome to Women for Women International, ${state.name}!`;
+            var sub = `New Account: ${state.name} (${state.division})`;
             console.log(sub);
             return sub;
           }),
           field('html', state => {
-            //WfW welcome template
+            //WfW email template for notifying supervisors of new employee setup
             var msg = 
 `<style type="text/css">
 @media screen and (max-width: 600px) {
@@ -66,44 +66,10 @@ each(
 </td>
 </tr>
 <tr>
-<td style="font-family: Calibri, Arial, sans-serif;font-size:20px;text-transform:uppercase;color:#D88C02;font-weight:bold;text-align:center;padding-top:10px;margin:0;" colspan="2"><p style="margin:0;padding:0;">Dear ${state.firstName}, welcome to</p>
-<p style="font-size:28px;margin:5px auto;line-height:1.2;color:grey;">Women for Women International!</p></td>
-</tr>     
-<tr>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
-<p>This email will help you get your new @womenforwomen.org account ready so you can start accessing the resources you need to begin communicating and collaborating with the rest of the organization. <br/><br/>Following are your credentials to get started and further down you will find the link to portal.office.com to get into your new Outlook account.</p>
-<table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Name:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.name}</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Email:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.workEmail}</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Temporary Password</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">You'll Never Walk Alone!</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#3CB371;text-decoration:none">START HERE</a></td>
-</tr>
-</table>
-<p style="text-align:center;font-size:18px;color:#B22222;">IMPORTANT: The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device. This temporary password will expire in 48 hours.</p>
-<p style="text-align:center;font-size:18px;color:#3CB371"><strong>Other links to get started:</strong></p>
-<table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Microsoft Teams</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://aka.ms/mstfw" style="font-weight:bold;color:#708090;text-decoration:none">https://aka.ms/mstfw</a></td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Outlook Web</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://outlook.office.com/" style="font-weight:bold;color:#708090;text-decoration:none">https://outlook.office.com/</a></td>
-</tr>
-</table>
+<p>Dear ${state.supervisor},<br/><br/>We have setup the new account for  ${state.name} and we have emailed  ${state.workEmail} instructions to get started.<br/><br/>Please, make sure to welcome ${state.firstName} on Teams by <a href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}" style="font-weight:bold;color:#708090;text-decoration:none">clicking here</a>.</p>
 <p>If you have any questions, do not hesitate to contact our Helpdesk Team via <a href="https://help.womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">live chat</a> or by email to <a href="mailto:helpdesk@womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">helpdesk@womenforwomen.org</a>.</p>
-<p>We look forward to working with you!<br/><br/>
+<p>Regards,<br/><br/>
 Your Helpdesk Team at WfWI</p> 
 </td>
 </tr>

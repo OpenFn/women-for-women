@@ -276,7 +276,7 @@ alterState(state => {
     'Temporary Staff',
   ];
 
-  const activeDivisions = ['Headquarters']; // Add divisions to turn "on"
+  const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
 
   state.employees = state.data.employees;
   return { ...state, stateMap, EmploymentStatus, administrativeUnitsMap, groupMap, activeDivisions };
@@ -564,6 +564,9 @@ each(
       if (!employee.fields['Work Email']) {
         throw new Error("No Azure actions taken because 'Work Email' not provided.");
       }
+      if (employee.fields['Email User Type'] === 'Does not need email account') {
+        console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
+      }
       // We check if the current 'Employee Id' exist in Azure
       if (userEmployeeIds.includes(fields['Employee #'])) {
         // We get the upn of that user we matched ... and it's azure id
@@ -715,6 +718,7 @@ each(
             assignAU();
             // 2.4 ADD USER AS MEMBER TO GROUP.
             assignGroup();
+            console.log(`Azure user updates: ${state.data}`); 
             return state;
           }
         )(state);
