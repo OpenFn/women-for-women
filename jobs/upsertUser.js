@@ -613,7 +613,9 @@ each(
               givenName: fields['First Name'],
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
+            if (data.otherMails === null) delete data.otherMails;
             console.log(data);
+
             const { id } = state.data; // Employee ID
             console.log(azureEmployee.id);
             return patch(
@@ -690,6 +692,7 @@ each(
           givenName: fields['First Name'],
           //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
         };
+        if (data.otherMails === null) delete data.otherMails;
         console.log(data);
         return post(
           `${api}/users`,
