@@ -592,9 +592,10 @@ each(
               mailNickname:
                 fields['First Name'].substring(0, 1) +
                 fields['Middle initial'] +
-                fields[
-                  'Last Name'
-                ] /*+
+                fields['Last Name'].replace(
+                  ' ',
+                  ''
+                ) /*+
               '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
               userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
               givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
@@ -674,7 +675,8 @@ each(
             forceChangePasswordNextSignInWithMfa: false,
             password: "You'll Never Walk Alone!",
           },
-          mailNickname: fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'], //Confirm transforms to AGKrolls@womenforwomen.org
+          mailNickname:
+            fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'].replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
           userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
           givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
           mail: fields['Work Email'],
@@ -718,7 +720,7 @@ each(
             assignAU();
             // 2.4 ADD USER AS MEMBER TO GROUP.
             assignGroup();
-            console.log(`Azure user updates: ${state.data}`); 
+            console.log(`Azure user updates: ${state.data}`);
             return state;
           }
         )(state);
