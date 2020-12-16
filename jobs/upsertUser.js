@@ -348,181 +348,176 @@ each(
     removeExtraSpace(fields);
 
     function assignManager() {
-      // 1.2 ASSIGN USER TO MANAGER
-      const supervisorEmail = employee.fields['Supervisor email'];
-      if (supervisorEmail) {
-        const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
-        // We (1) make a get to fetch the supervisor id.
-        get(
-          `${api}/users/${userPrincipalName}`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
+      return new Promise((resolve, reject) => {
+        // 1.2 ASSIGN USER TO MANAGER
+        const supervisorEmail = employee.fields['Supervisor email'];
+        if (supervisorEmail) {
+          const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+          // We (1) make a get to fetch the supervisor id.
+          return get(
+            `${api}/users/${userPrincipalName}`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-          },
-          state => {
-            if (!state.data.error) {
-              // (2) if we find it,
-              const { id } = state.data;
-              const data = {
-                '@odata.id': `${api}/users/${id}`,
-              };
-              console.log(
-                `Assigning ${fields['First name Last name']} (${fields['Employee #']}) to manager ${supervisorEmail} ...`
-              );
-              return put(
-                `${api}/users/${employee.id}/manager/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
-            } else {
-              console.log(`Manager ${supervisorEmail} not found...`);
-              return state;
+            state => {
+              if (!state.data.error) {
+                // (2) if we find it,
+                const { id } = state.data;
+                const data = {
+                  '@odata.id': `${api}/users/${id}`,
+                };
+                console.log(
+                  `Assigning ${fields['First name Last name']} (${fields['Employee #']}) to manager ${supervisorEmail} ...`
+                );
+                resolve(
+                  put(
+                    `${api}/users/${employee.id}/manager/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
+                    },
+                    state => {}
+                  )(state)
+                );
+              } else {
+                console.log(`Manager ${supervisorEmail} not found...`);
+                resolve(state);
+              }
             }
-          }
-        )(state);
-      }
+          )(state);
+        }
+        resolve(state);
+      });
     }
 
     function assignAU() {
-      // 1.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
-      const idsValue = Object.values(state.administrativeUnitsMap);
-      const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
-      if (administrativeUnitID) {
-        // (a) First we make a request to see if the employee has membership to any administrative unit...
-        post(
-          `${api}/users/${employee.id}/checkMemberObjects`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
+      return new Promise((resolve, reject) => {
+        // 1.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+        const idsValue = Object.values(state.administrativeUnitsMap);
+        const administrativeUnitID = state.administrativeUnitsMap[employee.fields.Division]; // Mapping AU name to correct ID
+        if (administrativeUnitID) {
+          // (a) First we make a request to see if the employee has membership to any administrative unit...
+          return post(
+            `${api}/users/${employee.id}/checkMemberObjects`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: { ids: idsValue },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: { ids: idsValue },
-          },
-          state => {
-            console.log('state', state.data);
-            const { value } = state.data.body;
-            // ... (b1) if he has, we remove him from the administrative unit...
+            state => {
+              console.log('state', state.data);
+              const { value } = state.data.body;
+              // ... (b1) if he has, we remove him from the administrative unit...
 
-            if (value.length > 0) {
-              console.log(`Removing member from the administrative unit ${value[0]}...`);
-              return del(
-                `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
+              if (value.length > 0) {
+                console.log(`Removing member from the administrative unit ${value[0]}...`);
+                return del(
+                  `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
+                  {
+                    headers: {
+                      authorization: `Bearer ${state.access_token}`,
+                      'Content-Type': 'application/json',
+                    },
+                    options: {
+                      successCodes: [200, 201, 202, 203, 204, 404],
+                    },
                   },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                },
-                state => {}
-              )(state).then(response => {
-                // ... (c) We add him to the new administrative unit.
+                  state => {}
+                )(state).then(response => {
+                  // ... (c) We add him to the new administrative unit.
+                  console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  resolve(
+                    post(
+                      `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                      {
+                        headers: {
+                          authorization: `Bearer ${state.access_token}`,
+                          'Content-Type': 'application/json',
+                        },
+                        options: {
+                          successCodes: [200, 201, 202, 203, 204, 404],
+                        },
+                        body: data,
+                      },
+                      state => {}
+                    )(state)
+                  );
+                });
+              } else {
+                // ... (b2) if he has not, we add him still.
                 console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
                 const data = {
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
-                return post(
-                  `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
-                  {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
+                resolve(
+                  post(
+                    `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
                     },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
-                    body: data,
-                  },
-                  state => {}
-                )(state);
-              });
-            } else {
-              // ... (b2) if he has not, we add him still.
-              console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
-              const data = {
-                '@odata.id': `${api}/directoryObjects/${employee.id}`,
-              };
-              return post(
-                `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
+                    state => {}
+                  )(state)
+                );
+              }
             }
-          }
-        )(state);
-      }
+          )(state);
+        }
+        resolve(state);
+      });
     }
 
     function assignGroup() {
-      // 1.4 ADD USER AS MEMBER TO GROUP.
-      const groupIdsValue = Object.values(state.groupMap);
-      const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
-      if (groupID) {
-        // (a) First we make a request to see if the employee has membership to any group...
-        post(
-          `${api}/users/${employee.id}/checkMemberObjects`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
+      return new Promise((resolve, reject) => {
+        // 1.4 ADD USER AS MEMBER TO GROUP.
+        const groupIdsValue = Object.values(state.groupMap);
+        const groupID = state.groupMap[employee.fields['Email User Type']]; // Mapping group name to correct ID
+        if (groupID) {
+          // (a) First we make a request to see if the employee has membership to any group...
+          return post(
+            `${api}/users/${employee.id}/checkMemberObjects`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: { ids: groupIdsValue },
             },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: { ids: groupIdsValue },
-          },
-          state => {
-            const { value } = state.data.body;
-            // ... (b1) if he has, we remove him from the group...
-            if (value.length > 0) {
-              console.log(`Removing member from the group ${value[0]}...`);
-              return del(
-                `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                },
-                state => {}
-              )(state).then(response => {
-                // ... (c) We add him to the new group.
-                console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
-                const data = {
-                  '@odata.id': `${api}/directoryObjects/${employee.id}`,
-                };
-                return post(
-                  `${api}/groups/${groupID}/members/$ref`,
+            state => {
+              const { value } = state.data.body;
+              // ... (b1) if he has, we remove him from the group...
+              if (value.length > 0) {
+                console.log(`Removing member from the group ${value[0]}...`);
+                return del(
+                  `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
                   {
                     headers: {
                       authorization: `Bearer ${state.access_token}`,
@@ -531,35 +526,59 @@ each(
                     options: {
                       successCodes: [200, 201, 202, 203, 204, 404],
                     },
-                    body: data,
                   },
                   state => {}
-                )(state);
-              });
-            } else {
-              // ... (b2) if he has not, we add him still.
-              console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
-              const data = {
-                '@odata.id': `${api}/directoryObjects/${employee.id}`,
-              };
-              return post(
-                `${api}/groups/${groupID}/members/$ref`,
-                {
-                  headers: {
-                    authorization: `Bearer ${state.access_token}`,
-                    'Content-Type': 'application/json',
-                  },
-                  options: {
-                    successCodes: [200, 201, 202, 203, 204, 404],
-                  },
-                  body: data,
-                },
-                state => {}
-              )(state);
+                )(state).then(response => {
+                  // ... (c) We add him to the new group.
+                  console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  resolve(
+                    post(
+                      `${api}/groups/${groupID}/members/$ref`,
+                      {
+                        headers: {
+                          authorization: `Bearer ${state.access_token}`,
+                          'Content-Type': 'application/json',
+                        },
+                        options: {
+                          successCodes: [200, 201, 202, 203, 204, 404],
+                        },
+                        body: data,
+                      },
+                      state => {}
+                    )(state)
+                  );
+                });
+              } else {
+                // ... (b2) if he has not, we add him still.
+                console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
+                const data = {
+                  '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                };
+                resolve(
+                  post(
+                    `${api}/groups/${groupID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
+                    },
+                    state => {}
+                  )(state)
+                );
+              }
             }
-          }
-        )(state);
-      }
+          )(state);
+        }
+        resolve(state);
+      });
     }
 
     if (state.activeDivisions.includes(employee.fields.Division)) {
@@ -645,12 +664,12 @@ each(
                 }
               )(state).then(response => {
                 // 2.2 ASSIGN USER TO MANAGER
-                assignManager();
                 // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
-                assignAU();
+                // assignAU();
                 // 2.4 ADD USER AS MEMBER TO GROUP.
-                assignGroup();
-                return state;
+                // assignGroup();
+                // return state;
+                return Promise.all([assignManager(), assignAU(), assignGroup()]).then(() => state);
               });
             } else {
               console.log(
@@ -726,13 +745,14 @@ each(
               const { id } = state.data.body;
               employee.id = id;
               // 2.2 ASSIGN USER TO MANAGER
-              assignManager();
-              // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
-              assignAU();
-              // 2.4 ADD USER AS MEMBER TO GROUP.
-              assignGroup();
-              console.log(`Azure user updates: ${state.data}`);
-              return state;
+              // assignManager();
+              // // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+              // assignAU();
+              // // 2.4 ADD USER AS MEMBER TO GROUP.
+              // assignGroup();
+              // console.log(`Azure user updates: ${state.data}`);
+              return Promise.all([assignManager(), assignAU(), assignGroup()]).then(() => state);
+              // return state;
             }
           )(state);
         }
@@ -747,7 +767,7 @@ each(
 alterState(state => {
   if (state.errors.length > 0) {
     console.log(JSON.stringify(state.errors, null, 2));
-    throw new Error("Some errors detected during run.");
+    throw new Error('Some errors detected during run.');
   }
   return state;
 });
