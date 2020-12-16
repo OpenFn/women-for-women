@@ -660,11 +660,16 @@ each(
               return state;
             }
           } else {
-            throw new Error(
+            state.errors
+              .push(`${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
+            (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
+            Please review this employee ${fields['Employee #']} to confirm the email and UPN are correct.`);
+            return state;
+            /* throw new Error(
               `${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
           (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
           Please review this employee ${fields['Employee #']} to confirm the email and UPN are correct.`
-            );
+            ); */
           }
         } else {
           // Creating new Azure user
@@ -742,7 +747,7 @@ each(
 alterState(state => {
   if (state.errors.length > 0) {
     console.log(JSON.stringify(state.errors, null, 2));
-    throw new Error();
+    throw new Error("Some errors detected during run.");
   }
   return state;
 });
