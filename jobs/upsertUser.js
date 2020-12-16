@@ -278,8 +278,10 @@ alterState(state => {
 
   const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
 
+  const errors = [];
+
   state.employees = state.data.employees;
-  return { ...state, stateMap, EmploymentStatus, administrativeUnitsMap, groupMap, activeDivisions };
+  return { ...state, stateMap, EmploymentStatus, administrativeUnitsMap, groupMap, activeDivisions, errors };
 });
 
 // GET TOKEN
@@ -562,7 +564,9 @@ each(
 
     if (state.activeDivisions.includes(employee.fields.Division)) {
       if (!employee.fields['Work Email']) {
-        throw new Error("No Azure actions taken because 'Work Email' not provided.");
+        state.errors.push(
+          `No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`
+        );
       }
       if (employee.fields['Email User Type'] === 'Does not need email account') {
         console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
@@ -731,3 +735,11 @@ each(
     }
   })
 );
+
+alterState(state => {
+  if (state.errors.length > 0) {
+    console.log(JSON.stringify(state.errors, null, 2));
+    throw new Error();
+  }
+  return state;
+});
