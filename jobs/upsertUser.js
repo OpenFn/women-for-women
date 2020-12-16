@@ -655,8 +655,9 @@ each(
             } else {
               console.log(
                 `No Azure changes made. Employment Status does not qualify for integration.
-            Nothing to update for ${fields['First name Last name']} (${fields['Employee #']} at this time`
+            Nothing to update for ${fields['First name Last name']} (${fields['Employee #']}) at this time`
               );
+              return state;
             }
           } else {
             throw new Error(
