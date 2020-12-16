@@ -567,6 +567,7 @@ each(
         state.errors.push(
           `No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`
         );
+        return state;
       } else {
         if (employee.fields['Email User Type'] === 'Does not need email account') {
           console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
