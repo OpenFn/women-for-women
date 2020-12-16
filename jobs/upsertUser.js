@@ -567,167 +567,168 @@ each(
         state.errors.push(
           `No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`
         );
-      }
-      if (employee.fields['Email User Type'] === 'Does not need email account') {
-        console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
-      }
-      // We check if the current 'Employee Id' exist in Azure
-      if (userEmployeeIds.includes(fields['Employee #'])) {
-        // We get the upn of that user we matched ... and it's azure id
-        const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);
+      } else {
+        if (employee.fields['Email User Type'] === 'Does not need email account') {
+          console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
+        }
+        // We check if the current 'Employee Id' exist in Azure
+        if (userEmployeeIds.includes(fields['Employee #'])) {
+          // We get the upn of that user we matched ... and it's azure id
+          const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);
 
-        const work_email = employee.fields['Work Email'];
-        const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
+          const work_email = employee.fields['Work Email'];
+          const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
 
-        // If the user from azure has the upn than the one from bambooHR
-        if (azureEmployee.userPrincipalName === userPrincipalName) {
-          if (
-            //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
-            fields.Status === 'Active' &&
-            state.EmploymentStatus.includes(fields['Employment Status'])
-          ) {
-            // STEP 2.a: User found, we are updating...
-            console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
+          // If the user from azure has the upn than the one from bambooHR
+          if (azureEmployee.userPrincipalName === userPrincipalName) {
+            if (
+              //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
+              fields.Status === 'Active' &&
+              state.EmploymentStatus.includes(fields['Employment Status'])
+            ) {
+              // STEP 2.a: User found, we are updating...
+              console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
 
-            const data = {
-              accountEnabled: fields.Status === 'Active' ? true : false,
-              employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
-              userType: 'Member',
-              mailNickname:
-                fields['First Name'].substring(0, 1) +
-                fields['Middle initial'] +
-                fields['Last Name'].replace(
-                  ' ',
-                  ''
-                ) /*+
+              const data = {
+                accountEnabled: fields.Status === 'Active' ? true : false,
+                employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+                userType: 'Member',
+                mailNickname:
+                  fields['First Name'].substring(0, 1) +
+                  fields['Middle initial'] +
+                  fields['Last Name'].replace(
+                    ' ',
+                    ''
+                  ) /*+
               '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
-              userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
-              givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-              mail: fields['Work Email'],
-              birthday: fields.Birthday,
-              department: fields.Department,
-              officeLocation: fields.Division,
-              employeeId: fields['Employee #'],
-              displayName: fields['First name Last name'],
-              //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-              otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
-              jobTitle: fields['Job Title'],
-              surname: fields['Last Name'],
-              usageLocation: state.stateMap[fields.Location],
-              //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-              mobilePhone: fields['Mobile Phone'],
-              businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
-              //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
-              givenName: fields['First Name'],
-              //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-            };
-            if (data.otherMails === null) delete data.otherMails;
-            console.log(data);
+                userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+                givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
+                mail: fields['Work Email'],
+                birthday: fields.Birthday,
+                department: fields.Department,
+                officeLocation: fields.Division,
+                employeeId: fields['Employee #'],
+                displayName: fields['First name Last name'],
+                //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+                otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+                jobTitle: fields['Job Title'],
+                surname: fields['Last Name'],
+                usageLocation: state.stateMap[fields.Location],
+                //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+                mobilePhone: fields['Mobile Phone'],
+                businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
+                //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
+                givenName: fields['First Name'],
+                //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
+              };
+              if (data.otherMails === null) delete data.otherMails;
+              console.log(data);
 
-            const { id } = state.data; // Employee ID
-            console.log(azureEmployee.id);
-            return patch(
-              `${api}/users/${azureEmployee.id}`,
-              {
-                headers: {
-                  authorization: `Bearer ${state.access_token}`,
-                  'Content-Type': 'application/json',
+              const { id } = state.data; // Employee ID
+              console.log(azureEmployee.id);
+              return patch(
+                `${api}/users/${azureEmployee.id}`,
+                {
+                  headers: {
+                    authorization: `Bearer ${state.access_token}`,
+                    'Content-Type': 'application/json',
+                  },
+                  options: {
+                    successCodes: [200, 201, 202, 203, 204, 404],
+                  },
+                  body: data,
                 },
-                options: {
-                  successCodes: [200, 201, 202, 203, 204, 404],
-                },
-                body: data,
-              },
-              state => {
-                employee.id = azureEmployee.id;
+                state => {
+                  employee.id = azureEmployee.id;
+                  return state;
+                }
+              )(state).then(response => {
+                // 2.2 ASSIGN USER TO MANAGER
+                assignManager();
+                // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
+                assignAU();
+                // 2.4 ADD USER AS MEMBER TO GROUP.
+                assignGroup();
                 return state;
-              }
-            )(state).then(response => {
+              });
+            } else {
+              console.log(
+                `No Azure changes made. Employment Status does not qualify for integration.
+            Nothing to update for ${fields['First name Last name']} (${fields['Employee #']} at this time`
+              );
+            }
+          } else {
+            throw new Error(
+              `${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
+          (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
+          Please review this employee ${fields['Employee #']} to confirm the email and UPN are correct.`
+            );
+          }
+        } else {
+          // Creating new Azure user
+          const { fields } = employee;
+          const work_email = employee.fields['Work Email'];
+          // STEP 2.b: User was not found, we are creating a new user.
+          console.log(`Creating a new user for ${fields['First name Last name']}...`);
+          const data = {
+            accountEnabled: fields.Status === 'Active' ? true : false,
+            employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+            userType: 'Member',
+            passwordProfile: {
+              forceChangePasswordNextSignIn: true,
+              forceChangePasswordNextSignInWithMfa: false,
+              password: "You'll Never Walk Alone!",
+            },
+            mailNickname:
+              fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'].replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
+            userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+            givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
+            mail: fields['Work Email'],
+            birthday: fields.Birthday,
+            department: fields.Department,
+            officeLocation: fields.Division,
+            employeeId: fields['Employee #'],
+            displayName: fields['First name Last name'],
+            //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
+            otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
+            jobTitle: fields['Job Title'],
+            surname: fields['Last Name'],
+            usageLocation: state.stateMap[fields.Location],
+            //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
+            mobilePhone: fields['Mobile Phone'],
+            businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
+            //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
+            givenName: fields['First Name'],
+            //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
+          };
+          if (data.otherMails === null) delete data.otherMails;
+          console.log(data);
+          return post(
+            `${api}/users`,
+            {
+              headers: {
+                authorization: `Bearer ${state.access_token}`,
+                'Content-Type': 'application/json',
+              },
+              options: {
+                successCodes: [200, 201, 202, 203, 204, 404],
+              },
+              body: data,
+            },
+            state => {
+              const { id } = state.data.body;
+              employee.id = id;
               // 2.2 ASSIGN USER TO MANAGER
               assignManager();
               // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
               assignAU();
               // 2.4 ADD USER AS MEMBER TO GROUP.
               assignGroup();
+              console.log(`Azure user updates: ${state.data}`);
               return state;
-            });
-          } else {
-            console.log(
-              `No Azure changes made. Employment Status does not qualify for integration.
-            Nothing to update for ${fields['First name Last name']} (${fields['Employee #']} at this time`
-            );
-          }
-        } else {
-          throw new Error(
-            `${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
-          (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
-          Please review this employee ${fields['Employee #']} to confirm the email and UPN are correct.`
-          );
+            }
+          )(state);
         }
-      } else {
-        // Creating new Azure user
-        const { fields } = employee;
-        const work_email = employee.fields['Work Email'];
-        // STEP 2.b: User was not found, we are creating a new user.
-        console.log(`Creating a new user for ${fields['First name Last name']}...`);
-        const data = {
-          accountEnabled: fields.Status === 'Active' ? true : false,
-          employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
-          userType: 'Member',
-          passwordProfile: {
-            forceChangePasswordNextSignIn: true,
-            forceChangePasswordNextSignInWithMfa: false,
-            password: "You'll Never Walk Alone!",
-          },
-          mailNickname:
-            fields['First Name'].substring(0, 1) + fields['Middle initial'] + fields['Last Name'].replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
-          userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
-          givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
-          mail: fields['Work Email'],
-          birthday: fields.Birthday,
-          department: fields.Department,
-          officeLocation: fields.Division,
-          employeeId: fields['Employee #'],
-          displayName: fields['First name Last name'],
-          //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
-          otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
-          jobTitle: fields['Job Title'],
-          surname: fields['Last Name'],
-          usageLocation: state.stateMap[fields.Location],
-          //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-          mobilePhone: fields['Mobile Phone'],
-          businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
-          //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
-          givenName: fields['First Name'],
-          //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-        };
-        if (data.otherMails === null) delete data.otherMails;
-        console.log(data);
-        return post(
-          `${api}/users`,
-          {
-            headers: {
-              authorization: `Bearer ${state.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            options: {
-              successCodes: [200, 201, 202, 203, 204, 404],
-            },
-            body: data,
-          },
-          state => {
-            const { id } = state.data.body;
-            employee.id = id;
-            // 2.2 ASSIGN USER TO MANAGER
-            assignManager();
-            // 2.3 ADD USER AS MEMBER TO ADMINISTRATIVE UNIT
-            assignAU();
-            // 2.4 ADD USER AS MEMBER TO GROUP.
-            assignGroup();
-            console.log(`Azure user updates: ${state.data}`);
-            return state;
-          }
-        )(state);
       }
     } else {
       console.log('Employee not member of activated Division. No automation executed.');
