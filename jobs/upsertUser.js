@@ -274,6 +274,10 @@ alterState(state => {
     'Regular Full-Time',
     'Regular Part-Time',
     'Temporary Staff',
+    'Terminated',
+    'Terminated - Gros Mis-conduct', 
+    'Terminated - Resignation', 
+    'Terminated - RIF'
   ];
 
   const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
@@ -613,7 +617,7 @@ each(
 
               const data = {
                 accountEnabled: fields.Status === 'Active' ? true : false,
-                employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
+                employeeType: fields['Employment Status'], 
                 userType: 'Member',
                 mailNickname:
                   fields['First Name'].substring(0, 1) +
