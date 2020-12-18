@@ -639,6 +639,7 @@ each(
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
+                companyName: 'Women for Women International',
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
               if (data.otherMails === null) delete data.otherMails;
@@ -730,8 +731,10 @@ each(
               businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
               //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
               givenName: fields['First Name'],
+              companyName: 'Women for Women International',
               //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
             };
+
             if (data.otherMails === null) delete data.otherMails;
             console.log(data);
             return post(
