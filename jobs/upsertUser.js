@@ -606,7 +606,7 @@ each(
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
               fields.Status === 'Active' &&
               state.EmploymentStatus.includes(fields['Employment Status']) &&
-              new Date(termination_date) > new Date()
+              (new Date(termination_date) > new Date() || !termination_date)
             ) {
               // STEP 2.a: User found, we are updating...
               console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
@@ -700,7 +700,7 @@ each(
             //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
             fields.Status === 'Active' &&
             state.EmploymentStatus.includes(fields['Employment Status']) &&
-            new Date(termination_date) > new Date()
+            (new Date(termination_date) > new Date() || !termination_date)
           ) {
             const { fields } = employee;
             const work_email = employee.fields['Work Email'];
