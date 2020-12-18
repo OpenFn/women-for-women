@@ -601,10 +601,12 @@ each(
 
           // If the user from azure has the upn than the one from bambooHR
           if (azureEmployee.userPrincipalName === userPrincipalName) {
+            const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
               fields.Status === 'Active' &&
-              state.EmploymentStatus.includes(fields['Employment Status'])
+              state.EmploymentStatus.includes(fields['Employment Status']) &&
+              new Date(termination_date) > new Date()
             ) {
               // STEP 2.a: User found, we are updating...
               console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
@@ -692,11 +694,13 @@ each(
             ); */
           }
         } else {
+          const termination_date = fields['Termination Date'];
           // Creating new Azure user
           if (
             //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
             fields.Status === 'Active' &&
-            state.EmploymentStatus.includes(fields['Employment Status'])
+            state.EmploymentStatus.includes(fields['Employment Status']) &&
+            new Date(termination_date) > new Date()
           ) {
             const { fields } = employee;
             const work_email = employee.fields['Work Email'];
