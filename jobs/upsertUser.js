@@ -8,6 +8,7 @@ alterState(state => {
     'South Sudan': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
     'The Democratic Republic of the Congo': '487422cb-09bc-4607-87e1-9e817498d47e',
     WOC: '8406e250-1202-4c15-815e-0b4ae118c548',
+    'No Division': '39d714aa-9abe-417f-a07a-c4ef698d87bd',
   };
 
   const groupMap = {
@@ -275,12 +276,12 @@ alterState(state => {
     'Regular Part-Time',
     'Temporary Staff',
     'Terminated',
-    'Terminated - Gros Mis-conduct', 
-    'Terminated - Resignation', 
-    'Terminated - RIF'
+    'Terminated - Gros Mis-conduct',
+    'Terminated - Resignation',
+    'Terminated - RIF',
   ];
 
-  const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
+  const activeDivisions = ['No Division', 'Headquarters', 'Nigeria']; // Add divisions to turn "on"
 
   const errors = [];
 
@@ -348,6 +349,8 @@ each(
     const employee = state.data; // We get the current employee
     const { fields } = employee;
     const userEmployeeIds = state.users.map(val => val.employeeId); // We get users ids
+
+    if (!fields.Division || fields.Division === '') fields.Division = 'No Division';
 
     removeExtraSpace(fields);
 
@@ -617,7 +620,7 @@ each(
 
               const data = {
                 accountEnabled: fields.Status === 'Active' ? true : false,
-                employeeType: fields['Employment Status'], 
+                employeeType: fields['Employment Status'],
                 userType: 'Member',
                 mailNickname:
                   fields['First Name'].substring(0, 1) +
