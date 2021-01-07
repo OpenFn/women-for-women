@@ -1,13 +1,21 @@
 alterState(state => {
   const administrativeUnitsMap = {
     Afghanistan: 'a6ea8828-6a06-450e-84ea-126967bb5468',
+    'Afghanistan - PM Access': 'a6ea8828-6a06-450e-84ea-126967bb5468',
     Headquarters: '61c87b53-b995-43ab-ba5a-1b9d62c893f3',
+    'Headquarters - PM Access': '61c87b53-b995-43ab-ba5a-1b9d62c893f3',
     Iraq: '1f4492b8-32bf-4363-8a91-21eaecc6814e',
+    'Iraq - PM Access': '1f4492b8-32bf-4363-8a91-21eaecc6814e',
     Nigeria: '194d1892-e2e7-4d0c-bcf4-b6902faff574',
+    'Nigeria - PM Access': '194d1892-e2e7-4d0c-bcf4-b6902faff574',
     Rwanda: 'b4c8cf51-f8e2-413a-ad4f-f466a180956f',
+    'Rwanda - PM Access': 'b4c8cf51-f8e2-413a-ad4f-f466a180956f',
     'South Sudan': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
+    'South Sudan - PM Access': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
     'The Democratic Republic of the Congo': '487422cb-09bc-4607-87e1-9e817498d47e',
+    'The Democratic Republic of the Congo - PM Access': '487422cb-09bc-4607-87e1-9e817498d47e',
     WOC: '8406e250-1202-4c15-815e-0b4ae118c548',
+    'WOC - PM Access': '8406e250-1202-4c15-815e-0b4ae118c548',
     'No Division': '39d714aa-9abe-417f-a07a-c4ef698d87bd',
   };
 
