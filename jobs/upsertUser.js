@@ -626,9 +626,13 @@ each(
               // STEP 2.a: User found, we are updating...
               console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
 
-              const displayName = employee.fields['Preferred Name']
-                ? `${fields['Preferred Name']} ${fields['Middle initial']} ${fields['Last Name']}`
-                : `${fields['First Name']} ${fields['Middle initial']} ${fields['Last Name']}`;
+              const displayName = [
+                fields['Preferred Name'] || fields['First Name'],
+                fields['Middle initial'],
+                fields['Last Name'],
+              ]
+                .filter(Boolean)
+                .join(' ');
 
               const data = {
                 accountEnabled: fields.Status === 'Active' ? true : false,
@@ -726,9 +730,13 @@ each(
             // STEP 2.b: User was not found, we are creating a new user.
             console.log(`Creating a new user for ${fields['First name Last name']}...`);
 
-            const displayName = employee.fields['Preferred Name']
-              ? `${fields['Preferred Name']} ${fields['Middle initial']} ${fields['Last Name']}`
-              : `${fields['First Name']} ${fields['Middle initial']} ${fields['Last Name']}`;
+            const displayName = [
+              fields['Preferred Name'] || fields['First Name'],
+              fields['Middle initial'],
+              fields['Last Name'],
+            ]
+              .filter(Boolean)
+              .join(' ');
 
             const data = {
               accountEnabled: fields.Status === 'Active' ? true : false,
