@@ -626,6 +626,10 @@ each(
               // STEP 2.a: User found, we are updating...
               console.log(`Updating ${fields['First name Last name']} (${fields['Employee #']}) user information...`);
 
+              const displayName = employee.fields['Preferred Name']
+                ? `${fields['Preferred Name']} ${fields['Middle initial']} ${fields['Last Name']}`
+                : `${fields['First Name']} ${fields['Middle initial']} ${fields['Last Name']}`;
+
               const data = {
                 accountEnabled: fields.Status === 'Active' ? true : false,
                 employeeType: fields['Employment Status'],
@@ -645,7 +649,7 @@ each(
                 department: fields.Department,
                 officeLocation: fields.Division,
                 employeeId: fields['Employee #'],
-                displayName: fields['First name Last name'],
+                displayName,
                 //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
                 otherMails: fields['Home Email'] ? [fields['Home Email']] : undefined, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
                 jobTitle: fields['Job Title'],
@@ -721,6 +725,11 @@ each(
             const work_email = employee.fields['Work Email'];
             // STEP 2.b: User was not found, we are creating a new user.
             console.log(`Creating a new user for ${fields['First name Last name']}...`);
+
+            const displayName = employee.fields['Preferred Name']
+              ? `${fields['Preferred Name']} ${fields['Middle initial']} ${fields['Last Name']}`
+              : `${fields['First Name']} ${fields['Middle initial']} ${fields['Last Name']}`;
+
             const data = {
               accountEnabled: fields.Status === 'Active' ? true : false,
               employeeType: fields['Employment Status'], // Confirm with Aleksa/Jed
@@ -739,7 +748,7 @@ each(
               department: fields.Department,
               officeLocation: fields.Division,
               employeeId: fields['Employee #'],
-              displayName: fields['First name Last name'],
+              displayName,
               //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
               otherMails: fields['Home Email'] ? [fields['Home Email']] : null, // ---Request not supported? needs to be in array ['email1', 'email2']; do not map, never return empty []
               jobTitle: fields['Job Title'],
