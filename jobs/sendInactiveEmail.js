@@ -28,7 +28,7 @@ each(
       return send(
         fields(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L30
+          field('to', 'MatiasA@womenforwomen.org'), //TODO: replace with L30
           field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L31
           //field('to', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to send TO Division contact
           //field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
