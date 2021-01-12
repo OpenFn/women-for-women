@@ -289,7 +289,7 @@ alterState(state => {
     'Terminated - RIF',
   ];
 
-  const activeDivisions = ['No Division', 'Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
+  const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
 
   const errors = [];
 
