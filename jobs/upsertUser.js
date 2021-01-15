@@ -606,8 +606,8 @@ each(
         if (employee.fields['Email User Type'] === 'Does not need email account') {
           console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
         }
-        // We check if the current 'Employee Id' exist in Azure
-        if (userEmployeeIds && userEmployeeIds.includes(fields['Employee #'])) {
+        // We check if the current 'Employee Id' exists in Azure
+        if (userEmployeeIds.includes(fields['Employee #'])) {
           // We get the upn of that user we matched ... and it's azure id
           const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);
 
