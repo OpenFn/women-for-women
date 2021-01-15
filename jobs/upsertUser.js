@@ -325,6 +325,39 @@ alterState(state => {
     password,
   };
 
+  let users = [];
+  let nbPage = 1;
+  // Recursively fetch users when spread accross multiple pages.
+  function getAllUsers(access_token, nextLink) {
+    const url = nextLink || `${api}/users?$select=employeeId,userPrincipalName,id`;
+    console.log('Fetching employees at page', nbPage);
+    return new Promise((resolve, reject) => {
+      // GET ALL USERS
+      resolve(
+        get(
+          `${url}`, // We select employeeId and upn
+          {
+            headers: {
+              authorization: `Bearer ${access_token}`,
+            },
+            options: {
+              successCodes: [200, 201, 202, 203, 204, 404],
+            },
+          },
+          state => {
+            const { value } = state.data;
+            users.push(...value);
+            if (state.data['@odata.nextLink']) {
+              nbPage++;
+              return Promise.resolve(getAllUsers(access_token, state.data['@odata.nextLink']));
+            }
+            return { ...state, users, access_token };
+          }
+        )(state)
+      );
+    });
+  }
+
   return post(
     `${host}${tenant_id}/oauth2/v2.0/token`,
     {
@@ -339,20 +372,8 @@ alterState(state => {
     }
   )(state).then(state => {
     // STEP 1. Get all users
-    return get(
-      `${api}/users?$select=employeeId,userPrincipalName,id`, // We select employeeId and upn
-      {
-        headers: {
-          authorization: `Bearer ${state.access_token}`,
-        },
-        options: {
-          successCodes: [200, 201, 202, 203, 204, 404],
-        },
-      },
-      state => {
-        return { ...state, users: state.data.value };
-      }
-    )(state);
+    return Promise.resolve(getAllUsers(state.access_token));
+    // return state;
   });
 });
 
@@ -366,7 +387,6 @@ each(
         if (object[obj]) object[obj] = object[obj].replace(/\s{2,}/g, ' ');
       }
     }
-
     const { api } = state.configuration;
     const employee = state.data; // We get the current employee
     const { fields } = employee;
@@ -623,13 +643,11 @@ each(
 
         const work_email = employee.fields['Work Email'];
         const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
-        /* console.log(userPrincipalName); */
+
         // We get the upn of that user we matched ... and it's azure id
         const azureEmployee = state.users.find(
           val => val.employeeId === fields['Employee #'] || val.userPrincipalName === userPrincipalName
         );
-
-        // console.log('azure', azureEmployee);
 
         // We check if the current 'Employee Id' exists in Azure
         if (
