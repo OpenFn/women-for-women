@@ -289,7 +289,7 @@ alterState(state => {
     'Terminated - RIF',
   ];
 
-  const activeDivisions = ['No Division', 'Headquarters', 'Nigeria']; // Add divisions to turn "on"
+  const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Afghanistan', 'Afghanistan - PM Access', 'Iraq', 'Iraq - PM Access', 'Kosovo', 'Nigeria', 'Nigeria - PM Access', 'Rwanda', 'South Sudan', 'The Democratic Republic of the Congo', 'WOC']; // Add divisions to turn "on"
 
   const errors = [];
 
@@ -606,7 +606,7 @@ each(
         if (employee.fields['Email User Type'] === 'Does not need email account') {
           console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
         }
-        // We check if the current 'Employee Id' exist in Azure
+        // We check if the current 'Employee Id' exists in Azure
         if (userEmployeeIds.includes(fields['Employee #'])) {
           // We get the upn of that user we matched ... and it's azure id
           const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);

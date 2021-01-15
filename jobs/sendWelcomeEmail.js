@@ -16,7 +16,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
+    const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
@@ -28,7 +28,7 @@ each(
       return send(
         fields(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+          field('to', 'MatiasA@womenforwomen.org'), //TODO: replace with L29
           field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
           //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
           //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
@@ -71,7 +71,7 @@ each(
 </tr>     
 <tr>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
-<p>This email will help you get your new @womenforwomen.org account ready so you can start accessing the resources you need to begin communicating and collaborating with the rest of the organization. <br/><br/>Following are your credentials to get started and further down you will find the link to portal.office.com to get into your new Outlook account.</p>
+<p>This email will help you get your new @womenforwomen.org account ready so you can start accessing the resources you need to begin communicating and collaborating with everyone in the organization. <br/><br/>Following are your temporary credentials to get started and further down you will find links to get into your new Outlook and Teams account.</p>
 <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
 <tr>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Name:</strong></td>
@@ -86,11 +86,11 @@ each(
 <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">You'll Never Walk Alone!</td>
 </tr>
 <tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Change Your Password At:</strong></td>
+<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Change Password:</strong></td>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#3CB371;text-decoration:none">START HERE</a></td>
 </tr>
 </table>
-<p style="text-align:center;font-size:18px;color:#B22222;">IMPORTANT: The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device. This temporary password will expire in 48 hours.</p>
+<p style="font-size:14px;color:#B22222;">IMPORTANT: The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device. This temporary password will expire in 48 hours.</p>
 <p style="text-align:center;font-size:18px;color:#3CB371"><strong>Other links to get started:</strong></p>
 <table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
 <tr>

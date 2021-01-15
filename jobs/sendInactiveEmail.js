@@ -13,7 +13,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = ['Headquarters', 'Nigeria']; // Add divisions to turn "on"
+    const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
@@ -28,7 +28,7 @@ each(
       return send(
         fields(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L30
+          field('to', 'MatiasA@womenforwomen.org'), //TODO: replace with L30
           field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L31
           //field('to', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to send TO Division contact
           //field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
@@ -68,8 +68,8 @@ each(
 <tr>
 <td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
 <p>This is an automated email to let you know that we have inactivated the account for ${state.name} as instructed on the employee record in BambooHR.</p>
-<p>Plesae, complete the following form for proper processing of this account.</p><p><a href="https://help.womenforwomen.org/portal/4/create/64" style="font-weight:bold;color:#66CDAA;text-decoration:none">USER TERMINATION FORM</a></p>
-<p>If this termination is being procesed by mistake, please get in touch with your IT Helpdesk as soon as possible.</p><p>Regards,</p>
+<p>Please, complete the following form for proper handling of this account.</p><p><a href="https://help.womenforwomen.org/portal/4/create/64" style="font-weight:bold;color:#66CDAA;text-decoration:none">USER TERMINATION FORM</a></p>
+<p>If this termination is being procesed by mistake, please get in touch with your HR Officer and IT Helpdesk as soon as possible.</p><p>Regards,</p>
 Your Helpdesk Team at WfWI</p> 
 </td>
 </tr>
