@@ -620,14 +620,22 @@ each(
         if (employee.fields['Email User Type'] === 'Does not need email account') {
           console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
         }
-        // We get the upn of that user we matched ... and it's azure id
-        const azureEmployee = state.users.find(val => val.employeeId === fields['Employee #']);
 
         const work_email = employee.fields['Work Email'];
         const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
+        /* console.log(userPrincipalName); */
+        // We get the upn of that user we matched ... and it's azure id
+        const azureEmployee = state.users.find(
+          val => val.employeeId === fields['Employee #'] || val.userPrincipalName === userPrincipalName
+        );
+
+        // console.log('azure', azureEmployee);
 
         // We check if the current 'Employee Id' exists in Azure
-        if (userEmployeeIds.includes(fields['Employee #']) || azureEmployee.userPrincipalName === userPrincipalName) {
+        if (
+          userEmployeeIds.includes(fields['Employee #']) ||
+          (azureEmployee && azureEmployee.userPrincipalName === userPrincipalName)
+        ) {
           // If the user from azure has the upn than the one from bambooHR
           if (azureEmployee.userPrincipalName === userPrincipalName) {
             const termination_date = fields['Termination Date'];
