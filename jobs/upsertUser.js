@@ -659,7 +659,7 @@ each(
           (azureEmployee && azureEmployee.userPrincipalName.toLowerCase() === userPrincipalName.toLowerCase())
         ) {
           // If the user from azure has the same upn than the one from bambooHR
-          if (azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) {
+          if (azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) {
             const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
@@ -756,7 +756,11 @@ each(
             return state;
           }
         } else {
-          if (azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) {
+          if (
+            azureEmployee.mail &&
+            azureEmployee.mail &&
+            azureEmployee.mail.toLowerCase() === work_email.toLowerCase()
+          ) {
             state.errors
               .push(`${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
               (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
