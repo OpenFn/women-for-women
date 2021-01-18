@@ -757,7 +757,7 @@ each(
           }
         } else {
           if (
-            azureEmployee.mail &&
+            azureEmployee &&
             azureEmployee.mail &&
             azureEmployee.mail.toLowerCase() === work_email.toLowerCase()
           ) {
