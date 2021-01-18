@@ -329,7 +329,7 @@ alterState(state => {
   let nbPage = 1;
   // Recursively fetch users when spread accross multiple pages.
   function getAllUsers(access_token, nextLink) {
-    const url = nextLink || `${api}/users?$select=employeeId,userPrincipalName,id`;
+    const url = nextLink || `${api}/users?$select=employeeId,userPrincipalName,id,mail`;
     console.log('Fetching employees at page', nbPage);
     return new Promise((resolve, reject) => {
       // GET ALL USERS
@@ -655,7 +655,7 @@ each(
           (azureEmployee && azureEmployee.userPrincipalName === userPrincipalName)
         ) {
           // If the user from azure has the upn than the one from bambooHR
-          if (azureEmployee.userPrincipalName === userPrincipalName) {
+          if (azureEmployee.userPrincipalName === userPrincipalName && azureEmployee.mail === work_email) {
             const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
