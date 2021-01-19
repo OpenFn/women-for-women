@@ -659,7 +659,7 @@ each(
           (azureEmployee && azureEmployee.userPrincipalName.toLowerCase() === userPrincipalName.toLowerCase())
         ) {
           // If the user from azure has the same upn than the one from bambooHR
-          if (azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) {
+          if ((azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase())|| (azureEmployee && !azureEmployee.mail)) {
             const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
