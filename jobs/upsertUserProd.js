@@ -642,7 +642,7 @@ each(
         }
 
         const work_email = employee.fields['Work Email'];
-        const userPrincipalName = work_email //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
+        const userPrincipalName = work_email; //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
 
         // We get the upn of that user we matched ... and it's azure id
         const azureEmployee = state.users.find(
@@ -690,7 +690,7 @@ each(
                     ''
                   ) /*+
                 '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
-                userPrincipalName: work_email //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+                userPrincipalName: work_email, //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
@@ -797,7 +797,7 @@ each(
                   fields['First Name'].substring(0, 1) +
                   (fields['Middle initial'] ? fields['Middle initial'] : '') +
                   fields['Last Name'].replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
-                userPrincipalName: work_email //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+                userPrincipalName: work_email, //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
