@@ -474,7 +474,7 @@ each(
               const { value } = state.data.body;
               // ... (b1) if he has, we remove him from the administrative unit...
 
-              if (value.length > 0) {
+              if (value && value.length > 0) {
                 console.log(`Removing member from the administrative unit ${value[0]}...`);
                 return del(
                   `${api}/directory/administrativeUnits/${value[0]}/members/${employee.id}/$ref`,
@@ -563,7 +563,7 @@ each(
             state => {
               const { value } = state.data.body;
               // ... (b1) if he has, we remove him from the group...
-              if (value.length > 0) {
+              if (value && value.length > 0) {
                 console.log(`Removing member from the group ${value[0]}...`);
                 return del(
                   `${api}/groups/${value[0]}/members/${employee.id}/$ref`,
@@ -756,11 +756,7 @@ each(
             return state;
           }
         } else {
-          if (
-            azureEmployee &&
-            azureEmployee.mail &&
-            azureEmployee.mail.toLowerCase() === work_email.toLowerCase()
-          ) {
+          if (azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) {
             state.errors
               .push(`${fields['First name Last name']} User Principal Name (${userPrincipalName}) and Bamboo Work Email
               (${azureEmployee.userPrincipalName}) do not match. Please review this user to confirm the Work Email entered in BambooHR.
