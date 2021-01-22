@@ -335,7 +335,7 @@ alterState(state => {
       // GET ALL USERS
       resolve(
         get(
-          `${url}`, // We select employeeId, upn and mail
+          `${url}`, // We select employeeId and upn
           {
             headers: {
               authorization: `Bearer ${access_token}`,
@@ -368,10 +368,13 @@ alterState(state => {
     },
     state => {
       console.log('Authentication successful');
-      state.access_token = state.data.access_token;
-      return Promise.resolve(getAllUsers(state.access_token));
+      return { ...state, access_token: state.data.access_token };
     }
-  )(state);
+  )(state).then(state => {
+    // STEP 1. Get all users
+    return Promise.resolve(getAllUsers(state.access_token));
+    // return state;
+  });
 });
 
 //FOR EVERY NEW EMPLOYEE SENT VIA BAMBOO...
@@ -398,7 +401,7 @@ each(
         // 1.2 ASSIGN USER TO MANAGER
         const supervisorEmail = employee.fields['Supervisor email'];
         if (supervisorEmail) {
-          const userPrincipalName = supervisorEmail.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
+          const userPrincipalName = supervisorEmail //.replace('@', '_') + '%23EXT%23@w4wtest.onmicrosoft.com'; // Replace # with %23
           // We (1) make a get to fetch the supervisor id.
           return get(
             `${api}/users/${userPrincipalName}`,
@@ -421,16 +424,20 @@ each(
                   `Assigning ${fields['First name Last name']} (${fields['Employee #']}) to manager ${supervisorEmail} ...`
                 );
                 resolve(
-                  put(`${api}/users/${employee.id}/manager/$ref`, {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
+                  put(
+                    `${api}/users/${employee.id}/manager/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
                     },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
-                    body: data,
-                  })(state)
+                    state => {}
+                  )(state)
                 );
               } else {
                 console.log(`Manager ${supervisorEmail} not found...`);
@@ -480,14 +487,17 @@ each(
                       successCodes: [200, 201, 202, 203, 204, 404],
                     },
                   },
-                  state => {
-                    // ... (c) We add him to the new administrative unit.
-                    console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
-                    const data = {
-                      '@odata.id': `${api}/directoryObjects/${employee.id}`,
-                    };
-                    resolve(
-                      post(`${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`, {
+                  state => {}
+                )(state).then(response => {
+                  // ... (c) We add him to the new administrative unit.
+                  console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  resolve(
+                    post(
+                      `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                      {
                         headers: {
                           authorization: `Bearer ${state.access_token}`,
                           'Content-Type': 'application/json',
@@ -496,12 +506,11 @@ each(
                           successCodes: [200, 201, 202, 203, 204, 404],
                         },
                         body: data,
-                      })(state)
-                    );
-                    return state;
-                  }
-                )(state); /* .then(response => {
-                }); */
+                      },
+                      state => {}
+                    )(state)
+                  );
+                });
               } else {
                 // ... (b2) if he has not, we add him still.
                 console.log(`Adding member to the administrative units ${employee.fields.Division}...`);
@@ -509,16 +518,20 @@ each(
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
                 resolve(
-                  post(`${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`, {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
+                  post(
+                    `${api}/directory/administrativeUnits/${administrativeUnitID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
                     },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
-                    body: data,
-                  })(state)
+                    state => {}
+                  )(state)
                 );
               }
             }
@@ -563,14 +576,17 @@ each(
                       successCodes: [200, 201, 202, 203, 204, 404],
                     },
                   },
-                  state => {
-                    // ... (c) We add him to the new group.
-                    console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
-                    const data = {
-                      '@odata.id': `${api}/directoryObjects/${employee.id}`,
-                    };
-                    resolve(
-                      post(`${api}/groups/${groupID}/members/$ref`, {
+                  state => {}
+                )(state).then(response => {
+                  // ... (c) We add him to the new group.
+                  console.log(`Adding member to the new group ${employee.fields['Email User Type']}...`);
+                  const data = {
+                    '@odata.id': `${api}/directoryObjects/${employee.id}`,
+                  };
+                  resolve(
+                    post(
+                      `${api}/groups/${groupID}/members/$ref`,
+                      {
                         headers: {
                           authorization: `Bearer ${state.access_token}`,
                           'Content-Type': 'application/json',
@@ -579,11 +595,11 @@ each(
                           successCodes: [200, 201, 202, 203, 204, 404],
                         },
                         body: data,
-                      })(state)
-                    );
-                    return state;
-                  }
-                )(state); /* .then(response => {}); */
+                      },
+                      state => {}
+                    )(state)
+                  );
+                });
               } else {
                 // ... (b2) if he has not, we add him still.
                 console.log(`Adding member to the group ${employee.fields['Email User Type']}...`);
@@ -591,16 +607,20 @@ each(
                   '@odata.id': `${api}/directoryObjects/${employee.id}`,
                 };
                 resolve(
-                  post(`${api}/groups/${groupID}/members/$ref`, {
-                    headers: {
-                      authorization: `Bearer ${state.access_token}`,
-                      'Content-Type': 'application/json',
+                  post(
+                    `${api}/groups/${groupID}/members/$ref`,
+                    {
+                      headers: {
+                        authorization: `Bearer ${state.access_token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      options: {
+                        successCodes: [200, 201, 202, 203, 204, 404],
+                      },
+                      body: data,
                     },
-                    options: {
-                      successCodes: [200, 201, 202, 203, 204, 404],
-                    },
-                    body: data,
-                  })(state)
+                    state => {}
+                  )(state)
                 );
               }
             }
@@ -622,7 +642,7 @@ each(
         }
 
         const work_email = employee.fields['Work Email'];
-        const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
+        const userPrincipalName = work_email; //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
 
         // We get the upn of that user we matched ... and it's azure id
         const azureEmployee = state.users.find(
@@ -670,7 +690,7 @@ each(
                     ''
                   ) /*+
                 '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
-                userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+                userPrincipalName: work_email, //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
@@ -777,7 +797,7 @@ each(
                   fields['First Name'].substring(0, 1) +
                   (fields['Middle initial'] ? fields['Middle initial'] : '') +
                   fields['Last Name'].replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
-                userPrincipalName: work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
+                userPrincipalName: work_email, //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
@@ -824,10 +844,7 @@ each(
                   // assignGroup();
                   // console.log(`Azure user updates: ${state.data}`);
                   return Promise.all([assignManager(), assignAU(), assignGroup()]).then(() => state);
-                  // return Promise.resolve(assignManager())
-                  //   .then(Promise.resolve(assignAU()))
-                  //   .then(Promise.resolve(assignGroup()))
-                  //   .then(() => state);
+                  // return state;
                 }
               )(state);
             } else {
