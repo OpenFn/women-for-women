@@ -292,17 +292,18 @@ alterState(state => {
   const activeDivisions = [
     'Headquarters',
     'Headquarters - PM Access',
-    'Afghanistan',
-    'Afghanistan - PM Access',
-    'Iraq',
-    'Iraq - PM Access',
-    'Kosovo',
-    'Nigeria',
-    'Nigeria - PM Access',
-    'Rwanda',
-    'South Sudan',
-    'The Democratic Republic of the Congo',
-    'WOC',
+    //'Afghanistan',
+    //'Afghanistan - PM Access',
+    //'Iraq',
+    //'Iraq - PM Access',
+    //'Kosovo',
+    //'Nigeria',
+    //'Nigeria - PM Access',
+    //'Rwanda',
+    //'South Sudan',
+    //'The Democratic Republic of the Congo',
+    //'WOC',
+    //'No Division'
   ]; // Add divisions to turn "on"
 
   const errors = [];
