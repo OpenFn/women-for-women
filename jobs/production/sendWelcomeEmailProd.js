@@ -114,7 +114,6 @@ Your Helpdesk Team at WfWI</p>
 <td style="margin-left:auto;margin-right:auto"><a href="https://twitter.com/WomenforWomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/twitter.svg" style="max-height:20px;padding-right:15px;"></a></td>
 </table></div>
 </td>
-
 </table>
 </tr>
 </tbody>
