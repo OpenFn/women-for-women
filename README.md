@@ -2,11 +2,9 @@
 
 Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 
-**Note!** 
-
-**1. Commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!**
-
-**2. There are 'production' and 'test' versions of the jobs configured on OpenFn.org. Turn on the `[PROD]` jobs to sync with the live production environment. Choose to keep the `[TEST]` jobs running in parallel for testing purposes.**
+## Important Notes
+### 1. Commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!
+### 2. There are 'production' and 'test' versions of the jobs configured on OpenFn.org. Turn on the `[PROD]` jobs to sync with the live production environment. Choose to keep the `[TEST]` jobs running in parallel for testing purposes.
 
 # 1. Solution Overview
 
