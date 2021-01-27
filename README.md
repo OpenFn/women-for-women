@@ -25,7 +25,7 @@ Depending on the Employment Status, different actions may be taken beyond Azure 
 2. Terminated Employees --> Helpdesk sent an email 
 3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting that "Employment Status does not qualify for integration." 
 4. Only employee records belonging to Divisions specified as **`Active Divisions`** will be processed by the automation flow. Otherwise, the automation will skip over the record and log `No Azure action taken`. Skip to `02:08` in [this video](https://www.youtube.com/watch?v=WKgb-UiTcMg&t=2m8s) for instructions on updating the `activeDivision` list, and please update the following lines in these jobs: 
-- `1. Upsert Azure User` - [see L292](https://www.openfn.org/projects/p56pxp/jobs/jvebjm) (`const activeDivisions = ['Headquarters', 'Nigeria'];`)
+- `1. Upsert Azure User` - [see L292](https://www.openfn.org/projects/p56pxp/jobs/jvebjm) (`const activeDivisions = ['Headquarters', 'Headquarters - PM Access'];`)
 https://github.com/OpenFn/women-for-women/blob/master/jobs/production/upsertUserProd.js#L292
 - `2A. Send Welcome Email` - [see L16](https://www.openfn.org/projects/p56pxp/jobs/jyjxb8)
 https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendWelcomeEmailProd.js#L16
