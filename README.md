@@ -2,7 +2,9 @@
 
 Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 
-*Note that commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!*
+**Note!** 
+**1. Commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!**
+**2. There are 'production' and 'test' versions of the jobs configured on OpenFn.org. Turn on the `[PROD]` jobs to sync with the live production environment. Choose to keep the `[TEST]` jobs running in parallel for testing purposes.**
 
 # 1. Solution Overview
 
@@ -23,10 +25,14 @@ Depending on the Employment Status, different actions may be taken beyond Azure 
 2. Terminated Employees --> Helpdesk sent an email 
 3. Employees marked as "Other" --> OpenFn logs a message in "Activity History" noting that "Employment Status does not qualify for integration." 
 4. Only employee records belonging to Divisions specified as **`Active Divisions`** will be processed by the automation flow. Otherwise, the automation will skip over the record and log `No Azure action taken`. Skip to `02:08` in [this video](https://www.youtube.com/watch?v=WKgb-UiTcMg&t=2m8s) for instructions on updating the `activeDivision` list, and please update the following lines in these jobs: 
-- `1. Upsert Azure User` - [see L279](https://www.openfn.org/projects/2976/jobs/3656) (`const activeDivisions = ['Headquarters', 'Nigeria'];`)
-- `2A. Send Welcome Email` - [see L20](https://www.openfn.org/projects/2976/jobs/3657)
-- `2B. Send Supervisor Email` - [see L16](https://www.openfn.org/projects/2976/jobs/3842)
-- `3. Send Inactive Employee Email` - [see L16](https://www.openfn.org/projects/2976/jobs/3707)
+- `1. Upsert Azure User` - [see L292](https://www.openfn.org/projects/p56pxp/jobs/jvebjm) (`const activeDivisions = ['Headquarters', 'Nigeria'];`)
+https://github.com/OpenFn/women-for-women/blob/master/jobs/production/upsertUserProd.js#L292
+- `2A. Send Welcome Email` - [see L16](https://www.openfn.org/projects/p56pxp/jobs/jyjxb8)
+https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendWelcomeEmailProd.js#L16
+- `2B. Send Supervisor Email` - [see L16](https://www.openfn.org/projects/p56pxp/jobs/jvrqek)
+https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendSupervisorEmailProd.js#L16
+- `3. Send Inactive Employee Email` - [see L16](https://www.openfn.org/projects/p56pxp/jobs/jv9nxn)
+https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendInactiveEmailProd.js#L16
 
 # 2. Technical Overview
 ## Data Flow
