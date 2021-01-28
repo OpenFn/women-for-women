@@ -1,27 +1,27 @@
 alterState(state => {
   const administrativeUnitsMap = {
-    Afghanistan: 'a6ea8828-6a06-450e-84ea-126967bb5468',
-    'Afghanistan - PM Access': 'a6ea8828-6a06-450e-84ea-126967bb5468',
-    Headquarters: '61c87b53-b995-43ab-ba5a-1b9d62c893f3',
-    'Headquarters - PM Access': '61c87b53-b995-43ab-ba5a-1b9d62c893f3',
-    Iraq: '1f4492b8-32bf-4363-8a91-21eaecc6814e',
-    'Iraq - PM Access': '1f4492b8-32bf-4363-8a91-21eaecc6814e',
-    Nigeria: '194d1892-e2e7-4d0c-bcf4-b6902faff574',
-    'Nigeria - PM Access': '194d1892-e2e7-4d0c-bcf4-b6902faff574',
-    Rwanda: 'b4c8cf51-f8e2-413a-ad4f-f466a180956f',
-    'Rwanda - PM Access': 'b4c8cf51-f8e2-413a-ad4f-f466a180956f',
-    'South Sudan': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
-    'South Sudan - PM Access': '2367b7c5-3757-440e-9fcd-64f45b8821f8',
-    'The Democratic Republic of the Congo': '487422cb-09bc-4607-87e1-9e817498d47e',
-    'The Democratic Republic of the Congo - PM Access': '487422cb-09bc-4607-87e1-9e817498d47e',
-    WOC: '8406e250-1202-4c15-815e-0b4ae118c548',
-    'WOC - PM Access': '8406e250-1202-4c15-815e-0b4ae118c548',
-    'No Division': '39d714aa-9abe-417f-a07a-c4ef698d87bd',
+    Afghanistan: '69d68699-bb6e-48a9-860b-0a56d313ebaf',
+    'Afghanistan - PM Access': '69d68699-bb6e-48a9-860b-0a56d313ebaf',
+    Headquarters: '418e20a0-79cf-4682-a3b3-b3fbeff00493',
+    'Headquarters - PM Access': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
+    Iraq: '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
+    'Iraq - PM Access': '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
+    Nigeria: 'cd4bb036-19c3-471f-9f7a-eeb311fe08fa',
+    'Nigeria - PM Access': 'cd4bb036-19c3-471f-9f7a-eeb311fe08fa',
+    Rwanda: '622d4704-e215-4963-95fb-29be4ee62eaa',
+    'Rwanda - PM Access': '622d4704-e215-4963-95fb-29be4ee62eaa',
+    'South Sudan': 'e55de9ae-6223-4010-90eb-eaf8c6b59a56',
+    'South Sudan - PM Access': 'e55de9ae-6223-4010-90eb-eaf8c6b59a56',
+    'The Democratic Republic of the Congo': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
+    'The Democratic Republic of the Congo - PM Access': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
+    WOC: '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
+    'WOC - PM Access': '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
+    'No Division': 'ce989d2c-43a9-42f6-976c-0db5ac8acbed',
   };
 
   const groupMap = {
-    'Full User (paid)': 'eb4a88b5-a02c-4ae9-abb8-cd9b082aae15',
-    'Mobile User (free)': '4e19592a-345b-461b-9058-ff6e21164bbd',
+    'Full User (paid)': 'b72cf67b-e9f5-4241-b1ed-52ee21c38b08', //Licenses M365 E3
+    'Mobile User (free)': '46ce29be-25d0-4c6d-8772-4f6a2c792258', //Licenses O365 E1
   };
 
   const stateMap = {
