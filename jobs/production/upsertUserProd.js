@@ -653,7 +653,7 @@ each(
 
               const displayName = [
                 fields['Preferred Name'] || fields['First Name'],
-                fields['Middle initial'],
+                //fields['Middle initial'],
                 fields['Last Name'],
               ]
                 .filter(Boolean)
