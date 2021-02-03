@@ -301,7 +301,7 @@ alterState(state => {
     'Nigeria - PM Access',
     //'Rwanda',
     'South Sudan',
-    //'The Democratic Republic of the Congo',
+    'The Democratic Republic of the Congo',
     //'WOC',
     //'No Division'
   ]; // Add divisions to turn "on"
