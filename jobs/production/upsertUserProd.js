@@ -292,8 +292,8 @@ alterState(state => {
   const activeDivisions = [
     'Headquarters',
     'Headquarters - PM Access',
-    //'Afghanistan',
-    //'Afghanistan - PM Access',
+    'Afghanistan',
+    'Afghanistan - PM Access',
     //'Iraq',
     //'Iraq - PM Access',
     //'Kosovo',
