@@ -1,3 +1,6 @@
+//-- Using Mailgun adaptor --
+//-- SEND WELCOME EMAIl --
+
 each(
   '$.data.employees[*]',
   alterState(state => {
@@ -13,7 +16,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = ['Headquarters', 'Headquarters - PM Access']; // Add divisions to turn "on"
+    const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
@@ -24,9 +27,9 @@ each(
     if (activeDivisions.includes(employee.fields.Division)) {
       return send(
         fields(
-          field('from', 'womenforwomen@irc.openfn.org'), 
-          field('to', 'MAverbujA@womenforwomen.org'), //FOR TESTING
-          //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
+          field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
+          field('to', 'MatiasA@womenforwomen.org'), //TODO: replace with L29
+          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
           //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
           //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
           field('subject', state => {
@@ -34,10 +37,8 @@ each(
             console.log(sub);
             return sub;
           }),
-          
-//WfW welcome template
-          
           field('html', state => {
+            //WfW welcome template
             var msg = 
 `<style type="text/css">
 @media screen and (max-width: 600px) {
@@ -116,6 +117,7 @@ Your Helpdesk Team at WfWI</p>
 <td style="margin-left:auto;margin-right:auto"><a href="https://twitter.com/WomenforWomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/twitter.svg" style="max-height:20px;padding-right:15px;"></a></td>
 </table></div>
 </td>
+
 </table>
 </tr>
 </tbody>
