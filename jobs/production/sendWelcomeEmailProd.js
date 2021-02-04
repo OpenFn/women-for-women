@@ -34,12 +34,11 @@ each(
             console.log(sub);
             return sub;
           }),
+          
+//WfW welcome template
+          
           field('html', state => {
             var msg = 
-
-//WfW welcome template
-
-
 `<style type="text/css">
 @media screen and (max-width: 600px) {
 #main-table {width:100%!important;border:0!important;}
