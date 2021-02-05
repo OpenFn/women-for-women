@@ -40,88 +40,276 @@ each(
           field('html', state => {
             //WfW welcome template
             var msg = 
-`<style type="text/css">
-@media screen and (max-width: 600px) {
-#main-table {width:100%!important;border:0!important;}
-#logo,#dept,#social-media,#address {width:100%!important;padding:0!important}	
-.mobile-hide, #dept-logo, #header-image {display:none!important;}
-#dept p, #address p {text-align:center!important;}
-#dept table, #social-media table {margin:5px auto 0 auto!important;}	
-#body {padding:10px 0 10px 0!important;}
-#body li {margin-left:-20px!important;}
-}
-</style>
-<table style="max-width:700px;margin:0 auto;border-spacing:0;background:white;border:10px solid #f0f0f0;" id="main-table">
-<tbody>
-<tr>
-<td style="background-color:#333;height:60px;">
-<div style="float:left;padding-left:2%;" align="left" id="logo">
-<img src="https://support.womenforwomen.org/files/womenforwomen/logo-color.png" alt="WfWI Logo" style="max-height:40px;padding-top:5px;display:block;margin:0 auto;"></div>
-<div style="float:right;padding-right:2%;" align="right" id="dept">
-<table><td style="font-family:Calibri,Arial,sans-serif;font-size:14px;color:white">
-<p style="text-transform:uppercase;margin:0;text-align:right"><span style="color:#FFFFFF;font-weight:bold">Global IT Business Services</span><br>
-<a href="mailto:#" style="color:#FFFFFF;text-decoration:none" target="_blank">helpdesk@womenforwomen.org</a></p></td>
-</table>
-</div>
-</td>
-</tr>
-<tr>
-<td style="font-family: Calibri, Arial, sans-serif;font-size:20px;text-transform:uppercase;color:#D88C02;font-weight:bold;text-align:center;padding-top:10px;margin:0;" colspan="2"><p style="margin:0;padding:0;">Dear ${state.firstName}, welcome to</p>
-<p style="font-size:28px;margin:5px auto;line-height:1.2;color:grey;">Women for Women International!</p></td>
-</tr>     
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
-<p>This email will help you get your new @womenforwomen.org account ready so you can start accessing the resources you need to begin communicating and collaborating with everyone in the organization. <br/><br/>Following are your temporary credentials to get started and further down you will find links to get into your new Outlook and Teams account.</p>
-<table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Name:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.name}</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Email:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">${state.workEmail}</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Temporary Password</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;">You'll Never Walk Alone!</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><strong>Change Password:</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.5;"><a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="font-weight:bold;color:#3CB371;text-decoration:none">START HERE</a></td>
-</tr>
-</table>
-<p style="font-size:14px;color:#B22222;">IMPORTANT: The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device. This temporary password will expire in 48 hours.</p>
-<p style="text-align:center;font-size:18px;color:#3CB371"><strong>Other links to get started:</strong></p>
-<table width="75%" border="0" align="center" style="margin:20px auto;background:#f0f0f0;border:1px solid #ccc;">
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Microsoft Teams</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://aka.ms/mstfw" style="font-weight:bold;color:#708090;text-decoration:none">https://aka.ms/mstfw</a></td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.2;"><strong>Outlook Web</strong></td>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:14px;padding:15px;line-height:0.0;"><a href="https://outlook.office.com/" style="font-weight:bold;color:#708090;text-decoration:none">https://outlook.office.com/</a></td>
-</tr>
-</table>
-<p>If you have any questions, do not hesitate to contact our Helpdesk Team via <a href="https://help.womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">live chat</a> or by email to <a href="mailto:helpdesk@womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">helpdesk@womenforwomen.org</a>.</p>
-<p>We look forward to working with you!<br/><br/>
-Your Helpdesk Team at WfWI</p> 
-</td>
-</tr>
-<tr>
-<td style="background-color:#333;padding:10px">
-<div style="float:left;padding-left:2%;" align="left" id="address">
-<p style="text-align:left;font-family:Calibri,Arial,sans-serif;color:white;font-size:12px;margin:0;padding-top:5px;">2000 M Sreet NW Suite 200, Washington, DC 20036 USA</p></div>
-<div style="float:right;padding-right:2%;" align="right" id="social-media">
-<table>
-<td style="margin:0 auto;"><a href="https://www.facebook.com/womenforwomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/facebook.svg" style="max-height:20px;padding-right:15px;"></a></td>
-<td style="margin-left:auto;margin-right:auto"><a href="https://twitter.com/WomenforWomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/twitter.svg" style="max-height:20px;padding-right:15px;"></a></td>
-</table></div>
-</td>
+`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
 
-</table>
-</tr>
-</tbody>
-</table>`;
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+
+    
+
+
+<div style="padding:0!important;margin:0!important;display:block!important;min-width:100%!important;width:100%!important;background:#eeeeee">
+    
+    
+    <span style="display:none;font-size:0px;line-height:0px;max-height:0px;max-width:0px;overflow:hidden"></span>
+    
+    
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#eeeeee">
+        <tr>
+            <td align="center" valign="top">
+                
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td align="center">
+                            <table width="700" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td style="width:700px;min-width:700px;font-size:0pt;line-height:0pt;padding:0;margin:0;font-weight:normal">
+
+
+                                        
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+                                            <tr>
+                                                <td style="padding:30px 0px 30px 0px">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td style="font-size:0pt;line-height:0pt;text-align:center"><img src="https://us05.rocketseed.com/img/2112" width="250" style="max-width:250px" border="0" alt=""></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                            
+                                                
+                                            
+                                        
+                                        
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+                                            <tr>
+                                                <td style="padding:30px 30px">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:15px">
+                                                                <strong>DEAR ${STATE.FIRSTNAME},</strong>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:15px">
+                                                                This email will help you get your new @<a href="http://womenforwomen.org" target="_blank">womenforwomen.org</a> account ready so you can start accessing the resources you need to begin communicating and collaborating with everyone in the organization.
+                                                            <br></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:15px">
+                                                                Following are your temporary credentials to get started and further down you will find links to get into your new Outlook and Teams account.
+                                                            <br></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="center" style="padding-top:20px;padding-bottom:30px">
+                                                                <table width="80%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F5B2AD">
+                                                                    <tr>
+                                                                        <td style="background:#f5b2ad;color:#ffffff;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;padding-top:10px;padding-bottom:10px;font-size:22px;line-height:28px;text-align:center">
+                                                                            <div>Temporary Credentials</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                                <table width="80%" border="0" cellspacing="0" cellpadding="0" bgcolor="#00997b" style="padding:0px 8px;border-collapse:collapse">
+
+
+                                                                    <tr>
+                                                                        <th width="40%">
+
+                                                                        </th>
+                                                                        <th width="60%">
+
+                                                                        </th>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            <div> <strong>	Name: </strong></div>
+                                                                        </td>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px">
+                                                                            ${<a href="http://state.name" target="_blank">state.name</a>}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            <div> <strong>	Email:</strong></div>
+                                                                        </td>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px">
+                                                                            ${state.workEmail}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            <div><strong>Temporary Password </strong></div>
+                                                                        </td>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            You&#39;ll Never Walk Alone!
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="middle" style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            <div> <strong>Change Password:</strong></div>
+                                                                        </td>
+                                                                        <td valign="middle" style="color:#ffffff;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px">
+                                                                            <a href="https://passwordreset.microsoftonline.com/?whr=womenforwomen.org" style="color:#ffffff;text-decoration:underline" target="_blank"><span style="color:#ffffff;text-decoration:underline"><strong>START HERE</strong></span></a>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color:#a32638;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:18px;text-align:left;padding-bottom:15px">
+                                                                <br><strong>Important:</strong> The above password is your temporary logon to WfWI. You will be asked to change it to a new password and setup multi-factor authentication with your mobile device.
+                                                                This temporary password will expire in 48 hours. <br>
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <td align="center" style="padding-top:15px;padding-bottom:10px">
+                                                                <table width="400px" border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <th width="200px" style="font-size:0pt;line-height:0pt;padding:0;margin:0;font-weight:normal;vertical-align:center">
+                                                                            <table align="center" width="100px" border="0" cellspacing="2" cellpadding="1">
+                                                                                <tr>
+                                                                                    <td style="font-family:&#39;Raleway&#39;,Arial,sans-serif;font-size:18px;line-height:22px;text-align:center;font-weight:bold">
+                                                                                        <div>
+                                                                                            <a href="https://outlook.office.com/" style="color:#4e54cb;text-decoration:none" target="_blank"><img src="https://th.bing.com/th/id/R3f0d0825e77de5c16ad70889bbcf3b09?rik=0mn0qg2UL6TyLg&amp;riu=http%3a%2f%2fwww.softsolutionworks.com%2fimages%2fOutlook%2fOutlook.png&amp;ehk=ckhb0FzDr4Q4OTOfZ0848Uofgl2FHDJLGyCG5ETvls4%3d&amp;risl=&amp;pid=ImgRaw" width="150px" style="max-width:175px" border="0" alt=""></a>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+
+                                                                            </table>
+                                                                        </th>
+                                                                        <th style="font-size:0pt;line-height:0pt;padding:0;margin:0;font-weight:normal;vertical-align:center">
+                                                                            <table align="center" width="200px" border="0" cellspacing="2" cellpadding="1">
+                                                                                <tr>
+                                                                                    <td style="font-family:&#39;Raleway&#39;,Arial,sans-serif;font-size:18px;line-height:22px;text-align:center;font-weight:bold">
+                                                                                        <div>
+                                                                                            <a href="https://aka.ms/mstfw" style="color:#4e54cb;text-decoration:none" target="_blank">
+                                                                                                <img src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE2Z7GW?ver=0ab9&amp;q=90&amp;m=2&amp;h=768&amp;w=1024&amp;b=%23FFFFFFFF&amp;aim=true" width="130px" height="75px" style="max-width:175px" border="0">
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </th>
+                                                                    </tr>
+																	<tr>
+																	<td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:center;padding-bottom:15px">
+                                                                Microsoft Outlook
+                                                            </td>
+															<td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:center;padding-bottom:15px">
+                                                                Microsoft Teams
+                                                            </td>
+																	</tr></table></td>
+																	</tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+
+
+                                                        
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:25px">
+                                                                <br>If you have any questions, do not hesitate to contact our Helpdesk Team via
+                                                                <a href="https://teams.microsoft.com/l/chat/0/0?users=maverbuj@womenforwomen.org,mmoisethomas@womenforwomen.org,cani@womenforwomen.org&amp;topicName=NEW+USER+%7C+Requesting+Support&amp;message=Welcome+to+Women+for+Women+International!+How+can+we+help+you?" target="_blank"> <span style="color:#f55c40;text-decoration:underline">live chat</span></a> or
+                                                                by email to
+                                                                <a href="mailto:helpdesk@womenforwomen.org" style="color:#f55c40;text-decoration:underline" target="_blank"><span style="color:#f55c40;text-decoration:underline">helpdesk@womenforwomen.org</span></a>.
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:10px">
+                                                                We look forward to working with you! <br>
+                                                            </td>
+                                                        </tr>
+														<tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:15px">
+                                                                IT@WfWI
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+
+                                        
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+                                            <tr>
+                                                <td style="padding:10px 20px 0px">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td style="color:#000000;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:22px;text-align:center;text-transform:uppercase;padding-bottom:20px">
+                                                                <div>f o l l o w   u s</div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="center" style="padding-bottom:20px">
+                                                                <table border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="40" style="font-size:0pt;line-height:0pt;text-align:left">
+                                                                            <a href="https://www.instagram.com/womenforwomen/" target="_blank"><img src="https://i.ibb.co/59BQ3Wd/instagram.png" width="32" height="32" style="max-width:32px" border="0" alt=""></a>
+                                                                        </td>
+
+                                                                        <td width="40" style="font-size:0pt;line-height:0pt;text-align:left">
+                                                                            <a href="https://www.facebook.com/womenforwomen" target="_blank"><img src="https://i.ibb.co/xGJmDgD/facebook.png" width="32" height="32" style="max-width:32px" border="0" alt=""></a>
+                                                                        </td>
+                                                                        <td width="40" style="font-size:0pt;line-height:0pt;text-align:left">
+                                                                            <a href="https://www.linkedin.com/company/women-for-women-international/" target="_blank"><img src="https://i.ibb.co/BzyvWbv/linkedin.png" width="32" height="32" style="max-width:32px" border="0" alt=""></a>
+                                                                        </td>
+                                                                        <td width="40" style="font-size:0pt;line-height:0pt;text-align:left">
+                                                                            <a href="https://twitter.com/WomenforWomen" target="_blank"><img src="https://i.ibb.co/DWLmY7L/twitter.png" width="32" height="32" style="max-width:32px" border="0" alt=""></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+
+
+                                                    </table>
+
+                                                </td>
+                                            </tr>
+
+                                            
+                                                
+                                                    
+                                                
+                                            
+                                        </table>
+                                        
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                
+            
+        
+    
+</div>
+
+</body></html>`;
             return msg;
           })
         )
