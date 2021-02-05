@@ -19,11 +19,13 @@ each(
     const activeDivisions = ['Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
+    //=== Dynamic field variables that can be inserted in email template ===========//
     state.workEmail = employee.fields['Work Email'];
     state.firstName = employee.fields['First Name'];
     state.name = employee.fields['First name Last name'];
+    //==============================================================================//
+    
     console.log(state.name, state.workEmail);
-
     if (activeDivisions.includes(employee.fields.Division)) {
       return send(
         fields(
