@@ -40,12 +40,7 @@ each(
           field('html', state => {
             //WfW email template for notifying supervisors of new employee setup
             var msg = 
-`<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
-</head>
-<body>
+`<body>
 <div style=" padding: 0 !important; margin: 0 !important; display:
 block !important; min-width: 100% !important; width: 100%
 !important; background: #eeeeee; "> <span style=" display: none;
@@ -125,9 +120,7 @@ started.<br>
 style="color:#000000;font-family:'Mulish',Calibri,Arial,sans-serif;font-size:18px;line-height:20px;text-align:left;padding-bottom:15px">Please,
 make sure to welcome
 ${state.firstName} on
-Teams by <a
-moz-do-not-send="true"
-href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}">clicking
+Teams by <a href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}>clicking
 here</a>.<br>
 <br>
 If you have any questions,
@@ -236,8 +229,7 @@ border="0"></a> </td>
 </tbody>
 </table>
 </div>
-</body>
-</html>`;
+</body>`;
             return msg;
           })
         )
