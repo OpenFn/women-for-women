@@ -123,7 +123,7 @@ each(
                                                 padding-bottom: 15px;
                                               "
                                             >
-                                              <strong>Dear ${state.supervisor},</strong>
+                                              <strong>Dear Supervisor,</strong>
                                             </td>
                                           </tr>
                                           <tr>
