@@ -164,7 +164,7 @@ each(
                                                 >USER TERMINATION FORM</a
                                               ><br />
                                               <br />
-                                              If this termination is being processed by mistake, please get in touch
+                                              If this termination is being submitted by mistake, please get in touch
                                               with your HR Officer and IT Helpdesk as soon as possible.<br />
                                               <br />
                                               Regards,<br />
