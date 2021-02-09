@@ -41,6 +41,7 @@ each(
           }),
           field('html', state => {
             //WfW welcome template
+            //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
             var msg = 
 `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -74,7 +75,7 @@ each(
         border="0"
         cellspacing="0"
         cellpadding="0"
-        bgcolor="#eeeeee"
+        bgcolor="#FFFFFF"
       >
         <tr>
           <td align="center" valign="top">

@@ -39,55 +39,238 @@ each(
           }),
           field('html', state => {
             //WfW email template for notifying supervisors of new employee setup
+            //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
             var msg = 
-`<style type="text/css">
-@media screen and (max-width: 600px) {
-#main-table {width:100%!important;border:0!important;}
-#logo,#dept,#social-media,#address {width:100%!important;padding:0!important}	
-.mobile-hide, #dept-logo, #header-image {display:none!important;}
-#dept p, #address p {text-align:center!important;}
-#dept table, #social-media table {margin:5px auto 0 auto!important;}	
-#body {padding:10px 0 10px 0!important;}
-#body li {margin-left:-20px!important;}
-}
-</style>
-<table style="max-width:700px;margin:0 auto;border-spacing:0;background:white;border:10px solid #f0f0f0;" id="main-table">
-<tbody>
-<tr>
-<td style="background-color:#333;height:60px;">
-<div style="float:left;padding-left:2%;" align="left" id="logo">
-<img src="https://support.womenforwomen.org/files/womenforwomen/logo-color.png" alt="WfWI Logo" style="max-height:40px;padding-top:5px;display:block;margin:0 auto;"></div>
-<div style="float:right;padding-right:2%;" align="right" id="dept">
-<table><td style="font-family:Calibri,Arial,sans-serif;font-size:14px;color:white">
-<p style="text-transform:uppercase;margin:0;text-align:right"><span style="color:#FFFFFF;font-weight:bold">Global IT Business Services</span><br>
-<a href="mailto:#" style="color:#FFFFFF;text-decoration:none" target="_blank">helpdesk@womenforwomen.org</a></p></td>
-</table>
-</div>
-</td>
-</tr>
-<tr>
-<td style="font-family:Calibri, Arial, sans-serif;font-size:15px;padding:20px;padding-top:10px;line-height:1.5;" id="body">
-<p>Dear ${state.supervisor},<br/><br/>We have setup the new account for  ${state.name} and we have emailed  ${state.workEmail} instructions to get started.<br/><br/>Please, make sure to welcome ${state.firstName} on Teams by <a href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}" style="font-weight:bold;color:#708090;text-decoration:none">clicking here</a>.</p>
-<p>If you have any questions, do not hesitate to contact our Helpdesk Team via <a href="https://help.womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">live chat</a> or by email to <a href="mailto:helpdesk@womenforwomen.org" style="font-weight:bold;color:#708090;text-decoration:none">helpdesk@womenforwomen.org</a>.</p>
-<p>Regards,<br/><br/>
-Your Helpdesk Team at WfWI</p> 
-</td>
-</tr>
-<tr>
-<td style="background-color:#333;padding:10px">
-<div style="float:left;padding-left:2%;" align="left" id="address">
-<p style="text-align:left;font-family:Calibri,Arial,sans-serif;color:white;font-size:12px;margin:0;padding-top:5px;">2000 M Sreet NW Suite 200, Washington, DC 20036 USA</p></div>
-<div style="float:right;padding-right:2%;" align="right" id="social-media">
-<table>
-<td style="margin:0 auto;"><a href="https://www.facebook.com/womenforwomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/facebook.svg" style="max-height:20px;padding-right:15px;"></a></td>
-<td style="margin-left:auto;margin-right:auto"><a href="https://twitter.com/WomenforWomen" target="_blank"><img src="https://www.womenforwomen.org/themes/custom/ts_wfw/images/svgs/twitter.svg" style="max-height:20px;padding-right:15px;"></a></td>
-</table></div>
-</td>
-
-</table>
-</tr>
-</tbody>
-</table>`;
+`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title></title>
+  </head>
+  <body>
+    <div
+      style="
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        min-width: 100% !important;
+        width: 100% !important;
+        background: #eeeeee;
+      "
+    >
+      <span
+        style="display: none; font-size: 0px; line-height: 0px; max-height: 0px; max-width: 0px; overflow: hidden"
+      ></span>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFFFF">
+        <tbody>
+          <tr>
+            <td valign="top" align="center">
+              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                  <tr>
+                    <td align="center">
+                      <table width="700" cellspacing="0" cellpadding="0" border="0">
+                        <tbody>
+                          <tr>
+                            <td
+                              style="
+                                width: 700px;
+                                min-width: 700px;
+                                font-size: 0pt;
+                                line-height: 0pt;
+                                padding: 0;
+                                margin: 0;
+                                font-weight: normal;
+                              "
+                            >
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff">
+                                <tbody>
+                                  <tr>
+                                    <td style="padding: 30px 0px 30px 0px">
+                                      <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                        <tbody>
+                                          <tr>
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: center">
+                                              <img
+                                                src="https://us05.rocketseed.com/img/2112"
+                                                style="max-width: 250px"
+                                                alt=""
+                                                width="250"
+                                                border="0"
+                                              />
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff">
+                                <tbody>
+                                  <tr>
+                                    <td style="padding: 30px 30px">
+                                      <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                        <tbody>
+                                          <tr>
+                                            <td
+                                              style="
+                                                color: #000000;
+                                                font-family: 'Mulish', Calibri, Arial, sans-serif;
+                                                font-size: 18px;
+                                                line-height: 20px;
+                                                text-align: left;
+                                                padding-bottom: 15px;
+                                              "
+                                            >
+                                              <strong>Dear ${state.supervisor},</strong>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td
+                                              style="
+                                                color: #000000;
+                                                font-family: 'Mulish', Calibri, Arial, sans-serif;
+                                                font-size: 18px;
+                                                line-height: 20px;
+                                                text-align: left;
+                                                padding-bottom: 15px;
+                                              "
+                                            >
+                                              We have setup the new account for ${state.name} and we have emailed
+                                              ${state.workEmail} instructions to get started.<br />
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td
+                                              style="
+                                                color: #000000;
+                                                font-family: 'Mulish', Calibri, Arial, sans-serif;
+                                                font-size: 18px;
+                                                line-height: 20px;
+                                                text-align: left;
+                                                padding-bottom: 15px;
+                                              "
+                                            >
+                                              Please, make sure to welcome ${state.firstName} on Teams by
+                                              <a
+                                                moz-do-not-send="true"
+                                                href="https://teams.microsoft.com/l/chat/0/0?users=${state.workEmail}"
+                                                >clicking here</a
+                                              >.<br />
+                                              <br />
+                                              If you have any questions, do not hesitate to contact our Helpdesk Team
+                                              via Teams or by email to helpdesk@womenforwomen.org.<br />
+                                              <br />
+                                              Regards,<br />
+                                              <br />
+                                              IT@WfWI<br />
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff">
+                        <tbody>
+                          <tr>
+                            <td style="padding: 10px 20px 0px">
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style="
+                                        color: #000000;
+                                        font-family: 'Mulish', Calibri, Arial, sans-serif;
+                                        font-size: 18px;
+                                        line-height: 22px;
+                                        text-align: center;
+                                        text-transform: uppercase;
+                                        padding-bottom: 20px;
+                                      "
+                                    >
+                                      <div>f o l l o w u s</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding-bottom: 20px" align="center">
+                                      <table cellspacing="0" cellpadding="0" border="0">
+                                        <tbody>
+                                          <tr>
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                              <a href="https://www.instagram.com/womenforwomen/" target="_blank"
+                                                ><img
+                                                  src="https://i.ibb.co/59BQ3Wd/instagram.png"
+                                                  style="max-width: 32px"
+                                                  alt=""
+                                                  height="32"
+                                                  width="32"
+                                                  border="0"
+                                              /></a>
+                                            </td>
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                              <a href="https://www.facebook.com/womenforwomen" target="_blank"
+                                                ><img
+                                                  src="https://i.ibb.co/xGJmDgD/facebook.png"
+                                                  style="max-width: 32px"
+                                                  alt=""
+                                                  height="32"
+                                                  width="32"
+                                                  border="0"
+                                              /></a>
+                                            </td>
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                              <a
+                                                href="https://www.linkedin.com/company/women-for-women-international/"
+                                                target="_blank"
+                                                ><img
+                                                  src="https://i.ibb.co/BzyvWbv/linkedin.png"
+                                                  style="max-width: 32px"
+                                                  alt=""
+                                                  height="32"
+                                                  width="32"
+                                                  border="0"
+                                              /></a>
+                                            </td>
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                              <a href="https://twitter.com/WomenforWomen" target="_blank"
+                                                ><img
+                                                  src="https://i.ibb.co/DWLmY7L/twitter.png"
+                                                  style="max-width: 32px"
+                                                  alt=""
+                                                  height="32"
+                                                  width="32"
+                                                  border="0"
+                                              /></a>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>`;
             return msg;
           })
         )
