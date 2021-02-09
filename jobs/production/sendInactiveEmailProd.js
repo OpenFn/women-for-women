@@ -30,7 +30,7 @@ each(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
           field('to', 'MAverbuj@womenforwomen.org'), //FOR TESTING
           //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
-          field('to', `$state.superEmail`), //TODO: use when ready to send TO Division contact
+          field('to', `${state.superEmail}`), //TODO: use when ready to send TO Division contact
           field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to send TO Division contact
           field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
           //field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
