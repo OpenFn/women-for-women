@@ -30,8 +30,8 @@ each(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
           //field('to', 'MAverbuj@womenforwomen.org'), //FOR TESTING
           //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
-          field('to', `${state.superEmail}`), //TODO: use when ready to send TO Division contact
-          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy HR
+          field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
+          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy division HR
           field('bcc', `helpdesk-us@womenforwomen.org, maverbuj@womenforwomen.org`), //TODO: use for testing
           field('subject', state => {
             var sub = `Account Termination: ${state.name} (${state.division})`;
