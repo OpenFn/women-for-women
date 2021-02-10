@@ -301,6 +301,7 @@ alterState(state => {
     'Nigeria - PM Access',
     //'Rwanda',
     'South Sudan',
+    'South Sudan - PM Access',
     'The Democratic Republic of the Congo',
     'The Democratic Republic of the Congo - PM Access',
     //'WOC',
