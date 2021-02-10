@@ -20,6 +20,7 @@ each(
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
+    state.homeEmail = employee.fields['Home Email']
     state.firstName = employee.fields['First Name'];
     state.name = employee.fields['First name Last name'];
     console.log(state.name, state.workEmail);
@@ -28,10 +29,11 @@ each(
       return send(
         fields(
           field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+          //field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
           //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
-          //field('to', `${state.workEmail}`), //TODO: use when ready to send TO employee
-          //field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+          field('to', `${state.homeEmail}, ${state.workEmail}`), //TODO: use when ready to send TO employee
+          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+          field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
           field('subject', state => {
             var sub = `Welcome to Women for Women International, ${state.name}!`;
             console.log(sub);
