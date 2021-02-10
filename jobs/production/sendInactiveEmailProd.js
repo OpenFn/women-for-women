@@ -13,7 +13,25 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = ['Headquarters', 'Headquarters - PM Access']; // Add divisions to turn "on"
+    const activeDivisions = [
+    'Headquarters',
+    'Headquarters - PM Access',
+    'Afghanistan',
+    'Afghanistan - PM Access',
+    'Iraq',
+    'Iraq - PM Access',
+    //'Kosovo',
+    'Nigeria',
+    'Nigeria - PM Access',
+    //'Rwanda',
+    'South Sudan',
+    'South Sudan - PM Access',
+    'The Democratic Republic of the Congo',
+    'The Democratic Republic of the Congo - PM Access',
+    //'WOC',
+    //'No Division'
+  ]; // Add divisions to turn "on"
+    //const activeDivisions = ['Headquarters', 'Headquarters - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
