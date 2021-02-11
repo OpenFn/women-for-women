@@ -270,7 +270,6 @@ each(
                                             "
                                             target="_blank"
                                             >
-                                          ${state.workEmail}
                                         </td>
                                       </tr>
                                       <tr>
