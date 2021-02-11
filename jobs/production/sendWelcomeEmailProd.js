@@ -263,7 +263,14 @@ each(
                                           valign="middle"
                                           style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
                                         >
-                                          '${state.workEmail}'
+                                          <a
+                                            href="${state.workEmail}"
+                                            style="
+                                              color: #ffffff;
+                                            "
+                                            target="_blank"
+                                            >
+                                          ${state.workEmail}
                                         </td>
                                       </tr>
                                       <tr>
