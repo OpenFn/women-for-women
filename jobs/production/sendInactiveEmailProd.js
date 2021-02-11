@@ -157,7 +157,7 @@ each(
                                               "
                                             >
                                               <p>
-                                                This is an automated email to let you know that we have inactivated the
+                                                This is an automated email to let you know that we have deactivated the
                                                 account for ${state.name} as instructed on the employee record in
                                                 BambooHR.
                                               </p>
