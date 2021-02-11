@@ -628,6 +628,7 @@ each(
         const userPrincipalName = work_email; //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
 
         // We get the upn of that user we matched ... and it's azure id
+        console.log(state.users); 
         const azureEmployee = state.users.find(
           val =>
             val.employeeId === fields['Employee #'] ||
