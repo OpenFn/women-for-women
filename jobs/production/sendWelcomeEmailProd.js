@@ -262,8 +262,7 @@ each(
                                         <td
                                           valign="middle"
                                           style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
-                                        >
-                                          <font color="#ffffff">${state.workEmail}</font>
+                                          valign="middle"> <font color="#ffffff">${state.workEmail}</font>
                                         </td>
                                       </tr>
                                       <tr>
