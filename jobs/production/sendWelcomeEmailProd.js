@@ -261,9 +261,25 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#FFFFFF;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
+                                          style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
                                         >
-                                          ${state.workEmail}
+                                          '${state.workEmail}'
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td
+                                          valign="middle"
+                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
+                                        >
+                                          <div>
+                                            <strong>Temporary Password </strong>
+                                          </div>
+                                        </td>
+                                        <td
+                                          valign="middle"
+                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
+                                        >
+                                          You&#39;ll Never Walk Alone!
                                         </td>
                                       </tr>
                                       <tr>
