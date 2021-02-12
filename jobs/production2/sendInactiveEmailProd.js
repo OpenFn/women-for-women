@@ -14,23 +14,23 @@ each(
     };
 
     const activeDivisions = [
-    'Headquarters',
-    'Headquarters - PM Access',
-    'Afghanistan',
-    'Afghanistan - PM Access',
-    'Iraq',
-    'Iraq - PM Access',
-    //'Kosovo',
-    'Nigeria',
-    'Nigeria - PM Access',
-    //'Rwanda',
-    'South Sudan',
-    'South Sudan - PM Access',
-    'The Democratic Republic of the Congo',
-    'The Democratic Republic of the Congo - PM Access',
-    //'WOC',
-    //'No Division'
-  ]; // Add divisions to turn "on"
+      'Headquarters',
+      'Headquarters - PM Access',
+      'Afghanistan',
+      'Afghanistan - PM Access',
+      'Iraq',
+      'Iraq - PM Access',
+      //'Kosovo',
+      'Nigeria',
+      'Nigeria - PM Access',
+      //'Rwanda',
+      'South Sudan',
+      'South Sudan - PM Access',
+      'The Democratic Republic of the Congo',
+      'The Democratic Republic of the Congo - PM Access',
+      //'WOC',
+      //'No Division'
+    ]; // Add divisions to turn "on"
     //const activeDivisions = ['Headquarters', 'Headquarters - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
@@ -42,25 +42,7 @@ each(
     state.endDate = employee.fields['Termination Date'];
     console.log(state.name, state.workEmail, state.division, state.endDate, state.supervisor, state.superEmail);
 
-    if (activeDivisions.includes(employee.fields.Division)) {
-      return send(
-        fields(
-          field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          //field('to', 'MAverbuj@womenforwomen.org'), //FOR TESTING
-          //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
-          field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
-          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy division HR
-          field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
-          field('subject', state => {
-            var sub = `Account Termination: ${state.name} (${state.division})`;
-            console.log(sub);
-            return sub;
-          }),
-          field('html', state => {
-            //WfW Inactive email alert template
-            //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
-            var msg = 
-`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+    var msg = `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -295,9 +277,65 @@ each(
     </div>
   </body>
 </html>`;
-            return msg;
-          })
-        )
+
+    const mail = {
+      personalizations: [
+        {
+          to: [
+            {
+              email: `${state.superEmail}`,
+            },
+          ],
+          cc: [
+            {
+              email: `${divisionEmailMap[employee.fields.Division]}`,
+            },
+          ],
+          bcc: [
+            {
+              email: `maverbuj@womenforwomen.org`,
+            },
+            {
+              email: `mmoisethoams@womenforwomen.org`,
+            },
+            {
+              email: `cani@womenforwomen.org`,
+            },
+          ],
+          subject: `Account Termination: ${state.name} (${state.division})`,
+        },
+      ],
+      from: {
+        email: 'info@messageagency.com',
+        name: 'Women For Women',
+      },
+      reply_to: {
+        email: 'info@messageagency.com',
+        name: 'Women For Women',
+      },
+      content: [
+        {
+          type: 'text/html',
+          value: msg,
+        },
+      ],
+    };
+    if (activeDivisions.includes(employee.fields.Division)) {
+      const { host, apiKey } = state.configuration;
+
+      return post(
+        `${host}/mail/send`,
+        {
+          body: mail,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'content-type': 'application/json',
+          },
+        },
+        state => {
+          console.log('Email sent to employee');
+          return state;
+        }
       )(state);
     } else {
       console.log('Employee not member of activated Division. No automation executed.');
