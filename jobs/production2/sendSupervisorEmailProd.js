@@ -14,23 +14,23 @@ each(
     };
 
     const activeDivisions = [
-    'Headquarters',
-    'Headquarters - PM Access',
-    'Afghanistan',
-    'Afghanistan - PM Access',
-    'Iraq',
-    'Iraq - PM Access',
-    //'Kosovo',
-    'Nigeria',
-    'Nigeria - PM Access',
-    //'Rwanda',
-    'South Sudan',
-    'South Sudan - PM Access',
-    'The Democratic Republic of the Congo',
-    'The Democratic Republic of the Congo - PM Access',
-    //'WOC',
-    //'No Division'
-  ]; // Add divisions to turn "on"
+      'Headquarters',
+      'Headquarters - PM Access',
+      'Afghanistan',
+      'Afghanistan - PM Access',
+      'Iraq',
+      'Iraq - PM Access',
+      //'Kosovo',
+      'Nigeria',
+      'Nigeria - PM Access',
+      //'Rwanda',
+      'South Sudan',
+      'South Sudan - PM Access',
+      'The Democratic Republic of the Congo',
+      'The Democratic Republic of the Congo - PM Access',
+      //'WOC',
+      //'No Division'
+    ]; // Add divisions to turn "on"
     //const activeDivisions = [ 'Headquarters', 'Headquarters - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
@@ -38,29 +38,13 @@ each(
     state.name = employee.fields['First name Last name'];
     state.firstName = employee.fields['First Name'];
     state.division = employee.fields['Division'];
-    state.supervisor = employee.fields['Supervisor name'] ? employee.fields['Supervisor name'].split(',')[1] : 'Supervisor';
+    state.supervisor = employee.fields['Supervisor name']
+      ? employee.fields['Supervisor name'].split(',')[1]
+      : 'Supervisor';
     state.superEmail = employee.fields['Supervisor email'];
     console.log(state.name, state.workEmail, state.firstName, state.division, state.supervisor, state.superEmail);
 
-    if (activeDivisions.includes(employee.fields.Division)) {
-      return send(
-        fields(
-          field('from', 'womenforwomen@irc.openfn.org'),
-          //field('to', 'MAverbujA@womenforwomen.org'), //FOR TESTING
-          //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
-          field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
-          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division HR contact
-          field('bcc', `maverbuj@womenforwomen.org, mmoisethoams@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
-          field('subject', state => {
-            var sub = `New Account: ${state.name} (${state.division})`;
-            console.log(sub);
-            return sub;
-          }),
-          field('html', state => {
-            //WfW email template for notifying supervisors of new employee setup
-            //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
-            var msg = 
-`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+    var msg = `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -290,9 +274,67 @@ each(
     </div>
   </body>
 </html>`;
-            return msg;
-          })
-        )
+
+    const mail = {
+      personalizations: [
+        {
+          to: [
+            {
+              email: `${state.superEmail}`,
+              name: `${state.firstName} ${state.name}`,
+            },
+          ],
+          cc: [
+            {
+              email: `${divisionEmailMap[employee.fields.Division]}`,
+            },
+          ],
+          bcc: [
+            {
+              email: `maverbuj@womenforwomen.org`,
+            },
+            {
+              email: `mmoisethoams@womenforwomen.org`,
+            },
+            {
+              email: `cani@womenforwomen.org`,
+            },
+          ],
+          subject: `New Account: ${state.name} (${state.division})`,
+        },
+      ],
+      from: {
+        email: 'info@messageagency.com',
+        name: 'Women For Women',
+      },
+      reply_to: {
+        email: 'info@messageagency.com',
+        name: 'Women For Women',
+      },
+      content: [
+        {
+          type: 'text/html',
+          value: msg,
+        },
+      ],
+    };
+
+    if (activeDivisions.includes(employee.fields.Division)) {
+      const { host, apiKey } = state.configuration;
+
+      return post(
+        `${host}/mail/send`,
+        {
+          body: mail,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'content-type': 'application/json',
+          },
+        },
+        state => {
+          console.log('Email sent to employee');
+          return state;
+        }
       )(state);
     } else {
       console.log('Employee not member of activated Division. No automation executed.');
