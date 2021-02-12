@@ -329,7 +329,7 @@ alterState(state => {
   let nbPage = 1;
   // Recursively fetch users when spread accross multiple pages.
   function getAllUsers(access_token, nextLink) {
-    const url = nextLink || `${api}/users?$select=employeeId,userPrincipalName,id,mail`;
+    const url = nextLink || `${api}/users?$select=employeeId,userPrincipalName,id,mail,proxyAddresses`;
     console.log('Fetching employees at page', nbPage);
     return new Promise((resolve, reject) => {
       // GET ALL USERS
@@ -623,8 +623,7 @@ each(
 
         const work_email = employee.fields['Work Email'];
         const userPrincipalName = work_email.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com';
-        
-        console.log(state.users); 
+
         // We get the upn of that user we matched ... and it's azure id
         const azureEmployee = state.users.find(
           val =>
@@ -634,13 +633,21 @@ each(
 
         console.log('Matched employee...', JSON.stringify(azureEmployee, null, 2));
 
+        // We get proxyAddresses and remove the smtp in front.
+        const proxyAddresses = azureEmployee.proxyAddresses.map(adr => adr.split(':')[1]);
+        // console.log('proxyAddresses', proxyAddresses);
+
         // We check if the current 'Employee Id' exists in Azure
         if (
           userEmployeeIds.includes(fields['Employee #']) ||
           (azureEmployee && azureEmployee.userPrincipalName.toLowerCase() === userPrincipalName.toLowerCase())
         ) {
           // If the user from azure has the same upn than the one from bambooHR
-          if ((azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase())|| (azureEmployee && !azureEmployee.mail)) {
+          if (
+            (azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) ||
+            proxyAddresses.includes(work_email.toLowerCase()) ||
+            (azureEmployee && !azureEmployee.mail)
+          ) {
             const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
@@ -693,6 +700,13 @@ each(
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
               if (data.otherMails === null) delete data.otherMails;
+              if (
+                work_email.toLowerCase() !== azureEmployee.mail &&
+                proxyAddresses.includes(work_email.toLowerCase())
+              ) {
+                delete data.userPrincipalName;
+              }
+
               console.log(data);
 
               const { id } = state.data; // Employee ID
