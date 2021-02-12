@@ -281,7 +281,6 @@ each(
           to: [
             {
               email: `${state.superEmail}`,
-              name: `${state.firstName} ${state.name}`,
             },
           ],
           cc: [

@@ -616,22 +616,38 @@ each(
           to: [
             {
               email: `${state.homeEmail}`,
-              name: `${state.firstName} ${state.name}`,
+              name: `${state.name}`,
             },
             {
               email: `${state.homeEmail}`,
-              name: `${state.firstName} ${state.name}`,
+              name: `${state.name}`,
+            },
+          ],
+          cc: [
+            {
+              email: `${divisionEmailMap[employee.fields.Division]}`,
+            },
+          ],
+          bcc: [
+            {
+              email: `maverbuj@womenforwomen.org`,
+            },
+            {
+              email: `mmoisethoams@womenforwomen.org`,
+            },
+            {
+              email: `cani@womenforwomen.org`,
             },
           ],
           subject: `Welcome to Women for Women International, ${state.name}!`,
         },
       ],
       from: {
-        email: 'info@messageagency.com',
+        email: 'info@messageagency.com', // Update to another 'from' value if needed
         name: 'Women For Women',
       },
       reply_to: {
-        email: 'info@messageagency.com',
+        email: 'info@messageagency.com', // Update to another value if needed
         name: 'Women For Women',
       },
       content: [
