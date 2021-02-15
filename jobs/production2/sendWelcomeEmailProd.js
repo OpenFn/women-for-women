@@ -612,14 +612,18 @@ each(
       personalizations: [
         {
           to: [
-            {
+            { //TODO: Comment out before go-live
+              email: `aleksa@openfn.org`,
+              name: `Aleksa Test`,
+            }
+            /*{ //TODO: Comment back in when ready for go-live
               email: `${state.workEmail}`,
               name: `${state.name}`,
             },
             {
               email: `${state.homeEmail}`,
               name: `${state.name}`,
-            },
+            },*/
           ],
           /*cc: [ //TODO: Comment back in when ready for go-live
             {
