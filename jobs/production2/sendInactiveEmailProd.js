@@ -13,7 +13,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = [
+    const activeDivisions = [ //TODO: Comment in activeDivisions before go-live
       'Headquarters',
       'Headquarters - PM Access',
       'Afghanistan',
@@ -31,7 +31,6 @@ each(
       //'WOC',
       //'No Division'
     ]; // Add divisions to turn "on"
-    //const activeDivisions = ['Headquarters', 'Headquarters - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
@@ -283,34 +282,37 @@ each(
         {
           to: [
             {
+              email: `maverbuj@womenforwomen.org`,
+            }
+            /*{ //TODO: Comment in after testing, before go-live
               email: `${state.superEmail}`,
-            },
+            },*/
           ],
-          cc: [
+          cc: [ //TODO: Comment in after testing, before go-live
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
           ],
-          bcc: [
+          bcc: [ //TODO: Comment in after testing, before go-live
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            {
+            /*{
               email: `mmoisethoams@womenforwomen.org`,
             },
             {
               email: `cani@womenforwomen.org`,
-            },
+            },*/
           ],
           subject: `Account Termination: ${state.name} (${state.division})`,
         },
       ],
       from: {
-        email: 'info@messageagency.com',
+        email: 'notifications@womenforwomen.org',
         name: 'Women For Women',
       },
       reply_to: {
-        email: 'info@messageagency.com',
+        email: 'notifications@womenforwomen.org',
         name: 'Women For Women',
       },
       content: [
@@ -333,7 +335,7 @@ each(
           },
         },
         state => {
-          console.log('Email sent to employee');
+          console.log(`Email sent to regarding inactive employee ${state.name}`);
           return state;
         }
       )(state);
