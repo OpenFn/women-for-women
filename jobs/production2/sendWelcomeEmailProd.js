@@ -1,4 +1,4 @@
-//-- Using SengGrip API --
+//-- Using SengGrid API --
 //-- SEND WELCOME EMAIl --
 
 each(
@@ -16,7 +16,7 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = [
+    const activeDivisions = [ //TODO: Update activeDivisions
       'Headquarters',
       'Headquarters - PM Access',
       'Afghanistan',
@@ -34,8 +34,6 @@ each(
       //'WOC',
       //'No Division'
     ]; // Add divisions to turn "on"
-
-    //const activeDivisions = ['Afghanistan', 'Afghanistan - PM Access', 'Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
@@ -615,7 +613,7 @@ each(
         {
           to: [
             {
-              email: `${state.homeEmail}`,
+              email: `${state.workEmail}`,
               name: `${state.name}`,
             },
             {
@@ -623,31 +621,31 @@ each(
               name: `${state.name}`,
             },
           ],
-          cc: [
+          /*cc: [ //TODO: Comment back in when ready for go-live
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
-          ],
+          ],*/
           bcc: [
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            {
+            /*{ //TODO: Comment back in when ready for go-live
               email: `mmoisethoams@womenforwomen.org`,
             },
             {
               email: `cani@womenforwomen.org`,
-            },
+            },*/
           ],
           subject: `Welcome to Women for Women International, ${state.name}!`,
         },
       ],
       from: {
-        email: 'info@messageagency.com', // Update to another 'from' value if needed
+        email: 'notifications@womenforwomen.org', 
         name: 'Women For Women',
       },
       reply_to: {
-        email: 'info@messageagency.com', // Update to another value if needed
+        email: 'notifications@womenforwomen.org',
         name: 'Women For Women',
       },
       content: [
@@ -671,7 +669,7 @@ each(
           },
         },
         state => {
-          console.log('Email sent to employee');
+          console.log(`Welcome email sent to employee ${state.name}`);
           return state;
         }
       )(state);
