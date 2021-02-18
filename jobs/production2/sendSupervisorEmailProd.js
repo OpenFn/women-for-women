@@ -279,28 +279,25 @@ each(
         personalizations: [
           {
             to: [
-              {
-                email: `maverbuj@womenforwomen.org`,
-              }
-              /*{ //TODO: Comment in after testing, before go-live
+              { 
                 email: `${state.superEmail}`,
-              },*/
+              },
             ],
-            /*cc: [ //TODO: Comment in after testing, before go-live
+            cc: [ 
               {
                 email: `${divisionEmailMap[employee.fields.Division]}`,
               },
-            ],*/
+            ],
             bcc: [
               {
                 email: `maverbuj@womenforwomen.org`,
               },
-              /*{ //TODO: Comment in after testing, before go-live
+              { 
                 email: `mmoisethoams@womenforwomen.org`,
               },
               {
                 email: `cani@womenforwomen.org`,
-              },*/
+              },
             ],
             subject: `New Account: ${state.name} (${state.division})`,
           },
