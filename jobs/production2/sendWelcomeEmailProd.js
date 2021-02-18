@@ -612,34 +612,34 @@ each(
       personalizations: [
         {
           to: [
-            { //TODO: Comment out before go-live
+            /*{ //TODO: Comment out before go-live
               email: `aleksa@openfn.org`,
               name: `Aleksa Test`,
-            }
-            /*{ //TODO: Comment back in when ready for go-live
+            }*/
+            { //employee email recipients
               email: `${state.workEmail}`,
               name: `${state.name}`,
             },
             {
               email: `${state.homeEmail}`,
               name: `${state.name}`,
-            },*/
+            },
           ],
-          /*cc: [ //TODO: Comment back in when ready for go-live
+          cc: [ //email to ccc
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
-          ],*/
+          ],
           bcc: [
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            /*{ //TODO: Comment back in when ready for go-live
+            { 
               email: `mmoisethoams@womenforwomen.org`,
             },
             {
               email: `cani@womenforwomen.org`,
-            },*/
+            },
           ],
           subject: `Welcome to Women for Women International, ${state.firstName}!`,
         },
