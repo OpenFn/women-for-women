@@ -641,16 +641,16 @@ each(
               email: `cani@womenforwomen.org`,
             },*/
           ],
-          subject: `Welcome to Women for Women International, ${state.name}!`,
+          subject: `Welcome to Women for Women International, ${state.firstName}!`,
         },
       ],
       from: {
         email: 'notifications@womenforwomen.org', 
-        name: 'Women For Women',
+        name: 'Notification',
       },
       reply_to: {
-        email: 'notifications@womenforwomen.org',
-        name: 'Women For Women',
+        email: 'helpdesk@womenforwomen.org',
+        name: 'Global IT Helpdesk',
       },
       content: [
         {
