@@ -309,11 +309,11 @@ each(
       ],
       from: {
         email: 'notifications@womenforwomen.org',
-        name: 'Women For Women',
+        name: 'Notification',
       },
       reply_to: {
-        email: 'notifications@womenforwomen.org',
-        name: 'Women For Women',
+        email: 'helpdesk@womenforwomen.org',
+        name: 'Global IT Helpdesk',
       },
       content: [
         {
