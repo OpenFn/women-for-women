@@ -281,28 +281,25 @@ each(
       personalizations: [
         {
           to: [
-            {
-              email: `maverbuj@womenforwomen.org`,
-            }
-            /*{ //TODO: Comment in after testing, before go-live
+            { 
               email: `${state.superEmail}`,
-            },*/
+            }
           ],
-          cc: [ //TODO: Comment in after testing, before go-live
+          cc: [ 
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
           ],
-          bcc: [ //TODO: Comment in after testing, before go-live
+          bcc: [ 
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            /*{
+            {
               email: `mmoisethoams@womenforwomen.org`,
             },
             {
               email: `cani@womenforwomen.org`,
-            },*/
+            },
           ],
           subject: `Account Termination: ${state.name} (${state.division})`,
         },
