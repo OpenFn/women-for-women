@@ -39,6 +39,7 @@ each(
     state.workEmail = employee.fields['Work Email'];
     state.homeEmail = employee.fields['Home Email'];
     state.firstName = employee.fields['First Name'];
+    state.userType = employee.fields['Email User Type'];
     state.name = employee.fields['First name Last name'];
     console.log(state.name, state.workEmail);
 
@@ -634,7 +635,7 @@ each(
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            { 
+            {
               email: `mmoisethoams@womenforwomen.org`,
             },
             {
@@ -645,7 +646,7 @@ each(
         },
       ],
       from: {
-        email: 'notifications@womenforwomen.org', 
+        email: 'notifications@womenforwomen.org',
         name: 'Notification',
       },
       reply_to: {
@@ -661,25 +662,35 @@ each(
     };
 
     if (activeDivisions.includes(employee.fields.Division)) {
-      const { host, apiKey } = state.configuration;
+      if (state.workEmail && state.workEmail.includes('womenforwomen')) {
+        if (state.userType !== '' && state.userType !== 'Does not need email account') {
+          const { host, apiKey } = state.configuration;
 
-      return post(
-        `${host}/mail/send`,
-        {
-          body: mail,
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'content-type': 'application/json',
-          },
-        },
-        state => {
-          console.log(`Welcome email sent to employee ${state.name}`);
+          return post(
+            `${host}/mail/send`,
+            {
+              body: mail,
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'content-type': 'application/json',
+              },
+            },
+            state => {
+              console.log(`Welcome email sent to employee ${state.name}`);
+              return state;
+            }
+          )(state);
+        } else {
+          console.log(`Employee user type does not require an email: ${state.userType}`);
           return state;
         }
-      )(state);
-    } else {
+      } else {
+        console.log(`Employee work email set as @womenforwomen.org address. See Work Email: '${state.workEmail}'`);
+        return state;
+      }
+    }
+    else {
       console.log('Employee not member of activated Division. No automation executed.');
       return state;
-    }
-  })
+    })
 );
