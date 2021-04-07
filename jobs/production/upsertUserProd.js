@@ -615,9 +615,10 @@ each(
 
     if (state.activeDivisions.includes(employee.fields.Division)) {
       if (!employee.fields['Work Email']) {
-        state.errors.push(
+        console.log(`No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`);
+        /* state.errors.push(
           `No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`
-        );
+        );*/
         return state;
       } else {
         if (employee.fields['Email User Type'] === 'Does not need email account') {
@@ -642,7 +643,10 @@ each(
           (azureEmployee && azureEmployee.userPrincipalName.toLowerCase() === userPrincipalName.toLowerCase())
         ) {
           // If the user from azure has the same upn than the one from bambooHR
-          if ((azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase())|| (azureEmployee && !azureEmployee.mail)) {
+          if (
+            (azureEmployee && azureEmployee.mail && azureEmployee.mail.toLowerCase() === work_email.toLowerCase()) ||
+            (azureEmployee && !azureEmployee.mail)
+          ) {
             const termination_date = fields['Termination Date'];
             if (
               //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
