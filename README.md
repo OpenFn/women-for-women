@@ -8,15 +8,27 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 
 # Committed Giving <> Salesforce Integration
 ## 1. Solution Overview
-...
+Women for Women International would like to integrate Committed Giving with Salesforce. OpenFn will sync donation data from Committed Giving to Salesforce. In addition, OpenFn to perform duplicate checking before upserting data.
+
 ### Functional Summary
-...
+
+Flow: Committed Giving --> Salesforce
+1. Weekly OpenFn will extract CSV exports of donation data from sftp server, convert to JSON.
+2. OpenFn will map CSVs to Salesforce objects.
+3. OpenFn to perform duplicate checking before upserting data.
 
 ## 2. Technical Overview
 ### Data Flow
+See data flow here.
 
 ### OpenFn Jobs
-...
+1. Job 1 gets the CSV files from Committed Giving and converts them to JSON.
+2. Job 2 maps the JSON objects, to Salesforce and Upserts Salesforce Objects.
+
+
+### OpenFn Adapters
+ SFTP adapter to getCSVs
+ Salesforce adapter
 
 ### Change Management Considerations
 
