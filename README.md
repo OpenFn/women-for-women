@@ -19,16 +19,16 @@ Flow: Committed Giving --> Salesforce
 
 ## 2. Technical Overview
 ### Data Flow
-See data flow here.
+See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a744ed8/edit?beaconFlowId=53F1EDFE7A9CEC2A&page=0_0#
 
 ### OpenFn Jobs
 1. Job 1 gets the CSV files from Committed Giving and converts them to JSON.
-2. Job 2 maps the JSON objects, to Salesforce and Upserts Salesforce Objects.
+2. Job 2 maps the JSON objects to Salesforce and checks for duplicates.
+3. Job 3 Upserts Salesforce Objects.
 
 
 ### OpenFn Adapters
- SFTP adapter to getCSVs
- Salesforce adapter
+ SFTP adapter and Salesforce adapter
 
 ### Change Management Considerations
 
