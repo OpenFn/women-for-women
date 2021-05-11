@@ -6,20 +6,36 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 ### 1. Commits to `master` will be audo-deployed to OpenFn.org. Always work on a branch!
 ### 2. There are 'production' and 'test' versions of the jobs configured on OpenFn.org. Turn on the `[PROD]` jobs to sync with the live production environment. Choose to keep the `[TEST]` jobs running in parallel for testing purposes.
 
-# 1. Solution Overview
+# Committed Giving <> Salesforce Integration
+## 1. Solution Overview
+...
+### Functional Summary
+...
+
+## 2. Technical Overview
+### Data Flow
+
+### OpenFn Jobs
+...
+
+### Change Management Considerations
+
+
+# Bamboo <> HR Integration
+## 1. Solution Overview
 
 [See here](https://www.youtube.com/watch?v=WKgb-UiTcMg&feature=youtu.be&hd=1) for the video walkthrough of the OpenFn setup. 
 
-## Functional Summary
+### Functional Summary
 This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their BambooHR system and Microsoft Azure AD. 
 OpenFn configured a prototype integration to pilot this data flow by first focusing on automation for new Employee registrations & updates. In subsequent phases, we may expand this automation to handle other employee scenarios (i.e., employee termination, contractor employees, etc.).
 
 Please see this data diagram for a review of the solution: [Data Flow Diagram](https://lucid.app/lucidchart/3da00134-e1d3-4a10-9bed-ada88e89c4fd/edit?page=TDoNVVxjmfJp#?folder_id=home&browser=icon)
 
-## BambooHR Webhook Notification
+### BambooHR Webhook Notification
 BambooHR has a webhook notification service that will send OpenFn real-time notifications when changes are made to employee records in Bamboo. The fields included in this notification & how they map to Azure are listed in [this mapping specification](https://docs.google.com/spreadsheets/d/18WNLa01o5ch2xFqVu_6tlUsvHOas-zqlKgJsi9QYWmU/edit#gid=1713086939). 
 
-## Administrator Notes
+### Administrator Notes
 Depending on the Employment Status, different actions may be taken beyond Azure user record updates. 
 1. New Employees --> Sent a "Welcome Email"
 2. Terminated Employees --> Helpdesk sent an email 
@@ -34,15 +50,15 @@ https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendSuperv
 - `3. Send Inactive Employee Email` - [see L16](https://www.openfn.org/projects/p56pxp/jobs/jv9nxn)
 https://github.com/OpenFn/women-for-women/blob/master/jobs/production/sendInactiveEmailProd.js#L16
 
-# 2. Technical Overview
-## Data Flow
+## 2. Technical Overview
+### Data Flow
 For this pilot integration setup, OpenFn will sync BambooHR `Employee` information with AzureAD `users` in a one-directional data flow.  This includes automation to execute the following actions in Azure: 
 1. Upsert `users`
 2. Assign a `manager`
 3. Add `user` as a member to `administrativeUnits`
 4. Add `user` as a member to `groups` (and thereby assign licenses)
 
-## OpenFn Logs & Errors
+### OpenFn Logs & Errors
 1.  When POST succeeds: 
     `Authentication successful`
 2.  When manager assigned:
@@ -68,13 +84,13 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
 12. When a user is not found a new user is created succesfully:
     `Creating a new user for ${employee.fields.First name Last name} ...`
 
-## Authorization with Azure
+### Authorization with Azure
 OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft Graph API. 
 
 1. We are authorizing with Azure AD `on behalf of a user` - [see docs here](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph/api/1.0)
 2. To enable this, Admin users needs to grant `Delegated Permissions` via the API Permissions menu item in the [Azure AD Portal](https://portal.azure.com/?feature.checklist=true#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/a699c0b6-e5c2-4d12-9350-5f5f13154a06/isMSAApp/)
 
-## Solution Roadmap 
+### Solution Roadmap 
 Discussed functionality may include: 
 1. Additional automated actions when a user is terminated (consider integration with Jira or Microsoft form to trigger this? 
 2. Syncing of profile photos
