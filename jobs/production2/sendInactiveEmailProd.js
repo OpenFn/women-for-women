@@ -203,7 +203,7 @@ each(
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td style="padding-bottom: 20px" align="center">
+                                    <td style="padding-bottom: 20px" align="center" style="margin-left:auto;margin-right:auto;">
                                       <table cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;margin-right:auto;">
                                         <tbody>
                                           <tr>
