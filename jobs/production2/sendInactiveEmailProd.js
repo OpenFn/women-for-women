@@ -38,7 +38,8 @@ each(
     state.division = employee.fields['Division'];
     state.supervisor = employee.fields['Supervisor name'];
     state.superEmail = employee.fields['Supervisor email'];
-    state.endDate = employee.fields['Termination Date'].toISOString();
+    state.endDate = employee.fields['Termination Date'];
+    state.termination = state.endDate.toISOString();
     console.log(state.name, state.workEmail, state.division, state.endDate, state.supervisor, state.superEmail);
 
     var msg = `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
