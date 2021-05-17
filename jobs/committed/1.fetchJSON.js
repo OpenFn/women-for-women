@@ -1,6 +1,5 @@
 alterState(state => {
   return list('/')(state).then(state => {
-    console.log(state);
     const fileNames = [
       '20210323 wfwi donors',
       '20210323 wfwi live sponsorships',
@@ -10,15 +9,10 @@ alterState(state => {
       '20210323 wfwi custom dd fields',
     ];
 
-    const trimDate = date => {
-      const dateString = new Date(date).toISOString();
-      const dateArray = dateString.split('T');
-      return new Date(dateArray[0]);
-    };
+    const files = state.data.filter(
+      file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
+    );
 
-    const files = state.data.filter(file => fileNames.includes(file.name.split('.')[0].toLowerCase()));
-    // const files = state.data.filter(file => file.size < 1000000);
-    // const files = state.data;
     console.log('Files are:', files);
 
     return { ...state, files };
