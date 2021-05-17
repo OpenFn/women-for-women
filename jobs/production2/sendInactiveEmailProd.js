@@ -204,7 +204,7 @@ each(
                                   </tr>
                                   <tr>
                                     <td style="padding-bottom: 20px" align="center">
-                                      <table cellspacing="0" cellpadding="0" border="0">
+                                      <table cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;margin-right:auto;">
                                         <tbody>
                                           <tr>
                                             <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
