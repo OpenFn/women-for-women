@@ -203,7 +203,7 @@ each(
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td style="padding-bottom: 20px" align="center" style="margin-left:auto;margin-right:auto;">
+                                    <td style="padding-bottom: 20px" align="center">
                                       <table cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;margin-right:auto;">
                                         <tbody>
                                           <tr>
@@ -211,7 +211,7 @@ each(
                                               <a href="https://www.instagram.com/womenforwomen/" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/59BQ3Wd/instagram.png"
-                                                  style="max-width: 32px"
+                                                  style="max-width: 32px; margin-left: auto; margin-right: auto"
                                                   alt=""
                                                   height="32"
                                                   width="32"
@@ -222,7 +222,7 @@ each(
                                               <a href="https://www.facebook.com/womenforwomen" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/xGJmDgD/facebook.png"
-                                                  style="max-width: 32px"
+                                                  style="max-width: 32px; margin-left: auto; margin-right: auto"
                                                   alt=""
                                                   height="32"
                                                   width="32"
@@ -235,7 +235,7 @@ each(
                                                 target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/BzyvWbv/linkedin.png"
-                                                  style="max-width: 32px"
+                                                  style="max-width: 32px; margin-left: auto; margin-right: auto"
                                                   alt=""
                                                   height="32"
                                                   width="32"
@@ -246,7 +246,7 @@ each(
                                               <a href="https://twitter.com/WomenforWomen" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/DWLmY7L/twitter.png"
-                                                  style="max-width: 32px"
+                                                  style="max-width: 32px; margin-left: auto; margin-right: auto"
                                                   alt=""
                                                   height="32"
                                                   width="32"
