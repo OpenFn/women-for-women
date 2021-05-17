@@ -281,9 +281,24 @@ each(
         {
           to: [
            { 
+              email: `${state.superEmail}`,
+            },
+          ],
+          cc: [ 
+            {
+              email: `${divisionEmailMap[employee.fields.Division]}`,
+            },
+          ],
+          bcc: [ 
+            {
               email: `maverbuj@womenforwomen.org`,
             },
-          
+            {
+              email: `mmoisethoams@womenforwomen.org`,
+            },
+            {
+              email: `cani@womenforwomen.org`,
+            },
           ],
           subject: `Account Termination: ${state.name} (${state.division})`,
         },
