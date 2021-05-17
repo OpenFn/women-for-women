@@ -138,7 +138,7 @@ each(
                                               "
                                             >
                                               <p>
-                                                This is an automated email to let you know that the account for <strong>${state.name}</strong> will be deactivated on <strong>${state.endDate}</strong> as instructed on the employee record in
+                                                This is an automated email to let you know that the account for <strong><font color="018374">${state.name}</strong></font> will be deactivated on <strong>${state.endDate}</strong> as instructed on the employee record in
                                                 BambooHR.
                                               </p>
                                             </td>
