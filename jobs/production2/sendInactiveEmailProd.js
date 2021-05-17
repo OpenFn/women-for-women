@@ -39,6 +39,7 @@ each(
     state.supervisor = employee.fields['Supervisor name'];
     state.superEmail = employee.fields['Supervisor email'];
     state.endDate = employee.fields['Termination Date'];
+    state.termination = state.endDate.toString().charat(12)
     console.log(state.name, state.workEmail, state.division, state.endDate, state.supervisor, state.superEmail);
 
     var msg = `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -138,7 +139,7 @@ each(
                                               "
                                             >
                                               <p>
-                                                This is an automated email to let you know that the account for <strong><font color="018374">${state.name}</font></strong> will be deactivated on <strong><font color="018374">${state.endDate}</font></strong> as instructed on the employee record in
+                                                This is an automated email to let you know that the account for <strong><font color="018374">${state.name}</font></strong> will be deactivated on <strong><font color="018374">${state.termination}</font></strong> as instructed on the employee record in
                                                 BambooHR.
                                               </p>
                                             </td>
@@ -281,27 +282,9 @@ each(
         {
           to: [
            { 
-              email: `${state.superEmail}`,
-            },
-          ],
-          cc: [ 
-            {
-              email: `${divisionEmailMap[employee.fields.Division]}`,
-            },
-          ],
-          bcc: [ 
-            {
               email: `maverbuj@womenforwomen.org`,
             },
-            {
-              email: `mmoisethoams@womenforwomen.org`,
-            },
-            {
-              email: `cani@womenforwomen.org`,
-            },
-          ],
-          subject: `Account Termination: ${state.name} (${state.division})`,
-        },
+
       ],
       from: {
         email: 'notifications@womenforwomen.org',
