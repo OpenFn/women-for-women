@@ -138,8 +138,7 @@ each(
                                               "
                                             >
                                               <p>
-                                                This is an automated email to let you know that we have deactivated the
-                                                account for ${state.name} as instructed on the employee record in
+                                                This is an automated email to let you know that <strong>${state.name}'s</strong> account will be deactivated on <strong>${state.endDate}</strong> as instructed on the employee record in
                                                 BambooHR.
                                               </p>
                                             </td>
@@ -281,25 +280,25 @@ each(
       personalizations: [
         {
           to: [
-            { 
-              email: `${state.superEmail}`,
-            }
+//           { 
+//              email: `${state.superEmail}`,
+//            }
           ],
           cc: [ 
-            {
-              email: `${divisionEmailMap[employee.fields.Division]}`,
-            },
+//            {
+//              email: `${divisionEmailMap[employee.fields.Division]}`,
+//            },
           ],
           bcc: [ 
             {
               email: `maverbuj@womenforwomen.org`,
             },
-            {
-              email: `mmoisethoams@womenforwomen.org`,
-            },
-            {
-              email: `cani@womenforwomen.org`,
-            },
+//            {
+//              email: `mmoisethoams@womenforwomen.org`,
+//            },
+//            {
+//              email: `cani@womenforwomen.org`,
+//            },
           ],
           subject: `Account Termination: ${state.name} (${state.division})`,
         },
