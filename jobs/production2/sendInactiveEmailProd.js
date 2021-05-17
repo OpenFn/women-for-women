@@ -280,28 +280,10 @@ each(
       personalizations: [
         {
           to: [
-//           { 
-//              email: `${state.superEmail}`,
-//            },
-             {
-                email: `maverbuj@womenforwomen.org`,
-             },
-          ],
-          cc: [ 
-//            {
-//              email: `${divisionEmailMap[employee.fields.Division]}`,
-//            },
-          ],
-          bcc: [ 
-            {
+           { 
               email: `maverbuj@womenforwomen.org`,
             },
-//            {
-//              email: `mmoisethoams@womenforwomen.org`,
-//            },
-//            {
-//              email: `cani@womenforwomen.org`,
-//            },
+          
           ],
           subject: `Account Termination: ${state.name} (${state.division})`,
         },
