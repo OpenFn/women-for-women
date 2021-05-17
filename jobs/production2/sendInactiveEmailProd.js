@@ -207,7 +207,7 @@ each(
                                       <table cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;margin-right:auto;">
                                         <tbody>
                                           <tr>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: center" width="40">
                                               <a href="https://www.instagram.com/womenforwomen/" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/59BQ3Wd/instagram.png"
@@ -218,7 +218,7 @@ each(
                                                   border="0"
                                               /></a>
                                             </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: center" width="40">
                                               <a href="https://www.facebook.com/womenforwomen" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/xGJmDgD/facebook.png"
@@ -229,7 +229,7 @@ each(
                                                   border="0"
                                               /></a>
                                             </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: center" width="40">
                                               <a
                                                 href="https://www.linkedin.com/company/women-for-women-international/"
                                                 target="_blank"
@@ -242,7 +242,7 @@ each(
                                                   border="0"
                                               /></a>
                                             </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
+                                            <td style="font-size: 0pt; line-height: 0pt; text-align: center" width="40">
                                               <a href="https://twitter.com/WomenforWomen" target="_blank"
                                                 ><img
                                                   src="https://i.ibb.co/DWLmY7L/twitter.png"
