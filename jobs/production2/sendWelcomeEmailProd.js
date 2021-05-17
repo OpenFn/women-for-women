@@ -511,88 +511,11 @@ each(
                             <td align="center" style="padding-bottom: 20px">
                               <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.instagram.com/womenforwomen/"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/59BQ3Wd/instagram.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.facebook.com/womenforwomen"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/xGJmDgD/facebook.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.linkedin.com/company/women-for-women-international/"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/BzyvWbv/linkedin.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://twitter.com/WomenforWomen"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/DWLmY7L/twitter.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                </tr>
+<td style="font-size: 0pt; line-height: 0pt; text-align: left;" width="40"><a href="https://www.instagram.com/womenforwomen/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/59BQ3Wd/instagram.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: left;" width="40"><a href="https://www.facebook.com/womenforwomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/xGJmDgD/facebook.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: left;" width="40"><a href="https://www.linkedin.com/company/women-for-women-international/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/BzyvWbv/linkedin.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: left;" width="40"><a href="https://twitter.com/WomenforWomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/DWLmY7L/twitter.png" alt="" width="32" height="32" border="0" /></a></td>
+</tr>
                               </table>
                             </td>
                           </tr>
