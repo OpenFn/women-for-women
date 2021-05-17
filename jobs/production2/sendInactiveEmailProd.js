@@ -285,7 +285,6 @@ each(
             },
           ],
 
-      ],
       from: {
         email: 'notifications@womenforwomen.org',
         name: 'Notification',
