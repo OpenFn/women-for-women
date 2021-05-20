@@ -10,6 +10,7 @@ each(
       Rwanda: 'RW_HR_Notifications@womenforwomen.org',
       'South Sudan': 'SS_HR_Notifications@womenforwomen.org',
       'The Democratic Republic of the Congo': 'CD_HR_Notifications@womenforwomen.org',
+      'The Democratic Republic of the Congo - PM Access': 'CD_HR_Notifications@womenforwomen.org',
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
