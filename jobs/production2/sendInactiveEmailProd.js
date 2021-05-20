@@ -3,12 +3,16 @@ each(
   alterState(state => {
     const divisionEmailMap = {
       Afghanistan: 'AF_HR_Notifications@womenforwomen.org',
+      'Afghanistan - PM Access': 'AF_HR_Notifications@womenforwomen.org',
       Headquarters: 'US_HR_Notifications@womenforwomen.org',
       Iraq: 'IQ_HR_Notifications@womenforwomen.org',
+      'Iraq - PM Access': 'IQ_HR_Notifications@womenforwomen.org',
       Kosovo: 'XK_HR_Notifications@womenforwomen.org',
       Nigeria: 'NG_HR_Notifications@womenforwomen.org',
+      'Nigeria - PM Access': 'NG_HR_Notifications@womenforwomen.org',
       Rwanda: 'RW_HR_Notifications@womenforwomen.org',
       'South Sudan': 'SS_HR_Notifications@womenforwomen.org',
+      'South Sudan - PM Access': 'SS_HR_Notifications@womenforwomen.org',
       'The Democratic Republic of the Congo': 'CD_HR_Notifications@womenforwomen.org',
       'The Democratic Republic of the Congo - PM Access': 'CD_HR_Notifications@womenforwomen.org',
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
