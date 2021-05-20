@@ -169,7 +169,10 @@ each(
                                               ><br />
                                               <br />
                                               If this termination is being submitted by mistake, please get in touch
-                                              with your HR Officer and IT Helpdesk as soon as possible.<br />
+                                              with your HR Officer and <a
+                                                moz-do-not-send="true"
+                                                href="https://help.womenforwomen.org/"
+                                                >IT Helpdesk</a> as soon as possible.<br />
                                               <br />
                                               Regards,<br />
                                               <br />
