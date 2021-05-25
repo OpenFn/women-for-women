@@ -3,31 +3,36 @@ each(
   alterState(state => {
     const divisionEmailMap = {
       Afghanistan: 'AF_HR_Notifications@womenforwomen.org',
+      'Afghanistan - PM Access': 'AF_HR_Notifications@womenforwomen.org',
       Headquarters: 'US_HR_Notifications@womenforwomen.org',
       Iraq: 'IQ_HR_Notifications@womenforwomen.org',
+      'Iraq - PM Access': 'IQ_HR_Notifications@womenforwomen.org',
       Kosovo: 'XK_HR_Notifications@womenforwomen.org',
       Nigeria: 'NG_HR_Notifications@womenforwomen.org',
+      'Nigeria - PM Access': 'NG_HR_Notifications@womenforwomen.org',
       Rwanda: 'RW_HR_Notifications@womenforwomen.org',
       'South Sudan': 'SS_HR_Notifications@womenforwomen.org',
+      'South Sudan - PM Access': 'SS_HR_Notifications@womenforwomen.org',
       'The Democratic Republic of the Congo': 'CD_HR_Notifications@womenforwomen.org',
+      'The Democratic Republic of the Congo - PM Access': 'CD_HR_Notifications@womenforwomen.org',
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
     const activeDivisions = [ //TODO: Comment in activeDivisions before go-live
       'Headquarters',
       'Headquarters - PM Access',
-      //'Afghanistan',
-      //'Afghanistan - PM Access',
-      //'Iraq',
-      //'Iraq - PM Access',
+      'Afghanistan',
+      'Afghanistan - PM Access',
+      'Iraq',
+      'Iraq - PM Access',
       //'Kosovo',
-      //'Nigeria',
-      //'Nigeria - PM Access',
+      'Nigeria',
+      'Nigeria - PM Access',
       //'Rwanda',
-      //'South Sudan',
-      //'South Sudan - PM Access',
-      //'The Democratic Republic of the Congo',
-      //'The Democratic Republic of the Congo - PM Access',
+      'South Sudan',
+      'South Sudan - PM Access',
+      'The Democratic Republic of the Congo',
+      'The Democratic Republic of the Congo - PM Access',
       //'WOC',
       //'No Division'
     ]; // Add divisions to turn "on"
@@ -138,8 +143,7 @@ each(
                                               "
                                             >
                                               <p>
-                                                This is an automated email to let you know that we have deactivated the
-                                                account for ${state.name} as instructed on the employee record in
+                                                This is an automated email to let you know that the account for <strong><font color="018374">${state.name}</font></strong> will be deactivated on <strong><font color="018374">${state.endDate}</font></strong> as instructed on the employee record in
                                                 BambooHR.
                                               </p>
                                             </td>
@@ -165,7 +169,10 @@ each(
                                               ><br />
                                               <br />
                                               If this termination is being submitted by mistake, please get in touch
-                                              with your HR Officer and IT Helpdesk as soon as possible.<br />
+                                              with your HR Officer and <a
+                                                moz-do-not-send="true"
+                                                href="https://help.womenforwomen.org/"
+                                                >IT Helpdesk</a> as soon as possible.<br />
                                               <br />
                                               Regards,<br />
                                               <br />
@@ -205,56 +212,14 @@ each(
                                   </tr>
                                   <tr>
                                     <td style="padding-bottom: 20px" align="center">
-                                      <table cellspacing="0" cellpadding="0" border="0">
+                                      <table cellspacing="0" cellpadding="0" border="0" style="margin-left:auto;margin-right:auto;">
                                         <tbody>
                                           <tr>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                              <a href="https://www.instagram.com/womenforwomen/" target="_blank"
-                                                ><img
-                                                  src="https://i.ibb.co/59BQ3Wd/instagram.png"
-                                                  style="max-width: 32px"
-                                                  alt=""
-                                                  height="32"
-                                                  width="32"
-                                                  border="0"
-                                              /></a>
-                                            </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                              <a href="https://www.facebook.com/womenforwomen" target="_blank"
-                                                ><img
-                                                  src="https://i.ibb.co/xGJmDgD/facebook.png"
-                                                  style="max-width: 32px"
-                                                  alt=""
-                                                  height="32"
-                                                  width="32"
-                                                  border="0"
-                                              /></a>
-                                            </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                              <a
-                                                href="https://www.linkedin.com/company/women-for-women-international/"
-                                                target="_blank"
-                                                ><img
-                                                  src="https://i.ibb.co/BzyvWbv/linkedin.png"
-                                                  style="max-width: 32px"
-                                                  alt=""
-                                                  height="32"
-                                                  width="32"
-                                                  border="0"
-                                              /></a>
-                                            </td>
-                                            <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                              <a href="https://twitter.com/WomenforWomen" target="_blank"
-                                                ><img
-                                                  src="https://i.ibb.co/DWLmY7L/twitter.png"
-                                                  style="max-width: 32px"
-                                                  alt=""
-                                                  height="32"
-                                                  width="32"
-                                                  border="0"
-                                              /></a>
-                                            </td>
-                                          </tr>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.instagram.com/womenforwomen/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/59BQ3Wd/instagram.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.facebook.com/womenforwomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/xGJmDgD/facebook.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.linkedin.com/company/women-for-women-international/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/BzyvWbv/linkedin.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://twitter.com/WomenforWomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/DWLmY7L/twitter.png" alt="" width="32" height="32" border="0" /></a></td>
+</tr>
                                         </tbody>
                                       </table>
                                     </td>
@@ -281,15 +246,16 @@ each(
       personalizations: [
         {
           to: [
-            { 
+           { 
+           /*   email: `maverbuj@womenforwomen.org`, */
               email: `${state.superEmail}`,
-            }
+            },
           ],
           cc: [ 
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
-          ],
+          ], 
           bcc: [ 
             {
               email: `maverbuj@womenforwomen.org`,

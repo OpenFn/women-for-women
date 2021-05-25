@@ -16,18 +16,18 @@ each(
       const activeDivisions = [ //TODO: Update active divisions before go-live
         'Headquarters',
         'Headquarters - PM Access',
-        //'Afghanistan',
-        //'Afghanistan - PM Access',
-        //'Iraq',
-        //'Iraq - PM Access',
+        'Afghanistan',
+        'Afghanistan - PM Access',
+        'Iraq',
+        'Iraq - PM Access',
         //'Kosovo',
-        //'Nigeria',
-        //'Nigeria - PM Access',
+        'Nigeria',
+        'Nigeria - PM Access',
         //'Rwanda',
-        //'South Sudan',
-        //'South Sudan - PM Access',
-        //'The Democratic Republic of the Congo',
-        //'The Democratic Republic of the Congo - PM Access',
+        'South Sudan',
+        'South Sudan - PM Access',
+        'The Democratic Republic of the Congo',
+        'The Democratic Republic of the Congo - PM Access',
         //'WOC',
         //'No Division'
       ]; // Add divisions to turn "on"
@@ -207,53 +207,11 @@ each(
                                         <table cellspacing="0" cellpadding="0" border="0">
                                           <tbody>
                                             <tr>
-                                              <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                                <a href="https://www.instagram.com/womenforwomen/" target="_blank"
-                                                  ><img
-                                                    src="https://i.ibb.co/59BQ3Wd/instagram.png"
-                                                    style="max-width: 32px"
-                                                    alt=""
-                                                    height="32"
-                                                    width="32"
-                                                    border="0"
-                                                /></a>
-                                              </td>
-                                              <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                                <a href="https://www.facebook.com/womenforwomen" target="_blank"
-                                                  ><img
-                                                    src="https://i.ibb.co/xGJmDgD/facebook.png"
-                                                    style="max-width: 32px"
-                                                    alt=""
-                                                    height="32"
-                                                    width="32"
-                                                    border="0"
-                                                /></a>
-                                              </td>
-                                              <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                                <a
-                                                  href="https://www.linkedin.com/company/women-for-women-international/"
-                                                  target="_blank"
-                                                  ><img
-                                                    src="https://i.ibb.co/BzyvWbv/linkedin.png"
-                                                    style="max-width: 32px"
-                                                    alt=""
-                                                    height="32"
-                                                    width="32"
-                                                    border="0"
-                                                /></a>
-                                              </td>
-                                              <td style="font-size: 0pt; line-height: 0pt; text-align: left" width="40">
-                                                <a href="https://twitter.com/WomenforWomen" target="_blank"
-                                                  ><img
-                                                    src="https://i.ibb.co/DWLmY7L/twitter.png"
-                                                    style="max-width: 32px"
-                                                    alt=""
-                                                    height="32"
-                                                    width="32"
-                                                    border="0"
-                                                /></a>
-                                              </td>
-                                            </tr>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.instagram.com/womenforwomen/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/59BQ3Wd/instagram.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.facebook.com/womenforwomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/xGJmDgD/facebook.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.linkedin.com/company/women-for-women-international/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/BzyvWbv/linkedin.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://twitter.com/WomenforWomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/DWLmY7L/twitter.png" alt="" width="32" height="32" border="0" /></a></td>
+</tr>
                                           </tbody>
                                         </table>
                                       </td>
