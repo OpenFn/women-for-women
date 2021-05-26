@@ -1,12 +1,14 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      '20210323 wfwi donors',
-      '20210323 wfwi live sponsorships',
-      '20210323 wfwi transactions - cards',
-      '20210323 wfwi transactions - dd',
-      '20210323 wfwi custom cc fields',
-      '20210323 wfwi custom dd fields',
+      '20210517 wfwi donors',
+      '20210517 wfwi live sponsorships',
+      '20210517 wfwi card master',
+      '20210517 wfwi direct debits',
+      '20210517 wfwi transactions - cards',
+      '20210517 wfwi transactions - DD',
+      '20210517 wfwi custom cc fields',
+      '20210517 wfwi custom dd fields,',
     ];
 
     const files = state.data.filter(
