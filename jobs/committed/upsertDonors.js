@@ -1,7 +1,7 @@
 beta.each(
   dataPath('json[*]'),
   upsert(
-    'Contact__c',
+    'Contact',
     'wfw_Legacy_Supporter_ID__c',
     fields(
       field('Committed_Giving_ID__c', dataValue('PrimKey')),
