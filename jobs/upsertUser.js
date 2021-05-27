@@ -619,6 +619,7 @@ each(
       } else {
         if (employee.fields['Email User Type'] === 'Does not need email account') {
           console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
+          return state;
         }
 
         const work_email = employee.fields['Work Email'];
