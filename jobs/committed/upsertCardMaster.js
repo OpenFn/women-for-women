@@ -40,7 +40,8 @@ beta.each(dataPath('json[*]'), state => {
           return dataValue('CCExpiry')(state).split('/')[1];
         }),
         field('Transaction_Reference_Id__c', dataValue('TransactionReference')),
-
+        field('Transaction_Date_Time__c', dataValue('AddedDateTime')),
+        field('npe01__Payment_Date__c', dataValue('AddedDateTime')),
         field('Amount', dataValue('Amount')),
         field('CurrencyIsoCode', 'GBP - British Pound'),
         field('StageName', 'Closed Won'),
@@ -58,6 +59,7 @@ beta.each(dataPath('json[*]'), state => {
             return `${dataValue('PrimKey')(state)} ${dataValue('CardMasterID')(state)}`;
           }),
           field('CurrencyIsoCode', 'GBP - British Pound'),
+          field('npe01__Payment_Method__c', 'Credit Card'),
           field('npe01__Paid__c', true),
           field('npe01__Payment_Date__c', dataValue('AddedDateTime')),
           field('npe01__Payment_Amount__c', dataValue('Amount'))
