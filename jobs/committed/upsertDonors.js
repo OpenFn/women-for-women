@@ -1,4 +1,4 @@
-each(
+beta.each(
   dataPath('json[*]'),
   upsert(
     'Contact__c',
