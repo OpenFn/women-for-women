@@ -279,21 +279,31 @@ each(
   
       if (activeDivisions.includes(employee.fields.Division)) {
         const { host, apiKey } = state.configuration;
-  
-        return post(
-          `${host}/mail/send`,
-          {
-            body: mail,
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              'content-type': 'application/json',
-            },
-          },
-          state => {
-            console.log(`Email sent to supervisor regarding new employee ${state.name}`);
+        if (!state.workEmail) {
+          console.log(
+            `No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`
+          );
+          return state;
+        } else {
+          if (employee.fields['Email User Type'] === 'Does not need email account') {
+            console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
             return state;
           }
-        )(state);
+          return post(
+            `${host}/mail/send`,
+            {
+              body: mail,
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'content-type': 'application/json',
+              },
+            },
+            state => {
+              console.log(`Email sent to supervisor regarding new employee ${state.name}`);
+              return state;
+            }
+          )(state);
+        }
       } else {
         console.log('Employee not member of activated Division. No automation executed.');
         return state;
