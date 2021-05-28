@@ -16,7 +16,8 @@ each(
       WOC: 'WOC_HR_Notifications@womenforwomen.org',
     };
 
-    const activeDivisions = [ //TODO: Update activeDivisions
+    const activeDivisions = [
+      //TODO: Update activeDivisions
       'Headquarters',
       'Headquarters - PM Access',
       'Afghanistan',
@@ -540,7 +541,8 @@ each(
               email: `aleksa@openfn.org`,
               name: `Aleksa Test`,
             }*/
-            { //employee email recipients
+            {
+              //employee email recipients
               email: `${state.workEmail}`,
               name: `${state.name}`,
             },
@@ -549,7 +551,8 @@ each(
               name: `${state.name}`,
             },
           ],
-          cc: [ //email to ccc
+          cc: [
+            //email to ccc
             {
               email: `${divisionEmailMap[employee.fields.Division]}`,
             },
@@ -585,35 +588,32 @@ each(
     };
 
     if (activeDivisions.includes(employee.fields.Division)) {
-      if (state.workEmail && state.workEmail.includes('womenforwomen')) {
-        if (state.userType !== '' && state.userType !== 'Does not need email account') {
-          const { host, apiKey } = state.configuration;
-
-          return post(
-            `${host}/mail/send`,
-            {
-              body: mail,
-              headers: {
-                Authorization: `Bearer ${apiKey}`,
-                'content-type': 'application/json',
-              },
-            },
-            state => {
-              console.log(`Welcome email sent to employee ${state.name}`);
-              return state;
-            }
-          )(state);
-        } else {
-          console.log(`Employee user type does not require an email: ${state.userType}`);
+      if (!employee.fields['Work Email']) {
+        console.log(`No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`);
+        return state;
+      } else {
+        if (employee.fields['Email User Type'] === 'Does not need email account') {
+          console.log(`No Azure actions taken because employee 'does not need email account' - see Email User Type.`);
           return state;
         }
-      } else {
-        console.log(`Employee work email set as @womenforwomen.org address. See Work Email: '${state.workEmail}'`);
-        return state;
+        return post(
+          `${host}/mail/send`,
+          {
+            body: mail,
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              'content-type': 'application/json',
+            },
+          },
+          state => {
+            console.log(`Welcome email sent to employee ${state.name}`);
+            return state;
+          }
+        )(state);
       }
-    }
-    else {
+    } else {
       console.log('Employee not member of activated Division. No automation executed.');
       return state;
     }
-  }));
+  })
+);
