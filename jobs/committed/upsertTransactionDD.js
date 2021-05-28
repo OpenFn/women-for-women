@@ -1,47 +1,46 @@
 beta.each(dataPath('json[*]'), state => {
   return upsert(
-    'Opportunity',
+    'npe01__OppPayment__c',
     'Committed_Giving_ID__c',
     fields(
       field('Committed_Giving_ID__c', state => {
-        return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)} ${dataValue('Date')(state)}`;
+        return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)}`;
       }),
-      relationship('RecordType', 'Name', 'Individual_Giving'), // HARDCODED
-      relationship('AccountId__r', 'Name', 'test test'), // HARDCODED
-      relationship('npsp__Primary_Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
-      field('Name', dataValue('CardMasterID')),
-      field('CG_Credit_Card_ID__c', dataValue('CardMasterID')),
-      field('CC_Exp_Month__c', state => {
-        return dataValue('CCExpiry')(state).split('/')[0];
+      field('npe01__Opportunity__r', state => {
+        return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)}`;
       }),
-      field('CC_Exp_Year__c', state => {
-        return dataValue('CCExpiry')(state).split('/')[1];
-      }),
-      field('Transaction_Reference_Id__c', dataValue('TransactionReference')),
-      field('Transaction_Date_Time__c', dataValue('AddedDateTime')),
-      field('npe01__Payment_Date__c', dataValue('AddedDateTime')),
-      field('Amount', dataValue('Amount')),
       field('CurrencyIsoCode', 'GBP - British Pound'),
-      field('StageName', 'Closed Won'),
-      field('CloseDate', dataValue('LastCredited'))
+      field('npe01__Payment_Method__c', 'Direct Debit'),
+      field('npe01__Paid__c', true),
+      field('Opportunity_Primary_Campaign_Source__r', dataValue('PromoCode')),
+      field('npe01__Payment_Date__c', dataValue('Date'))
     )
   )(state).then(state => {
     return upsert(
-      'npe01__OppPayment__c',
+      'Opportunity',
       'Committed_Giving_ID__c',
       fields(
         field('Committed_Giving_ID__c', state => {
-          return `${dataValue('PrimKey')(state)} ${dataValue('TransactionReference')(state)}`;
+          return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)} ${dataValue('Date')(state)}`;
         }),
-        relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', state => {
-          return `${dataValue('PrimKey')(state)} ${dataValue('CardMasterID')(state)}`;
-        }),
+        relationship('AccountId__r', 'Name', 'test test'), // HARDCODED
+        field('Amount', dataValue('Amount')),
         field('CurrencyIsoCode', 'GBP - British Pound'),
-        field('npe01__Payment_Method__c', 'Credit Card'),
-        field('npe01__Paid__c', true),
-        field('npe01__Payment_Date__c', dataValue('AddedDateTime')),
-        field('npe01__Payment_Amount__c', dataValue('Amount'))
+        field('StageName', 'Closed Won'),
+        field('CloseDate', dataValue('Date')),
+        field('npsp__ClosedReason__c', dataValue('Unpaid reason'))
       )
-    )(state);
+    )(state).then(state => {
+      return upsert(
+        'npe03__Recurring_Donation__c',
+        'Committed_Giving_ID__c',
+        fields(
+          field('Committed_Giving_ID__c', state => {
+            return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)}`;
+          }),
+          field('Committed_Giving_Direct_Debit_Reference__c', dataValue('DDRefforBank')(state))
+        )
+      )(state);
+    });
   });
 });
