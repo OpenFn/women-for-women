@@ -12,7 +12,7 @@ beta.each(dataPath('json[*]'), state => {
       field('CurrencyIsoCode', 'GBP - British Pound'),
       field('npe01__Payment_Method__c', 'Direct Debit'),
       field('npe01__Paid__c', true),
-      field('Opportunity_Primary_Campaign_Source__r', dataValue('PromoCode')),
+      relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
       field('npe01__Payment_Date__c', dataValue('Date'))
     )
   )(state).then(state => {
