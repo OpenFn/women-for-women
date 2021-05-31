@@ -1,15 +1,24 @@
 beta.each(
   dataPath('json[*]'),
   alterState(state => {
-    const { PersonRef } = state.data;
+    const { PersonRef, LastChangedDateTime } = state.data;
 
     return query(
-      `SELECT Id, FirstName, LastName, MailingAddress, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate from CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
+      `SELECT Id, FirstName, LastName, MailingAddress, Email, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate from CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
     )(state).then(state => {
-      console.log('state', state.references[0]);
       const size = state.references[0].totalSize;
+      const { records } = state.references[0];
+      console.log('state', records);
+
+      const FirstName = records[0].FirstName;
+      const LastName = records[0].Surname;
+      const Mailing = records[0].MailingAddress;
+      const Email = records[0].Email;
+      const TelNumber1 = records[0].HomePhone;
+      const LastModifiedDate = records[0].LastModifiedDate;
+
       // If no match...
-      if (size === 0) {
+      if (size === 0 || new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
         console.log(`No match found. Upserting Contact ${PersonRef}`);
         return upsert(
           'Contact',
@@ -56,6 +65,11 @@ beta.each(
           )
         )(state);
       } else {
+        if (new Date(LastChangedDateTime) < new Date(LastModifiedDate)) {
+          console.log(
+            `No Salesforce updates made for Contact with Id ${PersonRef} because Salesforce record has more recently been updated.`
+          );
+        }
         return { ...state, references: [] };
       }
     });
