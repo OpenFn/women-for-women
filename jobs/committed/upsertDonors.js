@@ -12,7 +12,6 @@ beta.each(
       const address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
         state
       )} ${dataValue('Address4')(state)}`;
-      console.log(address);
 
       // If no match
       if (size === 0) {
@@ -64,15 +63,25 @@ beta.each(
         const TelNumber1 = records[0].HomePhone;
         const LastModifiedDate = records[0].LastModifiedDate;
 
+        // We build our custom address from the attributes from SF
+        const customAddress = {
+          city: dataValue('Address5')(state),
+          country: dataValue('Country')(state),
+          postalCode: dataValue('Postcode')(state),
+          state: dataValue('Address1')(state),
+        };
+        delete Mailing.geocodeAccuracy;
+        delete Mailing.latitude;
+        delete Mailing.longitude;
+        delete Mailing.street;
+        // =======================================================
+
         const perfectMatch =
           FirstName === dataValue('FirstName')(state) &&
           LastName === dataValue('Surname')(state) &&
           Email === dataValue('EmailAddress')(state) &&
-          TelNumber1 ===
-            dataValue('TelNumber1')(
-              state
-            ); /* &&
-          JSON.stringify(Mailing) === JSON.stringify(dataValue('TelNumber1')) */
+          TelNumber1 === dataValue('TelNumber1')(state) &&
+          JSON.stringify(Mailing) === JSON.stringify(customAddress);
 
         if (size === 1 && (perfectMatch || new Date(LastChangedDateTime) > new Date(LastModifiedDate))) {
           console.log('Match found.');
