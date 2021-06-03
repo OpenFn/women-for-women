@@ -4,7 +4,7 @@ beta.each(
     const { PersonRef, LastChangedDateTime } = state.data;
 
     return query(
-      `SELECT Id, FirstName, LastName, MailingAddress, Email, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate from CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
+      `SELECT Id, FirstName, LastName, MailingStreet, Email, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate from CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
     )(state).then(state => {
       const size = state.references[0].totalSize;
       const { records } = state.references[0];
@@ -25,7 +25,7 @@ beta.each(
             field('Salutation', dataValue('Title')),
             field('FirstName', dataValue('FirstName')),
             field('LastName', dataValue('Surname')),
-            field('MailingAddress', address),
+            field('MailingStreet', address),
             field('MailingCity', dataValue('Address5')),
             field('MailingState', dataValue('Address6')),
             field('MailingPostalCode', dataValue('Postcode')),
@@ -94,7 +94,7 @@ beta.each(
               field('Salutation', dataValue('Title')),
               field('FirstName', dataValue('FirstName')),
               field('LastName', dataValue('Surname')),
-              field('MailingAddress', address),
+              field('MailingStreet', address),
               field('MailingCity', dataValue('Address5')),
               field('MailingState', dataValue('Address6')),
               field('MailingPostalCode', dataValue('Postcode')),
