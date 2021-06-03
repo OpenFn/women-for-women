@@ -58,7 +58,7 @@ beta.each(
       } else {
         const FirstName = records[0].FirstName;
         const LastName = records[0].LastName;
-        const Mailing = records[0].MailingAddress;
+        const Mailing = records[0].MailingStreet;
         const Email = records[0].Email;
         const TelNumber1 = records[0].HomePhone;
         const LastModifiedDate = records[0].LastModifiedDate;
@@ -73,7 +73,7 @@ beta.each(
         delete Mailing.geocodeAccuracy;
         delete Mailing.latitude;
         delete Mailing.longitude;
-        delete Mailing.street;
+        //delete Mailing.street;
         // =======================================================
 
         const perfectMatch =
