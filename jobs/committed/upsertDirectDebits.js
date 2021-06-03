@@ -12,7 +12,7 @@ beta.each(
       field('Type__c', state => {
         return dataValue('CampaignCode')(state) === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation';
       }),
-      relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
+      relationship('npe03__Recurring_Donation_Campaign__r', 'Source_Code__c', dataValue('PromoCode')),
       field('npe03__Amount__c', dataValue('Regular amount')),
       field('Status__c', state => {
         return dataValue('Status')(state) === 'live' ? 'Active' : 'Canceled'; // Advise on more transform choices
