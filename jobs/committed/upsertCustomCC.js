@@ -1,6 +1,6 @@
 upsert(
   'Opportunity',
-  'Credit_Card_ID__c',
+  'Credit_Card_ID__c', //CHANGE TO CG_Credit_Card_ID__c ?
   fields(
     field('CG_Credit_Card_ID__c', dataValue('CCID')),
     field('npsp__Tribute_Type__c', state => {
