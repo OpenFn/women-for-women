@@ -1,8 +1,8 @@
 upsert(
   'Opportunity',
-  'Direct_Debit_ID__c', //Change to CG_Direct_Debit_ID__c ?
+  'CG_Direct_Debit_ID__c', //Change to CG_Direct_Debit_ID__c ?
   fields(
-    field('CG_Credit_Card_ID__c', dataValue('DDID')), //SHould this be CG_Direct_Debit_ID__c ?
+    field('CG_Direct_Debit_ID__c', dataValue('DDID')), //SHould this be CG_Direct_Debit_ID__c ?
     field('npsp__Tribute_Type__c', state => {
       const obj = state.data.json.find(js => js.FieldName === 'FormName');
       return obj ? obj['Value'] : '';
