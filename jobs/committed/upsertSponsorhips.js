@@ -9,7 +9,7 @@ beta.each(
       field('Salutation', dataValue('Title')),
       field('FirstName', dataValue('FirstName')),
       field('LastName', dataValue('LastName')),
-      field('MailingAddress', state => {
+      field('MailingStreet', state => {
         const address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
           state
         )} ${dataValue('Address4')(state)}`;
