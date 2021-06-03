@@ -8,7 +8,7 @@ beta.each(
       field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
       field('Salutation', dataValue('Title')),
       field('FirstName', dataValue('FirstName')),
-      field('LastName', dataValue('LastName')),
+      field('LastName', dataValue('Surname')),
       field('MailingStreet', state => {
         const address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
           state
