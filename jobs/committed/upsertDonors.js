@@ -70,10 +70,12 @@ beta.each(
           postalCode: dataValue('Postcode')(state),
           state: dataValue('Address1')(state),
         };
-        delete Mailing.geocodeAccuracy;
-        delete Mailing.latitude;
-        delete Mailing.longitude;
-        delete Mailing.street;
+        if (Mailing) {
+          delete Mailing.geocodeAccuracy;
+          delete Mailing.latitude;
+          delete Mailing.longitude;
+          delete Mailing.street;
+        }
         // =======================================================
 
         const perfectMatch =
