@@ -19,9 +19,9 @@ beta.each(
       }),
       field('npsp__ClosedReason__c', dataValue('CancelReason')),
       field('npe03__Installment_Period__c', dataValue('PaymentFrequency')),
-      //field('npsp__InstallmentFrequency__c', dataValue('PaymentFrequency')),
+      //field('npsp__InstallmentFrequency__c', dataValue('PaymentFrequency')), //Remove mapping?
       field('npsp__StartDate__c', state => { 
-        return new Date(dataValue('StartDate')(state)).toISOString();
+        return new Date(dataValue('StartDate')(state)).toISOString();//not working; returning RangeError
       }),
       field('npe03__Date_Established__c', dataValue('AddedDateTime')),
       field('npe03__Installment_Amount__c', dataValue('FirstAmount')),
