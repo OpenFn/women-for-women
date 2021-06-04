@@ -28,7 +28,7 @@ beta.each(dataPath('json[*]'), state => {
         field('Committed_Giving_ID__c', state => {
           return `${dataValue('PrimKey')(state)} ${dataValue('CardMasterID')(state)}`;
         }),
-        relationship('RecordType', 'Name', 'Individual_Giving'), // HARDCODED
+        relationship('RecordType', 'Name', 'Individual Giving'), // HARDCODED
         relationship('AccountId', 'Name', 'test test'), // HARDCODED
         relationship('npsp__Primary_Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
         field('Name', dataValue('CardMasterID')),
