@@ -19,7 +19,10 @@ beta.each(
         const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }), // Field present twice
-      field('npe01__Payment_Amount__c', dataValue('Amount')),
+      field('npe01__Payment_Amount__c', state => {
+        const amount = dataValue('Amount')(state);
+        return `${amount.substring(1, amount.length - 1)}`;
+      }),
       field('npsp__Payment_Acknowledgment_Status__c', state => {
         return dataValue('Status')(state) === 'Paid' ? 'Acknowledged' : dataValue('Status')(state);
       }),
