@@ -17,7 +17,7 @@ beta.each(
         let date = dataValue('Transaction Date')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]);
+        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }), // Field present twice
       field('npe01__Payment_Amount__c', dataValue('Amount')),
       field('npsp__Payment_Acknowledgment_Status__c', state => {
@@ -29,7 +29,7 @@ beta.each(
         let date = dataValue('SettlementDate')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]);
+        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }) // Field present twice
     )
   )
