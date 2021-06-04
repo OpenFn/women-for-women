@@ -35,15 +35,15 @@ beta.each(
             field('MobilePhone', dataValue('Tel2Number')),
             field('Email', dataValue('EmailAddress')),
             field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-            field('Call_Opt_In__c', state => {
-              return dataValue('OK to phone')(state) === 'Yes' ? true : false;
-            }),
+           // field('Call_Opt_In__c', state => { //not in sandbox
+           //   return dataValue('OK to phone')(state) === 'Yes' ? true : false;
+         //   }),
             field('Email_Opt_in__c', state => {
               return dataValue('OK to email')(state) === 'Yes' ? true : false;
             }),
-            field('Mail_Opt_in__c', state => {
-              return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
-            }),
+            //field('Mail_Opt_in__c', state => { /not in sandbox
+            //  return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
+           // }),
             field('Text_Opt_In__c', state => {
               return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
             }),
@@ -106,9 +106,9 @@ beta.each(
               field('MobilePhone', dataValue('Tel2Number')),
               field('Email', dataValue('EmailAddress')),
               field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-              field('Call_Opt_In__c', state => {
-                return dataValue('OK to phone')(state) === 'Yes' ? true : false;
-              }),
+             // field('Call_Opt_In__c', state => { // not in sandbox
+              //  return dataValue('OK to phone')(state) === 'Yes' ? true : false;
+            //  }),
               field('Email_Opt_in__c', state => {
                 return dataValue('OK to email')(state) === 'Yes' ? true : false;
               }),
