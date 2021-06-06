@@ -13,7 +13,13 @@ beta.each(dataPath('json[*]'), state => {
       field('npe01__Payment_Method__c', 'Direct Debit'),
       field('npe01__Paid__c', true),
       relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
-      field('npe01__Payment_Date__c', dataValue('Date'))
+     // field('npe01__Payment_Date__c', dataValue('Date'))// changed to ISO format below
+      field('npe01__Payment_Date__c', state => {
+        let date = dataValue('Date')(state);
+        date = date.split(' ')[0];
+        const parts = date.match(/(\d+)/g);
+        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+      })
     )
   )(state).then(state => {
     return upsert(
@@ -27,7 +33,13 @@ beta.each(dataPath('json[*]'), state => {
         field('Amount', dataValue('Amount')),
         field('CurrencyIsoCode', 'GBP - British Pound'),
         field('StageName', 'Closed Won'),
-        field('CloseDate', dataValue('Date')),
+       // field('CloseDate', dataValue('Date')),// changed to ISO format below
+        field('CloseDate', state => {
+        let date = dataValue('Date')(state);
+        date = date.split(' ')[0];
+        const parts = date.match(/(\d+)/g);
+        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+      }),
         field('npsp__ClosedReason__c', dataValue('Unpaid reason'))
       )
     )(state).then(state => {
