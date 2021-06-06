@@ -115,9 +115,9 @@ beta.each(
              // field('Mail_Opt_in__c', state => {
               //  return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
              // }),
-              field('Text_Opt_In__c', state => {
-                return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
-              }),
+             // field('Text_Opt_In__c', state => { //not in sandbox
+             //   return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+             // }),
               field('npsp__Deceased__c', dataValue('Deceased')),
               field('wfw_Gift_Aid__c', state => {
                 return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
