@@ -38,8 +38,8 @@ beta.each(dataPath('json[*]'), state => {
         field('Closeout_Reason__c', dataValue('RecurringCancelReason')),
         //field('Closeout_Date__c', dataValue('RecurringCancelDate')) //changed to ISO format as below
         field('Closeout_Date__c', state => {
-        let rdate = dataValue('RecurringCancelDate')(state);
-        rdate = rdate.split(' ')[0];
+        let date = dataValue('RecurringCancelDate')(state);
+        date = date.split(' ')[0];
         const parts = rdate.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
@@ -67,16 +67,16 @@ beta.each(dataPath('json[*]'), state => {
         field('Transaction_Reference_Id__c', dataValue('TransactionReference')),
        // field('Transaction_Date_Time__c', dataValue('AddedDateTime')),// changed to ISO as below
         field('Transaction_Date_Time__c', state => {
-        let tdate = dataValue('AddedDateTime')(state);
-        tdate = tdate.split(' ')[0];
-        const parts = tdate.match(/(\d+)/g);
+        let date = dataValue('AddedDateTime')(state);
+        date = date.split(' ')[0];
+        const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
         //field('npe01__Payment_Date__c', dataValue('AddedDateTime')),//changed to ISO as below
         field('npe01__Payment_Date__c', state => {
         let pydate = dataValue('AddedDateTime')(state);
-        pydate = pydate.split(' ')[0];
-        const parts = pydate.match(/(\d+)/g);
+        date = date.split(' ')[0];
+        const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
         field('Amount', dataValue('Amount')),
@@ -84,9 +84,9 @@ beta.each(dataPath('json[*]'), state => {
         field('StageName', 'Closed Won'),
         //field('CloseDate', dataValue('LastCredited')) //changed to iso as below
         field('CloseDate', state => {
-        let cdate = dataValue('LastCredited')(state);
-        cdate = cdate.split(' ')[0];
-        const parts = cdate.match(/(\d+)/g);
+        let date = dataValue('LastCredited')(state);
+        date = date.split(' ')[0];
+        const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
       )
@@ -106,8 +106,8 @@ beta.each(dataPath('json[*]'), state => {
           field('npe01__Paid__c', true),
          // field('npe01__Payment_Date__c', dataValue('AddedDateTime')),// changed to ISO as below
           field('npe01__Payment_Date__c', state => {
-        let pdate = dataValue('AddedDateTime')(state);
-        pdate = pdate.split(' ')[0];
+        let date = dataValue('AddedDateTime')(state);
+        date = date.split(' ')[0];
         const parts = pdate.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
