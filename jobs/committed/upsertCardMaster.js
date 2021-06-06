@@ -40,7 +40,7 @@ beta.each(dataPath('json[*]'), state => {
         field('Closeout_Date__c', state => {
         let date = dataValue('RecurringCancelDate')(state);
         date = date.split(' ')[0];
-        const parts = rdate.match(/(\d+)/g);
+        const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
       )
@@ -108,7 +108,7 @@ beta.each(dataPath('json[*]'), state => {
           field('npe01__Payment_Date__c', state => {
         let date = dataValue('AddedDateTime')(state);
         date = date.split(' ')[0];
-        const parts = pdate.match(/(\d+)/g);
+        const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
       }),
           field('npe01__Payment_Amount__c', dataValue('Amount'))
