@@ -74,7 +74,7 @@ beta.each(dataPath('json[*]'), state => {
       }),
         //field('npe01__Payment_Date__c', dataValue('AddedDateTime')),//changed to ISO as below
         field('npe01__Payment_Date__c', state => {
-        let pydate = dataValue('AddedDateTime')(state);
+        let date = dataValue('AddedDateTime')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
