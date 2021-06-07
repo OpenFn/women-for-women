@@ -38,7 +38,7 @@ beta.each(
         const parts = date.match(/(\d+)/g);
         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
-      field('npe03__Installment_Amount__c', dataValue('FirstAmount')),
+      //field('npe03__Installment_Amount__c', dataValue('FirstAmount')),// comented outfor
      // field('npe03__Next_Payment_Date__c', dataValue('NextDate')),// changed to ISO as below
       field('npe03__Next_Payment_Date__c', state => {
         let date = dataValue('NextDate')(state);
