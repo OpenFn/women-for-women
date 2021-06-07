@@ -8,7 +8,7 @@ beta.each(dataPath('json[*]'), state => {
         field('Committed_Giving_ID__c', state => {
           return dataValue('PrimKey')(state) + dataValue('CardMasterID')(state);
         }),
-        field('Name', dataValue('CardMasterID')),// is this a relationship?
+        //field('Name', dataValue('CardMasterID')),// is this a relationship?
         relationship('npe03__Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
         field('npe03__Installment_Period__c', dataValue('Occurrence')),
         field('Type__c', 'Recurring Donation'),
@@ -60,7 +60,7 @@ beta.each(dataPath('json[*]'), state => {
         relationship('RecordType', 'Name', 'Individual Giving'), // HARDCODED
         relationship('Account', 'Name', 'test test'), // HARDCODED
         relationship('npsp__Primary_Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
-        field(Name', dataValue('CardMasterID')),// is this a relationship?
+       // field('Name', dataValue('CardMasterID')),// is this a relationship?
         field('CG_Credit_Card_ID__c', dataValue('CardMasterID')),
         field('CC_Exp_Month__c', state => {
           return dataValue('CCExpiry')(state).split('/')[0];
