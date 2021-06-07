@@ -47,7 +47,9 @@ beta.each(
            // field('Text_Opt_In__c', state => {
              // return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
           //  }),
-            field('npsp__Deceased__c', dataValue('Deceased')),
+            field('npsp__Deceased__c', state => {
+              return dataValue('Deceased')(state) === 'Yes' ? true : false; 
+            }),
             //field('wfw_Gift_Aid__c', state => { // data type in SF is not boolean
              // return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
            // }),
