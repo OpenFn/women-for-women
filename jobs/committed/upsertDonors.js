@@ -53,7 +53,14 @@ beta.each(
             field('wfw_Gift_Aid__c', state => { // data type in SF is not boolean
               return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
             }),
-            field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),
+            //field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')), //changed to ISO format
+             field('wfw_Date_of_Declaration_Confirmation__c', state => {
+              let date = dataValue('Gift Aid date')(state);
+              if (!date) return null;
+              date = date.split(' ')[0];
+              const parts = date.match(/(\d+)/g);
+             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+            }),
             field('wfw_Donor_Source__c ', dataValue('DonorSource'))
           )
         )(state);
@@ -127,7 +134,15 @@ beta.each(
              field('wfw_Gift_Aid__c', state => {
                return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
               }),
-              field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),
+             // field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),// changed to ISO format
+              field('wfw_Date_of_Declaration_Confirmation__c', state => {
+              let date = dataValue('Gift Aid date')(state);
+              if (!date) return null;
+              date = date.split(' ')[0];
+              const parts = date.match(/(\d+)/g);
+             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+            }),
+              
               field('wfw_Donor_Source__c ', dataValue('DonorSource'))
             )
           )(state);
