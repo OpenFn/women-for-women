@@ -60,7 +60,7 @@ beta.each(dataPath('json[*]'), state => {
         relationship('RecordType', 'Name', 'Individual Giving'), // HARDCODED
         relationship('Account', 'Account Name', 'test test'), // HARDCODED
         relationship('npsp__Primary_Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
-        relationship('Account','Name', dataValue('CardMasterID')),
+        relationship('Account','Account Name', dataValue('CardMasterID')),
         field('CG_Credit_Card_ID__c', dataValue('CardMasterID')),
         field('CC_Exp_Month__c', state => {
           return dataValue('CCExpiry')(state).split('/')[0];
