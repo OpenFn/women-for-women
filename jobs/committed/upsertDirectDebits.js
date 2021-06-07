@@ -25,32 +25,36 @@ beta.each(
      // }),
        field('npsp__StartDate__c', state => {
         let date = dataValue('StartDate')(state);
+         if (!date) return null;
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       //field('npe03__Date_Established__c', dataValue('AddedDateTime')),// changed to ISO as below
       field('npe03__Date_Established__c', state => {
         let date = dataValue('AddedDateTime')(state);
+         if (!date) return null;
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       field('npe03__Installment_Amount__c', dataValue('FirstAmount')),
      // field('npe03__Next_Payment_Date__c', dataValue('NextDate')),// changed to ISO as below
       field('npe03__Next_Payment_Date__c', state => {
         let date = dataValue('NextDate')(state);
+         if (!date) return null;
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       
      // field('npsp__EndDate__c', dataValue('EndDate')),// changed to ISO as below
       field('npsp__EndDate__c', state => {
         let date = dataValue('EndDate')(state);
+        if (!date) return null;
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       field('of_Sisters_Requested__c', dataValue('Number of sponsorships')),
       field('Committed_Giving_Direct_Debit_Reference__c', dataValue('DDRefforBank'))
