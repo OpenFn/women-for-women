@@ -18,14 +18,14 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('EndDate')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
         //field('npsp__StartDate__c', dataValue('StartDate')),//changed to ISO as below
         field('npsp__StartDate__c', state => {
         let date = dataValue('StartDate')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       
         //field('npe03__Next_Payment_Date__c', dataValue('NextDate')),//changed to ISO as below
@@ -33,7 +33,7 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('NextDate')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
         field('Closeout_Reason__c', dataValue('RecurringCancelReason')),
         //field('Closeout_Date__c', dataValue('RecurringCancelDate')) //changed to ISO format as below
@@ -41,7 +41,7 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('RecurringCancelDate')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       )
     )(state);
