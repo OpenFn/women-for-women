@@ -120,10 +120,13 @@ beta.each(
              // field('Text_Opt_In__c', state => { //not in sandbox
              //   return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
              // }),
-              field('npsp__Deceased__c', dataValue('Deceased')),
-             // field('wfw_Gift_Aid__c', state => {
-               // return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
-              //}),
+              //field('npsp__Deceased__c', dataValue('Deceased')),// updated to below
+              field('npsp__Deceased__c', state => {
+              return dataValue('Deceased')(state) === 'Yes' ? true : false; 
+            }),
+             field('wfw_Gift_Aid__c', state => {
+               return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
+              }),
               field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),
               field('wfw_Donor_Source__c ', dataValue('DonorSource'))
             )
