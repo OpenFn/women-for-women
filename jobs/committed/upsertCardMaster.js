@@ -89,13 +89,13 @@ beta.each(dataPath('json[*]'), state => {
         //field('CurrencyIsoCode', 'GBP - British Pound'), brimgs error
         field('StageName', 'Closed Won'),
         //field('CloseDate', dataValue('LastCredited')) //changed to iso as below
-       // field('CloseDate', state => {
-        //let date = dataValue('LastCredited')(state);
-       // if (!date) return null;
-      //  date = date.split(' ')[0];
-      //  const parts = date.match(/(\d+)/g);
-       // return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-    //  }),
+         field('CloseDate', state => {
+         let date = dataValue('LastCredited')(state);
+          if (!date) return null;
+          date = date.split(' ')[0];
+           const parts = date.match(/(\d+)/g);
+         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+   }),
       )
     )(state).then(state => {
       return upsert(
