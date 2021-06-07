@@ -70,14 +70,14 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('AddedDateTime')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
         //field('npe01__Payment_Date__c', dataValue('AddedDateTime')),//changed to ISO as below
         field('npe01__Payment_Date__c', state => {
         let date = dataValue('AddedDateTime')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
         field('Amount', dataValue('Amount')),
         field('CurrencyIsoCode', 'GBP - British Pound'),
@@ -87,7 +87,7 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('LastCredited')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
       )
     )(state).then(state => {
@@ -109,7 +109,7 @@ beta.each(dataPath('json[*]'), state => {
         let date = dataValue('AddedDateTime')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
-        return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
+        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       }),
           field('npe01__Payment_Amount__c', dataValue('Amount'))
         )
