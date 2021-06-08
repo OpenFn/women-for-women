@@ -42,7 +42,7 @@ beta.each(dataPath('json[*]'), state => {
         //field('Closeout_Date__c', dataValue('RecurringCancelDate')) //changed to ISO format as below
         field('Closeout_Date__c', state => {
         let date = dataValue('RecurringCancelDate')(state);
-        if (!date) return null;
+        if (!date) return '2021-07-01';
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
@@ -91,7 +91,7 @@ beta.each(dataPath('json[*]'), state => {
         //field('CloseDate', dataValue('LastCredited')) //changed to iso as below
          field('CloseDate', state => {
          let date = dataValue('LastCredited')(state);
-          if (!date) return null;
+          if (!date) return '2021-07-01';
           date = date.split(' ')[0];
            const parts = date.match(/(\d+)/g);
          return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
