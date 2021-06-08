@@ -41,7 +41,7 @@ beta.each(
 
       field('wfw_Honoree_State__c', dataValue('Notify County')),
       field('wfw_Honoree_Country__c', dataValue('Notify Country')),
-      field('npsp__Honoree_Contact__c', dataValue('Notify Name')),
+     // field('npsp__Honoree_Contact__c', dataValue('Notify Name')),
       field('Tribute_Occasion_Text__c', dataValue('Occasion')),
       field('wfw_Honoree_Address_1__c', dataValue('Notify Add1')),
       field('Honoree_Address_2__c', dataValue('Notify Add2'))
