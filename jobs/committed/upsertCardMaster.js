@@ -86,7 +86,7 @@ beta.each(dataPath('json[*]'), state => {
       //  return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
     //  }),
         field('Amount', dataValue('Amount')),
-        //field('CurrencyIsoCode', 'GBP - British Pound'), brimgs error
+        field('CurrencyIsoCode', 'GBP'), brimgs error
         field('StageName', 'Closed Won'),
         //field('CloseDate', dataValue('LastCredited')) //changed to iso as below
          field('CloseDate', state => {
