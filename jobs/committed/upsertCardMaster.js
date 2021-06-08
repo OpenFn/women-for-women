@@ -16,7 +16,7 @@ beta.each(dataPath('json[*]'), state => {
         //field('Closeout_Date__c', dataValue('EndDate')),// changed to ISO as below
         field('Closeout_Date__c', state => {
         let date = dataValue('EndDate')(state);
-        if (!date) return null;
+        if (!date) return '2021-07-01';
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
