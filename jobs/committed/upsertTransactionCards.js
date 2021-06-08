@@ -10,7 +10,7 @@ beta.each(
       // relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', state => {
       //   return dataValue('PrimKey')(state) + dataValue('CardMasterID')(state);
       // }),
-      field('CurrencyIsoCode', 'GBP - British Pound'),
+      field('CurrencyIsoCode', 'GBP'),
       field('npe01__Payment_Method__c', 'Credit Card'),
       field('npe01__Paid__c', true),
       field('npe01__Payment_Date__c', state => {
