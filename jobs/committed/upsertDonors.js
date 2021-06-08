@@ -32,7 +32,11 @@ beta.each(
             field('MailingPostalCode', dataValue('Postcode')),
             field('MailingCountry', dataValue('Country')),
             field('HomePhone', dataValue('TelNumber1')),
-            field('npe01__PreferredPhone__c', dataValue('TelNumber1')),
+            //field('npe01__PreferredPhone__c', dataValue('TelNumber1')),
+            field('npe01__PreferredPhone__c', state => {
+              let phone = dataValue('TelNumber1')(state);
+               if (!phone) return phone ? phone : '0'; }),
+               
             field('MobilePhone', dataValue('Tel2Number')),
             field('Email', dataValue('EmailAddress')),
             field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
@@ -113,7 +117,12 @@ beta.each(
               field('MailingPostalCode', dataValue('Postcode')),
               field('MailingCountry', dataValue('Country')),
               field('HomePhone', dataValue('TelNumber1')),
-              field('npe01__PreferredPhone__c', dataValue('TelNumber1')),
+            // field('npe01__PreferredPhone__c', dataValue('TelNumber1')),// changed to below
+
+              field('npe01__PreferredPhone__c', state => {
+              let phone = dataValue('TelNumber1')(state);
+               if (!phone) return phone ? phone : '0'; }),
+               
               field('MobilePhone', dataValue('Tel2Number')),
               field('Email', dataValue('EmailAddress')),
               field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
