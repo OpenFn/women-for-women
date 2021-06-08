@@ -51,5 +51,6 @@ beta.each(
         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
       })
       )
-    )(state)
-})}); 
+    )(state); 
+  })
+}); 
