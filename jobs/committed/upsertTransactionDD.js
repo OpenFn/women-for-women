@@ -30,9 +30,9 @@ beta.each(dataPath('json[*]'), state => {
         field('Committed_Giving_ID__c', state => {
           return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)} ${dataValue('Date')(state)}`;
         }),
-        relationship('AccountId__r', 'Name', 'test test'), // HARDCODED
+        field('Account', '0013K00000jOtMNQA0'), // HARDCODED
         field('Amount', dataValue('Amount')),
-        field('CurrencyIsoCode', 'GBP - British Pound'),
+        field('CurrencyIsoCode', 'GBP'),
         field('StageName', 'Closed Won'),
        // field('CloseDate', dataValue('Date')),// changed to ISO format below
         field('CloseDate', state => {
