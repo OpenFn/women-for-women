@@ -15,10 +15,11 @@ beta.each(
 
       // If no match
       if (size === 0) {
-        console.log(`No match found. Upserting Contact ${PersonRef}`);
-        return upsert(
+        console.log(`No match found. Creating Contact for wfw_Legacy_Supporter_ID__c: ${PersonRef}`);
+        // When we are here, there is no match so no need to `upsert` ====
+        // A `create` should always be enough ============================
+        return create(
           'Contact',
-          'wfw_Legacy_Supporter_ID__c',
           fields(
             field('Committed_Giving_ID__c', dataValue('PrimKey')),
             field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
@@ -35,31 +36,32 @@ beta.each(
             field('MobilePhone', dataValue('Tel2Number')),
             field('Email', dataValue('EmailAddress')),
             field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-           // field('Call_Opt_In__c', state => { //not in sandbox
-           //   return dataValue('OK to phone')(state) === 'Yes' ? true : false;
-         //   }),
+            // field('Call_Opt_In__c', state => { //not in sandbox
+            //   return dataValue('OK to phone')(state) === 'Yes' ? true : false;
+            //   }),
             field('Email_Opt_in__c', state => {
               return dataValue('OK to email')(state) === 'Yes' ? true : false;
             }),
             //field('Mail_Opt_in__c', state => { /not in sandbox
             //  return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
-           // }),
-           // field('Text_Opt_In__c', state => {
-             // return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
-          //  }),
+            // }),
+            // field('Text_Opt_In__c', state => {
+            // return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+            //  }),
             field('npsp__Deceased__c', state => {
-              return dataValue('Deceased')(state) === 'Yes' ? true : false; 
+              return dataValue('Deceased')(state) === 'Yes' ? true : false;
             }),
-            field('wfw_Gift_Aid__c', state => { // data type in SF is not boolean
+            field('wfw_Gift_Aid__c', state => {
+              // data type in SF is not boolean
               return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
             }),
             //field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')), //changed to ISO format
-             field('wfw_Date_of_Declaration_Confirmation__c', state => {
+            field('wfw_Date_of_Declaration_Confirmation__c', state => {
               let date = dataValue('Gift Aid date')(state);
               if (!date) return null;
               date = date.split(' ')[0];
               const parts = date.match(/(\d+)/g);
-             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+              return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
             }),
             field('wfw_Donor_Source__c ', dataValue('DonorSource'))
           )
@@ -115,34 +117,34 @@ beta.each(
               field('MobilePhone', dataValue('Tel2Number')),
               field('Email', dataValue('EmailAddress')),
               field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-             // field('Call_Opt_In__c', state => { // not in sandbox
+              // field('Call_Opt_In__c', state => { // not in sandbox
               //  return dataValue('OK to phone')(state) === 'Yes' ? true : false;
-            //  }),
+              //  }),
               field('Email_Opt_in__c', state => {
                 return dataValue('OK to email')(state) === 'Yes' ? true : false;
               }),
-             // field('Mail_Opt_in__c', state => {
+              // field('Mail_Opt_in__c', state => {
               //  return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
-             // }),
-             // field('Text_Opt_In__c', state => { //not in sandbox
-             //   return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
-             // }),
+              // }),
+              // field('Text_Opt_In__c', state => { //not in sandbox
+              //   return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+              // }),
               //field('npsp__Deceased__c', dataValue('Deceased')),// updated to below
               field('npsp__Deceased__c', state => {
-              return dataValue('Deceased')(state) === 'Yes' ? true : false; 
-            }),
-             field('wfw_Gift_Aid__c', state => {
-               return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
+                return dataValue('Deceased')(state) === 'Yes' ? true : false;
               }),
-             // field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),// changed to ISO format
+              field('wfw_Gift_Aid__c', state => {
+                return dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
+              }),
+              // field('wfw_Date_of_Declaration_Confirmation__c', dataValue('Gift Aid date')),// changed to ISO format
               field('wfw_Date_of_Declaration_Confirmation__c', state => {
-              let date = dataValue('Gift Aid date')(state);
-              if (!date) return null;
-              date = date.split(' ')[0];
-              const parts = date.match(/(\d+)/g);
-             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-            }),
-              
+                let date = dataValue('Gift Aid date')(state);
+                if (!date) return null;
+                date = date.split(' ')[0];
+                const parts = date.match(/(\d+)/g);
+                return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+              }),
+
               field('wfw_Donor_Source__c ', dataValue('DonorSource'))
             )
           )(state);
