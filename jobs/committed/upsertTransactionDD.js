@@ -9,7 +9,7 @@ beta.each(dataPath('json[*]'), state => {
       relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', state => {
         return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)}`;
       }),
-      field('CurrencyIsoCode', 'GBP - British Pound'),
+      field('CurrencyIsoCode', 'GBP'),
       field('npe01__Payment_Method__c', 'Direct Debit'),
       field('npe01__Paid__c', true),
       relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
