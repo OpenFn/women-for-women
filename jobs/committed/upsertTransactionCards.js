@@ -24,7 +24,7 @@ beta.each(
       relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
       field('wfw_Credit_Card_Type__c', dataValue('CCType')),
       field('npe01__Payment_Date__c', state => {
-        let date = dataValue('SettlementDate')(state);
+        let date = dataValue('Transaction Date')(state);
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
         return new Date(parts[2], parts[1] - 1, parts[0]).toISOString();
@@ -44,7 +44,7 @@ beta.each(
         field('StageName', 'Closed Won'),
        // field('CloseDate', dataValue('Date')),// changed to ISO format below
         field('CloseDate', state => {
-        let date = dataValue('SettlementDate')(state);
+        let date = dataValue('Transaction Date')(state);
          if (!date) return null;
         date = date.split(' ')[0];
         const parts = date.match(/(\d+)/g);
