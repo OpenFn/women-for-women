@@ -27,14 +27,14 @@ alterState(state => {
   return state;
 });
 
-alterState(state => {
-  const name = dataValue('Notify Name')(state);
-  return query(`SELECT Id from CONTACT WHERE npsp__Honoree_Contact__c = '${name}'`)(state).then(state => {
-    const { records } = state.references[0];
-    const id = records[0].Id;
-    return beta.each(
-      'newJson[*]',
-      upsert(
+beta.each(
+  'newJson[*]',
+  alterState(state => {
+    const name = dataValue('Notify Name')(state);
+    return query(`SELECT Id from CONTACT WHERE npsp__Honoree_Contact__c = '${name}'`)(state).then(state => {
+      const { records } = state.references[0];
+      const id = records[0].Id;
+      return upsert(
         'Opportunity',
         'CG_Credit_Card_ID__c', //CHANGE TO CG_Credit_Card_ID__c ?
         fields(
@@ -43,7 +43,6 @@ alterState(state => {
           field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
           field('wfw_Honoree_City__c', dataValue('Notify Town')),
           field('wfw_Honoree_Zip__c', dataValue('Notify Postcode')),
-
           field('wfw_Honoree_State__c', dataValue('Notify County')),
           field('wfw_Honoree_Country__c', dataValue('Notify Country')),
           field('npsp__Honoree_Contact__c', id),
@@ -51,7 +50,7 @@ alterState(state => {
           field('wfw_Honoree_Address_1__c', dataValue('Notify Add1')),
           field('Honoree_Address_2__c', dataValue('Notify Add2'))
         )
-      )
-    )(state);
-  });
-});
+      )(state);
+    });
+  })
+);
