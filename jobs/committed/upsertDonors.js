@@ -18,8 +18,9 @@ beta.each(
         console.log(`No match found. Creating Contact for wfw_Legacy_Supporter_ID__c: ${PersonRef}`);
         // When we are here, there is no match so no need to `upsert` ====
         // A `create` should always be enough ============================
-        return create(
-          'Contact',
+       // return create(
+          //'Contact',
+          upsert( 'Contact', 'Committed_Giving_ID__c', 
           fields(
             field('Committed_Giving_ID__c', dataValue('PrimKey')),
             field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
