@@ -31,9 +31,10 @@ beta.each(
   'newJson[*]',
   alterState(state => {
     const name = dataValue('Notify Name')(state);
-    return query(`SELECT Id from CONTACT WHERE npsp__Honoree_Contact__c = '${name}'`)(state).then(state => {
+    return query(`SELECT Id from CONTACT WHERE name = '${name}'`)(state).then(state => {
       const { records } = state.references[0];
-      const id = records[0].Id;
+
+      const id = records.length > 0 ? records[0].Id : null;
       return upsert(
         'Opportunity',
         'CG_Credit_Card_ID__c', //CHANGE TO CG_Credit_Card_ID__c ?
