@@ -20,7 +20,7 @@ beta.each(
         // A `create` should always be enough ============================
        // return create(
           //'Contact',
-          upsert( 'Contact', 'Committed_Giving_ID__c', 
+          return upsert( 'Contact', 'Committed_Giving_ID__c', 
           fields(
             field('Committed_Giving_ID__c', dataValue('PrimKey')),
             field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
