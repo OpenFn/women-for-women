@@ -32,7 +32,7 @@ each(
       let headers = state.data[0].split(',');
       headers = headers.map(h => (h = h.replace(/"/g, '')));
 
-      state.data.forEach(data => {
+      state.data.slice(1).forEach(data => {
         let row = data.split(',');
 
         let obj = {};
@@ -41,6 +41,7 @@ each(
         }
         json.push(obj);
       });
+
       const type =
         data.name.includes('Extract') === true
           ? 'extract'
@@ -65,7 +66,7 @@ each(
         })(state)
         .then(() => {
           console.log(`Posted ${data.name} to OpenFn Inbox.\n`);
-          return { configuration, references: [] };
+          return { configuration, references: [], data: {} };
         });
     });
   })
