@@ -537,11 +537,11 @@ each(
       personalizations: [
         {
           to: [
-            { //TODO: Comment out before go-live
+            /*{ //TODO: Comment out before go-live
               email: `maverbuj@womengorwomen.org`,
               name: `Matias Averbuj`,
-            }
-            /*{
+            }*/
+            {
               //employee email recipients
               email: `${state.workEmail}`,
               name: `${state.name}`,
@@ -549,7 +549,7 @@ each(
             {
               email: `${state.homeEmail}`,
               name: `${state.name}`,
-            },*/
+            },
           ],
           cc: [
             //email to ccc
