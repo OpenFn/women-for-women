@@ -18,9 +18,11 @@ beta.each(
         console.log(`No match found. Creating Contact for wfw_Legacy_Supporter_ID__c: ${PersonRef}`);
         // When we are here, there is no match so no need to `upsert` ====
         // A `create` should always be enough ============================
-       // return create(
-          //'Contact',
-          return upsert( 'Contact', 'Committed_Giving_ID__c', 
+        // return create(
+        //'Contact',
+        return upsert(
+          'Contact',
+          'Committed_Giving_ID__c',
           fields(
             field('Committed_Giving_ID__c', dataValue('PrimKey')),
             field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
@@ -36,22 +38,23 @@ beta.each(
             //field('npe01__PreferredPhone__c', dataValue('TelNumber1')),
             field('npe01__PreferredPhone__c', state => {
               let phone = dataValue('TelNumber1')(state);
-               if (!phone) return phone ? phone : '0'; }),
-               
+              if (!phone) return phone ? phone : '0';
+            }),
+
             field('MobilePhone', dataValue('Tel2Number')),
             field('Email', dataValue('EmailAddress')),
             field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-            field('Call_Opt_In__c', state => { 
-            return dataValue('OK to phone')(state) === 'Yes' ? true : false;
+            field('Call_Opt_In__c', state => {
+              return dataValue('OK to phone')(state) === 'Yes' ? true : false;
             }),
             field('Email_Opt_in__c', state => {
               return dataValue('OK to email')(state) === 'Yes' ? true : false;
             }),
-           field('Mail_Opt_in__c', state => { 
-            return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
+            field('Mail_Opt_in__c', state => {
+              return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
             }),
             field('Text_Opt_In__c', state => {
-           return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+              return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
             }),
             field('npsp__Deceased__c', state => {
               return dataValue('Deceased')(state) === 'Yes' ? true : false;
@@ -115,30 +118,35 @@ beta.each(
               field('MailingStreet', address),
               field('MailingCity', dataValue('Address5')),
               field('MailingState', dataValue('Address6')),
-              field('MailingPostalCode', dataValue('Postcode')),
+              field('MailingPostalCode', state => {
+                return dataValue('Postcode')(state).substring(0, 20);
+              }),
               field('MailingCountry', dataValue('Country')),
               field('HomePhone', dataValue('TelNumber1')),
-            // field('npe01__PreferredPhone__c', dataValue('TelNumber1')),// changed to below
+              // field('npe01__PreferredPhone__c', dataValue('TelNumber1')),// changed to below
 
               field('npe01__PreferredPhone__c', state => {
-              let phone = dataValue('TelNumber1')(state);
-               if (!phone) return phone ? phone : '0'; }),
-               
+                let phone = dataValue('TelNumber1')(state);
+                if (!phone) return phone ? phone : '0';
+              }),
+
               field('MobilePhone', dataValue('Tel2Number')),
               field('Email', dataValue('EmailAddress')),
               field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
-              field('Call_Opt_In__c', state => { // not in sandbox
-               return dataValue('OK to phone')(state) === 'Yes' ? true : false;
+              field('Call_Opt_In__c', state => {
+                // not in sandbox
+                return dataValue('OK to phone')(state) === 'Yes' ? true : false;
               }),
               field('Email_Opt_in__c', state => {
                 return dataValue('OK to email')(state) === 'Yes' ? true : false;
               }),
-             field('Mail_Opt_in__c', state => {
-             return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
-               }),
-              field('Text_Opt_In__c', state => { //not in sandbox
-              return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
-               }),
+              field('Mail_Opt_in__c', state => {
+                return dataValue('Ok to mail')(state) === 'Yes' ? true : false;
+              }),
+              field('Text_Opt_In__c', state => {
+                //not in sandbox
+                return dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+              }),
               //field('npsp__Deceased__c', dataValue('Deceased')),// updated to below
               field('npsp__Deceased__c', state => {
                 return dataValue('Deceased')(state) === 'Yes' ? true : false;
