@@ -32,7 +32,9 @@ beta.each(
             field('MailingStreet', address),
             field('MailingCity', dataValue('Address5')),
             field('MailingState', dataValue('Address6')),
-            field('MailingPostalCode', dataValue('Postcode')),
+            field('MailingPostalCode', state => {
+              return dataValue('Postcode')(state).substring(0, 20);
+            }),
             field('MailingCountry', dataValue('Country')),
             field('HomePhone', dataValue('TelNumber1')),
             //field('npe01__PreferredPhone__c', dataValue('TelNumber1')),
