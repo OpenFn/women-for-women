@@ -229,7 +229,7 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
+                                          style="color:#ffffff;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
                                         >
                                           ${state.name}
                                         </td>
@@ -244,7 +244,7 @@ each(
                                         <td
                                           valign="middle"
                                           style="color:#ffffff;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
-                                          > <a href='#' style='text-decoration:none; color:#ffffff'>${state.workEmail}</a>
+                                          > <a href='#' style='text-decoration:none'>${state.workEmail}</a>
                                         </td>
                                       </tr>
                                       <tr>
@@ -258,7 +258,7 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
+                                          style="color:#ffffff;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
                                         >
                                           You&#39;ll Never Walk Alone!
                                         </td>
