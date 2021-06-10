@@ -243,8 +243,8 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
-                                          > <a href='#' style='text-decoration: none; color:#ffffff'>${state.workEmail}</a>
+                                          style="color:#ffffff;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
+                                          > <a href='#' style='text-decoration:none; color:#ffffff'>${state.workEmail}</a>
                                         </td>
                                       </tr>
                                       <tr>
