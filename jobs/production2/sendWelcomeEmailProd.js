@@ -588,12 +588,18 @@ each(
     };
 
     if (activeDivisions.includes(employee.fields.Division)) {
+      const { host, apiKey } = state.configuration;
       if (!employee.fields['Work Email']) {
         console.log(`No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`);
         return state;
       } else {
-        if (!employee.fields['Email User Type'] || employee.fields['Email User Type'] === 'Does not need email account') {
-          console.log(`No Azure actions taken because employee 'does not need email account' or email not specified - see Email User Type: ${fields['Email User Type']}`);
+        if (
+          !employee.fields['Email User Type'] ||
+          employee.fields['Email User Type'] === 'Does not need email account'
+        ) {
+          console.log(
+            `No Azure actions taken because employee 'does not need email account' or email not specified - see Email User Type: ${fields['Email User Type']}`
+          );
           return state;
         }
         return post(
