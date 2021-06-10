@@ -2,13 +2,13 @@ alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
       '20210517 wfwi donors',
-     // '20210517 wfwi live sponsorships',
-     // '20210517 wfwi card master',
-     // '20210517 wfwi direct debits',
-    //  '20210517 wfwi transactions - cards',
-    //  '20210517 wfwi custom cc fields',
-     // '20210517 wfwi custom dd fields',
-    //  '20210517 wfwi transactions - dd',
+      // '20210517 wfwi live sponsorships',
+      // '20210517 wfwi card master',
+      // '20210517 wfwi direct debits',
+      //  '20210517 wfwi transactions - cards',
+      //  '20210517 wfwi custom cc fields',
+      // '20210517 wfwi custom dd fields',
+      //  '20210517 wfwi transactions - dd',
     ];
 
     const files = state.data.filter(
@@ -25,20 +25,6 @@ each(
   '$.files[*]',
   alterState(state => {
     const { configuration, data } = state;
-
-    const checkDuplicate = (value, arr) => {
-      let index = [];
-      arr.forEach((ob, i) => {
-        if (ob['EmailAddress'] !== '' && ob['EmailAddress'] === value) {
-          index.push(i);
-        }
-      });
-      if (index.length > 1) {
-        index.slice(1).forEach((ind, i) => {
-          arr[ind]['EmailAddress'] = `${arr[ind]['EmailAddress']}up${i + 1}`;
-        });
-      }
-    };
 
     return getCSV(`/${data.name}`)(state).then(state => {
       const splitName = data.name.split('.');
@@ -57,9 +43,22 @@ each(
         json.push(obj);
       });
 
-      json.forEach(js => {
-        checkDuplicate(js['EmailAddress'], json);
-      });
+      for (i = 0; i < json.length - 1; i++) {
+        let index = [];
+        for (j = i + 1; j < json.length; j++) {
+          console;
+          if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
+            if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
+              index.push(j);
+            }
+          }
+        }
+        if (index.length > 0) {
+          index.forEach((ind, k) => {
+            json[ind]['EmailAddress'] = `${json[ind]['EmailAddress']}up${k + 1}`;
+          });
+        }
+      }
 
       const type =
         data.name.includes('Extract') === true
