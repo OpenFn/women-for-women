@@ -44,8 +44,16 @@ beta.each(
             }),
 
             field('MobilePhone', dataValue('Tel2Number')),
-            field('Email', dataValue('EmailAddress')),
-            field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
+            field('Email', dataValue('EmailAddress')), // Note: comment this line
+            /* field('Email', state => {
+              const arr = dataValue('EmailAddress')(state).split(' ');
+              if (arr.length > 1) return arr[1];
+            }), */
+            field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
+            /* field('npe01__Preferred_Email__c', state => {
+              const arr = dataValue('EmailAddress')(state).split(' ');
+              if (arr.length > 1) return arr[1];
+            }), */
             field('Call_Opt_In__c', state => {
               return dataValue('OK to phone')(state) === 'Yes' ? true : false;
             }),
