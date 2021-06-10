@@ -198,7 +198,7 @@ each(
                                     >
                                       <tr>
                                         <td
-                                          style="background:#f5b2ad;color:#ffffff;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;padding-top:10px;padding-bottom:10px;font-size:22px;line-height:28px;text-align:center"
+                                          style="background:#f5b2ad;color:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;padding-top:10px;padding-bottom:10px;font-size:22px;line-height:28px;text-align:center"
                                         >
                                           <div>Temporary Credentials</div>
                                         </td>
