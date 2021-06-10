@@ -83,7 +83,7 @@ beta.each(
         const customAddress = {
           city: dataValue('Address5')(state),
           country: dataValue('Country')(state),
-          postalCode: dataValue('Postcode')(state),
+          postalCode: dataValue('Postcode')(state).substring(0, 20),
           state: dataValue('Address1')(state),
         };
         if (Mailing) {
