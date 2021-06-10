@@ -25,6 +25,21 @@ each(
   '$.files[*]',
   alterState(state => {
     const { configuration, data } = state;
+
+    const checkDuplicate = (value, arr) => {
+      let index = [];
+      arr.forEach((ob, i) => {
+        if (ob['EmailAddress'] !== '' && ob['EmailAddress'] === value) {
+          index.push(i);
+        }
+      });
+      if (index.length > 1) {
+        index.slice(1).forEach((ind, i) => {
+          arr[ind]['EmailAddress'] = `${arr[ind]['EmailAddress']}up${i + 1}`;
+        });
+      }
+    };
+
     return getCSV(`/${data.name}`)(state).then(state => {
       const splitName = data.name.split('.');
       console.log(state.data.length);
@@ -40,6 +55,10 @@ each(
           obj[headers[j]] = row[j].replace(/"/g, '');
         }
         json.push(obj);
+      });
+
+      json.forEach(js => {
+        checkDuplicate(js['EmailAddress'], json);
       });
 
       const type =
