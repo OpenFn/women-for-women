@@ -47,12 +47,18 @@ beta.each(
             //field('Email', dataValue('EmailAddress')), // Note: comment this line
             field('Email', state => {
               //const arr = dataValue('EmailAddress')(state).split(' ');
+              const email = dataValue('EmailAddress')(state);
+              if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+              return null;
               const arr = dataValue('EmailAddress')(state) ? dataValue('EmailAddress')(state).split(' ') : null;
               if (arr.length > 1) return arr[1];
             }),
             // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
             field('npe01__Preferred_Email__c', state => {
-              //const arr = dataValue('EmailAddress')(state).split(' '); 
+              //const arr = dataValue('EmailAddress')(state).split(' ');
+              const email = dataValue('EmailAddress')(state);
+              if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+              return null;
               const arr = dataValue('EmailAddress')(state) ? dataValue('EmailAddress')(state).split(' ') : null;
               if (arr.length > 1) return arr[1];
             }),
