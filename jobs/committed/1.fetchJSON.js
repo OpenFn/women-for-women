@@ -44,12 +44,12 @@ each(
       });
 
       for (i = 0; i < json.length - 1; i++) {
-       // let index = [];
+        let index = [];
         for (j = i + 1; j < json.length; j++) {
           console;
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
-       //       index.push(j);
+             index.push(j);
             }
           }
         }
