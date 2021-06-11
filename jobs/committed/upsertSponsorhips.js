@@ -18,8 +18,16 @@ beta.each(
       field('MailingCity', dataValue('Address5')),
       field('MailingState', dataValue('Address6')),
       field('MailingPostalCode', dataValue('Postcode')),
-      field('Email', dataValue('EmailAddress')),
-      field('npe01__Preferred_Email__c', dataValue('EmailAddress'))
+      field('Email', state => {
+        const email = dataValue('EmailAddress')(state);
+        if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+        return null;
+      }),
+      field('npe01__Preferred_Email__c', state => {
+        const email = dataValue('EmailAddress')(state);
+        if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+        return null;
+      })
     )
   )
 );
