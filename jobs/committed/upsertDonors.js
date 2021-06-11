@@ -20,7 +20,8 @@ beta.each(
         // A `create` should always be enough ============================
         // return create(
         //'Contact',
-        return upsert(
+        return upsertIf(
+          dataValue('PrimKey'),
           'Contact',
           'Committed_Giving_ID__c',
           fields(
@@ -124,7 +125,8 @@ beta.each(
 
         if (size === 1 && (perfectMatch || new Date(LastChangedDateTime) > new Date(LastModifiedDate))) {
           console.log('Match found.');
-          return upsert(
+          return upsertIf(
+            dataValue('PrimKey'),
             'Contact',
             'wfw_Legacy_Supporter_ID__c',
             fields(
