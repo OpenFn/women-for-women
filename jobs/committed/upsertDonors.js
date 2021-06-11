@@ -33,7 +33,7 @@ beta.each(
             field('MailingCity', dataValue('Address5')),
             field('MailingState', dataValue('Address6')),
             field('MailingPostalCode', state => {
-              return dataValue('Postcode')(state).substring(0, 20);
+              return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
             }),
             field('MailingCountry', dataValue('Country')),
             field('HomePhone', dataValue('TelNumber1')),
@@ -45,15 +45,15 @@ beta.each(
 
             field('MobilePhone', dataValue('Tel2Number')),
             //field('Email', dataValue('EmailAddress')), // Note: comment this line
-             field('Email', state => {
+            field('Email', state => {
               const arr = dataValue('EmailAddress')(state).split(' ');
               if (arr.length > 1) return arr[1];
-            }), 
-           // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
+            }),
+            // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
             field('npe01__Preferred_Email__c', state => {
               const arr = dataValue('EmailAddress')(state).split(' ');
               if (arr.length > 1) return arr[1];
-            }), 
+            }),
             field('Call_Opt_In__c', state => {
               return dataValue('OK to phone')(state) === 'Yes' ? true : false;
             }),
@@ -96,7 +96,7 @@ beta.each(
         const customAddress = {
           city: dataValue('Address5')(state),
           country: dataValue('Country')(state),
-          postalCode: dataValue('Postcode')(state).substring(0, 20),
+          postalCode: dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '',
           state: dataValue('Address1')(state),
         };
         if (Mailing) {
@@ -129,7 +129,7 @@ beta.each(
               field('MailingCity', dataValue('Address5')),
               field('MailingState', dataValue('Address6')),
               field('MailingPostalCode', state => {
-                return dataValue('Postcode')(state).substring(0, 20);
+                return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
               }),
               field('MailingCountry', dataValue('Country')),
               field('HomePhone', dataValue('TelNumber1')),
