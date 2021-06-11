@@ -26,7 +26,13 @@ each(
   alterState(state => {
     const { configuration, data } = state;
 
-    return getCSV(`/${data.name}`)(state).then(state => {
+    const chunk = (arr, chunkSize) => {
+      var R = [];
+      for (var i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
+      return R;
+    };
+
+    return getCSV(`/${data.name}`)(state).then(async state => {
       const splitName = data.name.split('.');
       console.log(state.data.length);
       let json = [];
@@ -49,7 +55,7 @@ each(
           console;
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
-             index.push(j);
+              index.push(j);
             }
           }
         }
@@ -60,6 +66,10 @@ each(
         }
       }
 
+      const jsonSets = chunk(json, 1000); // chunking into arrays of 1000 objects
+
+      console.log(jsonSets.length, 'sets.');
+
       const type =
         data.name.includes('Extract') === true
           ? 'extract'
@@ -67,25 +77,57 @@ each(
           ? 'component'
           : splitName[0];
 
-      const fileContent = {
-        fileName: data.name,
-        fileType: type,
-        json,
-        uploadDate: new Date(data.modifyTime).toISOString(),
-      };
+      const fileChunks = [];
+      jsonSets.forEach(sets => {
+        const fileContent = {
+          fileName: data.name,
+          fileType: type,
+          json: sets,
+          uploadDate: new Date(data.modifyTime).toISOString(),
+        };
+        fileChunks.push(fileContent);
+      });
+
+      // const fileContent = {
+      //   fileName: data.name,
+      //   fileType: type,
+      //   json,
+      //   uploadDate: new Date(data.modifyTime).toISOString(),
+      // };
       // console.log('fileContent', fileContent);
       // return state;
-      return http
-        .post({
+
+      let countInbox = 0;
+      const postToInbox = async data => {
+        countInbox++;
+        console.log(`${countInbox} request to inbox`);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        // return state;
+        await http.post({
           url: configuration.openfnInboxUrl,
-          data: fileContent,
+          data,
           maxContentLength: Infinity,
           maxBodyLength: Infinity,
-        })(state)
-        .then(() => {
-          console.log(`Posted ${data.name} to OpenFn Inbox.\n`);
-          return { configuration, references: [], data: {} };
-        });
+        })(state);
+      };
+
+      for (const file of fileChunks) {
+        await postToInbox(file);
+      }
+      return { configuration, references: [], data: {} };
+
+      // return http
+      //   .post({
+      //     url: configuration.openfnInboxUrl,
+      //     data: fileContent,
+      //     maxContentLength: Infinity,
+      //     maxBodyLength: Infinity,
+      //   })(state)
+      //   .then(() => {
+      //     console.log(`Posted ${data.name} to OpenFn Inbox.\n`);
+      //     return { configuration, references: [], data: {} };
+      //   });
     });
   })
 );
