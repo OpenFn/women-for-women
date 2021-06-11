@@ -46,12 +46,14 @@ beta.each(
             field('MobilePhone', dataValue('Tel2Number')),
             //field('Email', dataValue('EmailAddress')), // Note: comment this line
             field('Email', state => {
-              const arr = dataValue('EmailAddress')(state).split(' ');
+              //const arr = dataValue('EmailAddress')(state).split(' ');
+              const arr = dataValue('EmailAddress')(state) ? dataValue('EmailAddress')(state).split(' ') : null;
               if (arr.length > 1) return arr[1];
             }),
             // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
             field('npe01__Preferred_Email__c', state => {
-              const arr = dataValue('EmailAddress')(state).split(' ');
+              //const arr = dataValue('EmailAddress')(state).split(' '); 
+              const arr = dataValue('EmailAddress')(state) ? dataValue('EmailAddress')(state).split(' ') : null;
               if (arr.length > 1) return arr[1];
             }),
             field('Call_Opt_In__c', state => {
