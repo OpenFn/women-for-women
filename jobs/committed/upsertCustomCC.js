@@ -27,24 +27,30 @@ alterState(state => {
   return state;
 });
 
-beta.each(
-  'newJson[*]',
-  upsert(
-    'Opportunity',
-    'CG_Credit_Card_ID__c', //CHANGE TO CG_Credit_Card_ID__c ?
-    fields(
-      field('CG_Credit_Card_ID__c', dataValue('CCID')),
-      field('npsp__Tribute_Type__c', dataValue('FormName')),
-      field('Tribute_Occasion_Text__c', dataValue('Occasion')),
-      field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
-      field('Paper_Card_Shipping_City__c', dataValue('Notify Town')),
-      field('Paper_Card_Shipping_Zip_Postal__c', dataValue('Notify Postcode')),
-      field('Paper_Card_Shipping_State_Province__c', dataValue('Notify County')),
-      field('Paper_Card_Shipping_Country__c', dataValue('Notify Country')),
-      field('Paper_Card_Shipping_Name__c', dataValue('Notify Name')),
-      field('Paper_Card_Shipping_Address__c', dataValue('Notify Add1')),
-      field('Paper_Card_Shipping_Address_Line_2__c', dataValue('Notify Add2')),
-      field('eCard_Recipient_Email__c', dataValue('Notify Email Address'))
-    )
-  )
+bulk(
+  'Opportunity', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'CG_Credit_Card_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true, // what is this?
+  },
+  state => {
+    return state.newJson.map(x => {
+      return {
+        CG_Credit_Card_ID__c: x.CCID,
+        npsp__Tribute_Type__c: x.FormName,
+        Tribute_Occasion_Text__c: x.Occasion,
+        npsp__Honoree_Name__c: x['Honouree / Tributee Name'],
+        Paper_Card_Shipping_City__c: x['Notify Town'],
+        Paper_Card_Shipping_Zip_Postal__c: x['Notify Postcode'],
+        Paper_Card_Shipping_State_Province__c: x['Notify County'],
+        Paper_Card_Shipping_Country__c: x['Notify Country'],
+        Paper_Card_Shipping_Name__c: x['Notify Name'],
+        Paper_Card_Shipping_Address__c: x['Notify Add1'],
+        Paper_Card_Shipping_Address_Line_2__c: x['Notify Add2'],
+        eCard_Recipient_Email__c: x['Notify Email Address'],
+      };
+    });
+  }
 );
