@@ -104,7 +104,7 @@ beta.each(dataPath('json[*]'), state => {
         `SELECT Id FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c = '${PrimKey}${TransactionReference}'`
       )(state).then(state => {
         const { totalSize } = state.references[0];
-        let date = dataValue('AddedDateTime')(state) ? dataValue('AddedDateTime')(state).split(' ')[O] : null;
+        let date = dataValue('AddedDateTime')(state) ? dataValue('AddedDateTime')(state).split(' ')[0] : null;
         let dateField = null;
         if (date) {
           const parts = date.match(/(\d+)/g);
