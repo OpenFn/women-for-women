@@ -40,7 +40,8 @@ beta.each(
             field('MailingCity', dataValue('Address5')),
             field('MailingState', dataValue('Address6')),
             field('MailingPostalCode', state => {
-              if (dataValue('Postcode')(state).length > 20) {
+              const zipCode = dataValue('Postcode')(state);
+              if (zipCode && zipCode.length > 20) {
                 state.zipErrors.push(dataValue('Postcode')(state));
               }
               return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
@@ -57,7 +58,7 @@ beta.each(
             //field('Email', dataValue('EmailAddress')), // Note: comment this line
             field('Email', state => {
               const email = dataValue('EmailAddress')(state);
-              if (email.substring(email.length - 3, email.length - 1) === 'up') {
+              if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
                 if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
                   state.dupErrors.push(email.substring(0, email.length - 3));
               }
@@ -67,7 +68,7 @@ beta.each(
             // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
             field('npe01__Preferred_Email__c', state => {
               const email = dataValue('EmailAddress')(state);
-              if (email.substring(email.length - 3, email.length - 1) === 'up') {
+              if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
                 if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
                   state.dupErrors.push(email.substring(0, email.length - 3));
               }
@@ -150,7 +151,8 @@ beta.each(
               field('MailingCity', dataValue('Address5')),
               field('MailingState', dataValue('Address6')),
               field('MailingPostalCode', state => {
-                if (dataValue('Postcode')(state).length > 20) {
+                const zipCode = dataValue('Postcode')(state);
+                if (zipCode && zipCode.length > 20) {
                   state.zipErrors.push(dataValue('Postcode')(state));
                 }
                 return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
@@ -168,7 +170,7 @@ beta.each(
               field('Email', state => {
                 const email = dataValue('EmailAddress')(state);
                 // if email is duplicated, we add to the errors array
-                if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
                   if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
                     state.dupErrors.push(email.substring(0, email.length - 3));
                 }
@@ -177,7 +179,7 @@ beta.each(
               }),
               field('npe01__Preferred_Email__c', state => {
                 const email = dataValue('EmailAddress')(state);
-                if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
                   if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
                     state.dupErrors.push(email.substring(0, email.length - 3));
                 }
