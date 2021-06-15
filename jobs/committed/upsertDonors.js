@@ -1,3 +1,9 @@
+alterState(state => {
+  const zipErrors = [];
+  const dupErrors = [];
+  return { ...state, zipErrors, dupErrors };
+});
+
 beta.each(
   dataPath('json[*]'),
   alterState(state => {
@@ -34,6 +40,9 @@ beta.each(
             field('MailingCity', dataValue('Address5')),
             field('MailingState', dataValue('Address6')),
             field('MailingPostalCode', state => {
+              if (dataValue('Postcode')(state).length > 20) {
+                state.zipErrors.push(dataValue('Postcode')(state));
+              }
               return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
             }),
             field('MailingCountry', dataValue('Country')),
@@ -133,6 +142,9 @@ beta.each(
               field('MailingCity', dataValue('Address5')),
               field('MailingState', dataValue('Address6')),
               field('MailingPostalCode', state => {
+                if (dataValue('Postcode')(state).length > 20) {
+                  state.zipErrors.push(dataValue('Postcode')(state));
+                }
                 return dataValue('Postcode')(state) ? dataValue('Postcode')(state).substring(0, 20) : '';
               }),
               field('MailingCountry', dataValue('Country')),
@@ -199,3 +211,19 @@ beta.each(
     });
   })
 );
+
+alterState(state => {
+  const error = [];
+  if (state.zipErrors.length > 0) {
+    console.log(JSON.stringify(state.errors, null, 2));
+    error.push('Errors detected on mailing postal code');
+  }
+  if (state.dupErrors.length > 0) {
+    console.log(JSON.stringify(state.errors, null, 2));
+    error.push('Errors detected on duplicated emails');
+  }
+
+  if (error.length > 0) throw new Error(error.join('\n'));
+
+  return state;
+});
