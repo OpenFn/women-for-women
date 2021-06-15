@@ -57,12 +57,20 @@ beta.each(
             //field('Email', dataValue('EmailAddress')), // Note: comment this line
             field('Email', state => {
               const email = dataValue('EmailAddress')(state);
+              if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
+                  state.dupErrors.push(email.substring(0, email.length - 3));
+              }
               if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
               return `${dataValue('PrimKey')(state)}@incomplete.com`;
             }),
             // field('npe01__Preferred_Email__c', dataValue('EmailAddress')), // Note: comment this line
             field('npe01__Preferred_Email__c', state => {
               const email = dataValue('EmailAddress')(state);
+              if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
+                  state.dupErrors.push(email.substring(0, email.length - 3));
+              }
               if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
               return `${dataValue('PrimKey')(state)}@incomplete.com`;
             }),
@@ -159,11 +167,20 @@ beta.each(
               field('MobilePhone', dataValue('Tel2Number')),
               field('Email', state => {
                 const email = dataValue('EmailAddress')(state);
+                // if email is duplicated, we add to the errors array
+                if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                  if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
+                    state.dupErrors.push(email.substring(0, email.length - 3));
+                }
                 if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
                 return `${dataValue('PrimKey')(state)}@incomplete.com`;
               }),
               field('npe01__Preferred_Email__c', state => {
                 const email = dataValue('EmailAddress')(state);
+                if (email.substring(email.length - 3, email.length - 1) === 'up') {
+                  if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
+                    state.dupErrors.push(email.substring(0, email.length - 3));
+                }
                 if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
                 return `${dataValue('PrimKey')(state)}@incomplete.com`;
               }),
@@ -215,11 +232,11 @@ beta.each(
 alterState(state => {
   const error = [];
   if (state.zipErrors.length > 0) {
-    console.log(JSON.stringify(state.errors, null, 2));
+    console.log(JSON.stringify(state.zipErrors, null, 2));
     error.push('Errors detected on mailing postal code');
   }
   if (state.dupErrors.length > 0) {
-    console.log(JSON.stringify(state.errors, null, 2));
+    console.log(JSON.stringify(state.dupErrors, null, 2));
     error.push('Errors detected on duplicated emails');
   }
 
