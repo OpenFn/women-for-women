@@ -145,8 +145,16 @@ beta.each(
               }),
 
               field('MobilePhone', dataValue('Tel2Number')),
-              field('Email', dataValue('EmailAddress')),
-              field('npe01__Preferred_Email__c', dataValue('EmailAddress')),
+              field('Email', state => {
+                const email = dataValue('EmailAddress')(state);
+                if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+                return `${dataValue('PrimKey')(state)}@incomplete.com`;
+              }),
+              field('npe01__Preferred_Email__c', state => {
+                const email = dataValue('EmailAddress')(state);
+                if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) return email;
+                return `${dataValue('PrimKey')(state)}@incomplete.com`;
+              }),
               field('Call_Opt_In__c', state => {
                 // not in sandbox
                 return dataValue('OK to phone')(state) === 'Yes' ? true : false;
