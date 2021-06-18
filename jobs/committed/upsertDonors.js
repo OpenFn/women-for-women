@@ -221,11 +221,14 @@ beta.each(
               field('wfw_Donor_Source__c ', dataValue('DonorSource'))
             )
           )(state);
-        } else if (new Date(LastChangedDateTime) < new Date(LastModifiedDate)) {
-          console.log(
-            `No Salesforce updates made for Contact with Id ${PersonRef} because Salesforce record has more recently been updated.`
-          );
-          return state;
+        } else {
+          // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+          return upsertIf(
+            dataValue('PrimKey'),
+            'Contact',
+            'Committed_Giving_ID__c',
+            fields(field('Committed_Giving_ID__c', dataValue('PrimKey')))
+          )(state);
         }
         return { ...state, references: [] };
       }
