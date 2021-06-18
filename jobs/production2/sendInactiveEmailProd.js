@@ -261,7 +261,7 @@ each(
               email: `maverbuj@womenforwomen.org`,
             },
             {
-              email: `mmoisethoams@womenforwomen.org`,
+              email: `mmoisethomas@womenforwomen.org`,
             },
             {
               email: `cani@womenforwomen.org`,
