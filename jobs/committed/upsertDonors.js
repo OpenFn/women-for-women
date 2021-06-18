@@ -237,11 +237,19 @@ alterState(state => {
   const error = [];
   if (state.zipErrors.length > 0) {
     console.log(JSON.stringify(state.zipErrors, null, 2));
-    error.push('Errors detected on mailing postal code');
+    error.push('Errors detected on mailing postal code.');
   }
   if (state.dupErrors.length > 0) {
     console.log(JSON.stringify(state.dupErrors, null, 2));
-    error.push('Errors detected on duplicated emails');
+    error.push('Errors detected on duplicated emails.');
+  }
+  if (state.dupErrorsDifferentNames.length > 0) {
+    console.log(JSON.stringify(state.dupErrorsDifferentNames, null, 2));
+    error.push('Errors detected on duplicated emails with different names.');
+  }
+  if (state.dupErrorsFirstNameAddress.length > 0) {
+    console.log(JSON.stringify(state.dupErrorsFirstNameAddress, null, 2));
+    error.push('Errors detected on duplicated firstname and address.');
   }
 
   if (error.length > 0) throw new Error(error.join('\n'));
