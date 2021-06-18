@@ -1,7 +1,9 @@
 alterState(state => {
   const zipErrors = [];
   const dupErrors = [];
-  return { ...state, zipErrors, dupErrors };
+  const dupErrorsDifferentNames = [];
+  const dupErrorsFirstNameAddress = [];
+  return { ...state, zipErrors, dupErrors, dupErrorsDifferentNames, dupErrorsFirstNameAddress };
 });
 
 beta.each(
