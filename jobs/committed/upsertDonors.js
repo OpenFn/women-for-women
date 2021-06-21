@@ -8,7 +8,7 @@ alterState(state => {
 
 beta.each(
   dataPath('json[*]'),
-  alterState(state => {
+  alterState(async state => {
     const { PersonRef, LastChangedDateTime } = state.data;
 
     let upsertCondition = 0;
@@ -46,38 +46,39 @@ beta.each(
 
     // ======================================================================
 
-    return query(
+    await query(
       `SELECT Id, FirstName, LastName, MailingStreet, Email, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
       FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
-    )(state).then(state => {
+    )(state).then(async state => {
       const { FirstName, EmailAddress } = state.data;
       const sizeLegacyMatch = state.references[0].totalSize;
       const { records } = state.references[0];
 
       if (sizeLegacyMatch === 0) {
         // A. If no matching Contact has been found...
-        return query(
+        await query(
           `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
           FROM CONTACT WHERE FirstName = '${FirstName}' 
           AND Email = '${EmailAddress}'`
-        )(state).then(state => {
+        )(state).then(async state => {
+          const { records } = state.references[0];
           const sizeEmailMatch = state.references[0].totalSize;
 
           if (sizeEmailMatch === 0) {
             // A1. If no matching Contact has been found...
-            return query(
+            await query(
               `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
               FROM CONTACT WHERE FirstName = '${FirstName}' 
               AND MailingStreet = '${address}'`
-            )(state).then(state => {
+            )(state).then(async state => {
               const sizeMailingMatch = state.references[0].totalSize;
 
               if (sizeMailingMatch === 0) {
                 // A11. If no matching Contact has been found...
-                return query(
+                await query(
                   `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
                   FROM CONTACT WHERE Email = '${EmailAddress}'`
-                )(state).then(state => {
+                )(state).then(async state => {
                   const sizeEmailMatch2 = state.references[0].totalSize;
 
                   if (sizeEmailMatch2 === 0) {
@@ -122,6 +123,7 @@ beta.each(
                     )(state);
                   } else {
                     // A112. If a matching Contact has been found...
+                    console.log('Logging duplicate email with different names.');
                     state.dupErrorsDifferentNames.push(email);
                     return state;
                   }
@@ -133,6 +135,7 @@ beta.each(
               }
             });
           } else {
+            console.log('modified', records[0].LastModifiedDate);
             const { LastModifiedDate } = records[0];
             const EmailSF = records[0].Email;
             // A2. If a matching Contact has been found...
@@ -253,6 +256,7 @@ beta.each(
         }
       }
     });
+    return state;
   })
 );
 
