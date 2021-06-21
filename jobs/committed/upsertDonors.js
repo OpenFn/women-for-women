@@ -18,6 +18,7 @@ beta.each(
     )} ${dataValue('Address4')(state)}`;
     address = address.replace(/'/g, "\\'");
     let email = dataValue('EmailAddress')(state);
+    const originalEmail = dataValue('EmailAddress')(state);
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
       email = `${dataValue('PrimKey')(state)}@incomplete.com`;
 
@@ -76,59 +77,100 @@ beta.each(
 
               if (sizeMailingMatch === 0) {
                 // A11. If no matching Contact has been found...
-                await query(
-                  `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
+                if (originalEmail !== '') {
+                  await query(
+                    `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
                   FROM CONTACT WHERE Email = '${EmailAddress}'`
-                )(state).then(async state => {
-                  const sizeEmailMatch2 = state.references[0].totalSize;
+                  )(state).then(async state => {
+                    const sizeEmailMatch2 = state.references[0].totalSize;
 
-                  if (sizeEmailMatch2 === 0) {
-                    // A111. If no matching Contact has been found...
-                    upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
-                    return upsertIf(
-                      dataValue('PrimKey'),
-                      'Contact',
-                      'Committed_Giving_ID__c',
-                      fields(
-                        field('Committed_Giving_ID__c', dataValue('PrimKey')),
-                        field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
-                        field('Salutation', dataValue('Title')),
-                        field('FirstName', dataValue('FirstName')),
-                        field('LastName', dataValue('Surname')),
-                        field('MailingStreet', address),
-                        field('MailingCity', dataValue('Address5')),
-                        field('MailingState', dataValue('Address6')),
-                        field('MailingPostalCode', zipCode),
-                        field('MailingCountry', dataValue('Country')),
-                        field('HomePhone', dataValue('TelNumber1')),
+                    if (sizeEmailMatch2 === 0) {
+                      // A111. If no matching Contact has been found...
+                      upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
+                      return upsertIf(
+                        dataValue('PrimKey'),
+                        'Contact',
+                        'Committed_Giving_ID__c',
+                        fields(
+                          field('Committed_Giving_ID__c', dataValue('PrimKey')),
+                          field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
+                          field('Salutation', dataValue('Title')),
+                          field('FirstName', dataValue('FirstName')),
+                          field('LastName', dataValue('Surname')),
+                          field('MailingStreet', address),
+                          field('MailingCity', dataValue('Address5')),
+                          field('MailingState', dataValue('Address6')),
+                          field('MailingPostalCode', zipCode),
+                          field('MailingCountry', dataValue('Country')),
+                          field('HomePhone', dataValue('TelNumber1')),
 
-                        field('npe01__PreferredPhone__c', phone),
-                        field('MobilePhone', dataValue('Tel2Number')),
-                        field('Email', email),
-                        field('npe01__Preferred_Email__c', email),
-                        field('Call_Opt_In__c', OkToPhone),
-                        field('Email_Opt_in__c', OkToEmail),
-                        field('Mail_Opt_in__c', OkToMail),
-                        field('Text_Opt_In__c', TextOptIn),
-                        field('npsp__Deceased__c', Deceased),
-                        field('wfw_Gift_Aid__c', Gift),
-                        field('wfw_Date_of_Declaration_Confirmation__c', state => {
-                          let date = dataValue('Gift Aid date')(state);
-                          if (!date) return null;
-                          date = date.split(' ')[0];
-                          const parts = date.match(/(\d+)/g);
-                          return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                        }),
-                        field('wfw_Donor_Source__c ', dataValue('DonorSource'))
-                      )
-                    )(state);
-                  } else {
-                    // A112. If a matching Contact has been found...
-                    console.log('Logging duplicate email with different names.');
-                    state.dupErrorsDifferentNames.push(email);
-                    return state;
-                  }
-                });
+                          field('npe01__PreferredPhone__c', phone),
+                          field('MobilePhone', dataValue('Tel2Number')),
+                          field('Email', email),
+                          field('npe01__Preferred_Email__c', email),
+                          field('Call_Opt_In__c', OkToPhone),
+                          field('Email_Opt_in__c', OkToEmail),
+                          field('Mail_Opt_in__c', OkToMail),
+                          field('Text_Opt_In__c', TextOptIn),
+                          field('npsp__Deceased__c', Deceased),
+                          field('wfw_Gift_Aid__c', Gift),
+                          field('wfw_Date_of_Declaration_Confirmation__c', state => {
+                            let date = dataValue('Gift Aid date')(state);
+                            if (!date) return null;
+                            date = date.split(' ')[0];
+                            const parts = date.match(/(\d+)/g);
+                            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+                          }),
+                          field('wfw_Donor_Source__c ', dataValue('DonorSource'))
+                        )
+                      )(state);
+                    } else {
+                      // A112. If a matching Contact has been found...
+                      console.log('Logging duplicate email with different names.');
+                      state.dupErrorsDifferentNames.push(email);
+                      return state;
+                    }
+                  });
+                } else {
+                  console.log('Upserting new Contact.');
+                  return upsertIf(
+                    dataValue('PrimKey'),
+                    'Contact',
+                    'Committed_Giving_ID__c',
+                    fields(
+                      field('Committed_Giving_ID__c', dataValue('PrimKey')),
+                      field('wfw_Legacy_Supporter_ID__c', dataValue('PersonRef')),
+                      field('Salutation', dataValue('Title')),
+                      field('FirstName', dataValue('FirstName')),
+                      field('LastName', dataValue('Surname')),
+                      field('MailingStreet', address),
+                      field('MailingCity', dataValue('Address5')),
+                      field('MailingState', dataValue('Address6')),
+                      field('MailingPostalCode', zipCode),
+                      field('MailingCountry', dataValue('Country')),
+                      field('HomePhone', dataValue('TelNumber1')),
+
+                      field('npe01__PreferredPhone__c', phone),
+                      field('MobilePhone', dataValue('Tel2Number')),
+                      field('Email', email),
+                      field('npe01__Preferred_Email__c', email),
+                      field('Call_Opt_In__c', OkToPhone),
+                      field('Email_Opt_in__c', OkToEmail),
+                      field('Mail_Opt_in__c', OkToMail),
+                      field('Text_Opt_In__c', TextOptIn),
+                      field('npsp__Deceased__c', Deceased),
+                      field('wfw_Gift_Aid__c', Gift),
+                      field('wfw_Date_of_Declaration_Confirmation__c', state => {
+                        let date = dataValue('Gift Aid date')(state);
+                        if (!date) return null;
+                        date = date.split(' ')[0];
+                        const parts = date.match(/(\d+)/g);
+                        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+                      }),
+                      field('wfw_Donor_Source__c ', dataValue('DonorSource'))
+                    )
+                  )(state);
+                }
               } else {
                 // A12. If a matching Contact has been found...
                 state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
