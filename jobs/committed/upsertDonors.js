@@ -53,8 +53,6 @@ beta.each(
       const { FirstName, EmailAddress } = state.data;
       const sizeLegacyMatch = state.references[0].totalSize;
       const { records } = state.references[0];
-      let LastModifiedDate = records[0].LastModifiedDate;
-      const EmailSF = records[0].Email;
 
       if (sizeLegacyMatch === 0) {
         // A. If no matching Contact has been found...
@@ -64,7 +62,6 @@ beta.each(
           AND Email = '${EmailAddress}'`
         )(state).then(state => {
           const sizeEmailMatch = state.references[0].totalSize;
-          LastModifiedDate = records[0].LastModifiedDate;
 
           if (sizeEmailMatch === 0) {
             // A1. If no matching Contact has been found...
@@ -105,14 +102,8 @@ beta.each(
 
                         field('npe01__PreferredPhone__c', phone),
                         field('MobilePhone', dataValue('Tel2Number')),
-                        field('Email', state => {
-                          if (EmailSF !== null) return undefined;
-                          return email;
-                        }),
-                        field('npe01__Preferred_Email__c', state => {
-                          if (EmailSF !== null) return undefined;
-                          return email;
-                        }),
+                        field('Email', email),
+                        field('npe01__Preferred_Email__c', email),
                         field('Call_Opt_In__c', OkToPhone),
                         field('Email_Opt_in__c', OkToEmail),
                         field('Mail_Opt_in__c', OkToMail),
@@ -142,6 +133,8 @@ beta.each(
               }
             });
           } else {
+            const { LastModifiedDate } = records[0];
+            const EmailSF = records[0].Email;
             // A2. If a matching Contact has been found...
             if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
               // If CG is more recent than SF
@@ -201,6 +194,8 @@ beta.each(
           }
         });
       } else {
+        const { LastModifiedDate } = records[0];
+        const EmailSF = records[0].Email;
         // B. If a matching Contact has been found...
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
           // If CG is more recent than SF
