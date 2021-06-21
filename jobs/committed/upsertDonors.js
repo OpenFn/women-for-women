@@ -137,7 +137,7 @@ beta.each(
             });
           } else {
             console.log('modified', records[0].LastModifiedDate);
-            const { LastModifiedDate } = records[0];
+            const { LastModifiedDate, Id } = records[0];
             const EmailSF = records[0].Email;
             // A2. If a matching Contact has been found...
             if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
@@ -188,12 +188,15 @@ beta.each(
               )(state);
             } else {
               upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-              return update('Contact', fields(field('Committed_Giving_ID__c', dataValue('PrimKey'))))(state);
+              return update(
+                'Contact',
+                fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
+              )(state);
             }
           }
         });
       } else {
-        const { LastModifiedDate } = records[0];
+        const { LastModifiedDate, Id } = records[0];
         const EmailSF = records[0].Email;
         // B. If a matching Contact has been found...
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
@@ -243,7 +246,10 @@ beta.each(
           )(state);
         } else {
           // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-          return update('Contact', fields(field('Committed_Giving_ID__c', dataValue('PrimKey'))))(state);
+          return update(
+            'Contact',
+            fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
+          )(state);
         }
       }
     });
