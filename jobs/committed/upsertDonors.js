@@ -13,9 +13,10 @@ beta.each(
 
     let upsertCondition = 0;
 
-    const address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
+    let address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
       state
     )} ${dataValue('Address4')(state)}`;
+    address = address.replace(/'/g, "\\'");
     let email = dataValue('EmailAddress')(state);
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
       email = `${dataValue('PrimKey')(state)}@incomplete.com`;
