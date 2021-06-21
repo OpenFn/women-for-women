@@ -188,12 +188,7 @@ beta.each(
               )(state);
             } else {
               upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-              return upsertIf(
-                dataValue('PrimKey'),
-                'Contact',
-                'Committed_Giving_ID__c',
-                fields(field('Committed_Giving_ID__c', dataValue('PrimKey')))
-              )(state);
+              return update('Contact', fields(field('Committed_Giving_ID__c', dataValue('PrimKey'))))(state);
             }
           }
         });
@@ -248,12 +243,7 @@ beta.each(
           )(state);
         } else {
           // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-          return upsertIf(
-            dataValue('PrimKey'),
-            'Contact',
-            'Committed_Giving_ID__c',
-            fields(field('Committed_Giving_ID__c', dataValue('PrimKey')))
-          )(state);
+          return update('Contact', fields(field('Committed_Giving_ID__c', dataValue('PrimKey'))))(state);
         }
       }
     });
