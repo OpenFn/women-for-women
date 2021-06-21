@@ -16,6 +16,9 @@ beta.each(
     const address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
       state
     )} ${dataValue('Address4')(state)}`;
+    let email = dataValue('EmailAddress')(state);
+    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
+      email = `${dataValue('PrimKey')(state)}@incomplete.com`;
 
     if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
       // This means it is a duplicated email
@@ -40,10 +43,6 @@ beta.each(
     const TextOptIn = dataValue('Text Opt In')(state) === 'Yes' ? true : false;
     const Deceased = dataValue('Deceased')(state) === 'Yes' ? true : false;
     const Gift = dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
-
-    let email = dataValue('EmailAddress')(state);
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
-      email = `${dataValue('PrimKey')(state)}@incomplete.com`;
 
     // ======================================================================
 
