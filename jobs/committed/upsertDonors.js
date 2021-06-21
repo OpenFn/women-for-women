@@ -22,7 +22,8 @@ beta.each(
       if (state.dupErrors.indexOf(email.substring(0, email.length - 3)) === -1)
         state.dupErrors.push(email.substring(0, email.length - 3));
 
-      throw new Error(`Duplicated email found for ${email}`);
+      return state;
+      // throw new Error(`Duplicated email found for ${email}`);
     }
 
     // DATA CLEANING ========================================================
