@@ -3,8 +3,8 @@ alterState(state => {
     const fileNames = [
       //'20210517 wfwi donors',
       //'20210517 wfwi live sponsorships',
-      '20210517 wfwi card master',
-      // '20210517 wfwi direct debits',
+      //'20210517 wfwi card master',
+       '20210517 wfwi direct debits',
       //  '20210517 wfwi transactions - cards',
       //  '20210517 wfwi custom cc fields',
       // '20210517 wfwi custom dd fields',
