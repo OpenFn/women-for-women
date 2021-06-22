@@ -60,7 +60,7 @@ beta.each(
         // A. If no matching Contact has been found...
         await query(
           `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
-          FROM CONTACT WHERE FirstName = '${FirstName}' 
+          FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
           AND Email = '${EmailAddress}'`
         )(state).then(async state => {
           const { records } = state.references[0];
@@ -70,7 +70,7 @@ beta.each(
             // A1. If no matching Contact has been found...
             await query(
               `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
-              FROM CONTACT WHERE FirstName = '${FirstName}' 
+              FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
               AND MailingStreet = '${address}'`
             )(state).then(async state => {
               const sizeMailingMatch = state.references[0].totalSize;
