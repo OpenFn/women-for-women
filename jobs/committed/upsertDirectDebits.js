@@ -18,7 +18,7 @@ bulk(
       return {
         Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}`,
         Committed_Giving_Direct_Debit_ID__c: x.DDId,
-        npe03__Contact__r: { Committed_Giving_Id__c: x.PrimKey },
+        'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
         Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
         npe03__Amount__c: x['Regular amount'],
         Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
