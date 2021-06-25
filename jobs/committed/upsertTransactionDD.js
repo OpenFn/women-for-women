@@ -1,73 +1,124 @@
-beta.each(dataPath('json[*]'), state => {
-  let date = dataValue('Date')(state) ? dataValue('Date')(state).split(' ')[0] : null;
-  let dateField = null;
-  if (date) {
+alterState(state => {
+  const formatDate = date => {
+    if (!date) return null;
+    date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    dateField = parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-  }
-  const id = `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)}`;
+    return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+  };
 
-  return upsert(
-    'Opportunity',
-    'Committed_Giving_ID__c',
-    fields(
-      field('Committed_Giving_ID__c', state => {
-        return `${dataValue('PrimKey')(state)} ${dataValue('DDRefforBank')(state)} ${dataValue('Date')(state)}`;
-      }),
-      field('Account', '0013K00000jOtMNQA0'), // HARDCODED
-      field('Amount', dataValue('Amount')),
-      field('CurrencyIsoCode', 'GBP'),
-      field('StageName', 'Closed Won'),
-      // field('CloseDate', dataValue('Date')),// changed to ISO format below
-      field('CloseDate', dateField),
-      field('npsp__ClosedReason__c', dataValue('Unpaid reason'))
-    )
-  )(state).then(state => {
-    return upsert(
-      'npe03__Recurring_Donation__c',
-      'Committed_Giving_ID__c',
-      fields(
-        field('Committed_Giving_ID__c', id),
-        field('Committed_Giving_Direct_Debit_Reference__c', dataValue('DDRefforBank')(state))
-      )
-    )(state).then(state => {
-      const { PrimKey, DDRefforBank } = state.data;
+  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}` }));
 
-      return query(`SELECT Id FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c = '${PrimKey}${DDRefforBank}'`)(
-        state
-      ).then(state => {
-        const { totalSize } = state.references[0];
+  const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
-        if (totalSize > 0) {
-          return update(
-            'npe01__OppPayment__c',
-            fields(
-              field('Committed_Giving_ID__c', id),
-              relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', id),
-              field('CurrencyIsoCode', 'GBP'),
-              field('npe01__Payment_Method__c', 'Direct Debit'),
-              field('npe01__Paid__c', true),
-              relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
-              // field('npe01__Payment_Date__c', dataValue('Date'))// changed to ISO format below
-              field('npe01__Payment_Date__c', dateField)
-            )
-          )(state);
-        } else {
-          return create(
-            'npe01__OppPayment__c',
-            fields(
-              field('Committed_Giving_ID__c', id),
-              relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', id),
-              field('CurrencyIsoCode', 'GBP'),
-              field('npe01__Payment_Method__c', 'Direct Debit'),
-              field('npe01__Paid__c', true),
-              relationship('Opportunity_Primary_Campaign_Source__r', 'Source_Code__c', dataValue('PromoCode')),
-              // field('npe01__Payment_Date__c', dataValue('Date'))// changed to ISO format below
-              field('npe01__Payment_Date__c', dateField)
-            )
-          )(state);
-        }
-      });
-    });
-  });
+  return { ...state, opportunities, cgIDs, formatDate };
 });
+
+bulk(
+  'Opportunity', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting opportunities.');
+    return state.data.json.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+        AccountId: '0013K00000jOtMNQA0', // HARDCODED
+        Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+        CurrencyIsoCode: 'GBP',
+        StageName: 'Closed Won',
+        CloseDate: state.formatDate(x['Date']),
+        npsp__ClosedReason__c: x['Unpaid reason'],
+      };
+    });
+  }
+);
+
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting donations.');
+
+    return state.data.json.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+        Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
+      };
+    });
+  }
+);
+
+// query in order to perform the subsequent update. For create it's all good.
+query(
+  `SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c IN [${state =>
+    state.cgIDs}]`
+);
+
+alterState(state => {
+  const { records } = state.references[0];
+
+  const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
+  const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
+
+  return { ...state, paymentsToUpdate, paymentsToCreate };
+});
+
+bulk(
+  'npe01__OppPayment__c', // the sObject
+  'update', //  the operation
+  {
+    // extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk updating payments.');
+    return state.paymentsToUpdate.map(x => {
+      return {
+        // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
+        Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
+        CurrencyIsoCode: 'GBP',
+        npe01__Payment_Method__c: 'Direct Debit',
+        npe01__Paid__c: true,
+        'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+        npe01__Payment_Date__c: state.formatDate(x.Date),
+      };
+    });
+  }
+);
+
+bulk(
+  'npe01__OppPayment__c', // the sObject
+  'create', //  the operation
+  {
+    // extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk creating payments.');
+    return state.paymentsToCreate.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
+        CurrencyIsoCode: 'GBP',
+        npe01__Payment_Method__c: 'Direct Debit',
+        npe01__Paid__c: true,
+        npe01__Payment_Amount__c: x.Amount,
+        'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+        wfw_Credit_Card_Type__c: x.CCType,
+        npe01__Payment_Date__c: state.formatDate(x.Date),
+      };
+    });
+  }
+);
