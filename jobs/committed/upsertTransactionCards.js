@@ -24,7 +24,6 @@ bulk(
   state => {
     console.log('Bulk upserting opportunities.');
     return state.data.json.map(x => {
-      fields();
       return {
         Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
         AccountId: '0013K00000jOtMNQA0', // HARDCODED
