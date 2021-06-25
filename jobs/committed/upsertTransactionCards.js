@@ -105,3 +105,8 @@ bulk(
     });
   }
 );
+
+alterState(state => {
+  // lighten state
+  return { ...state, opportunities: [], cgIDs: {} };
+});

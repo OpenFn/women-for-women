@@ -153,3 +153,8 @@ bulk(
     });
   }
 );
+
+alterState(state => {
+  // lighten state
+  return { ...state, opportunities: [], donations: [], cgIDs: {} };
+});
