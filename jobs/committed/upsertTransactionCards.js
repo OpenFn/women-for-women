@@ -25,7 +25,7 @@ bulk(
     console.log('Bulk upserting opportunities.');
     return state.data.json.map(x => {
       return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
         AccountId: '0013K00000jOtMNQA0', // HARDCODED
         Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
         CurrencyIsoCode: 'GBP',
