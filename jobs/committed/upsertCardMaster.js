@@ -140,7 +140,7 @@ bulk(
   },
   state => {
     console.log('Bulk creating payments.');
-    return state.paymentsToUpdate.map(x => {
+    return state.paymentsToCreate.map(x => {
       return {
         Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
         'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
