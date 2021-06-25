@@ -1,154 +1,155 @@
-beta.each(dataPath('json[*]'), state => {
-  const { Occurrence, LastCredited } = state.data;
-  if (LastCredited !== '' || LastCredited !== null) {
-    if (Occurrence === 'Yearly' || Occurrence === 'Monthly') {
-      return upsert(
-        'npe03__Recurring_Donation__c',
-        'Committed_Giving_ID__c',
-        fields(
-          field('Committed_Giving_ID__c', state => {
-            return dataValue('PrimKey')(state) + dataValue('CardMasterID')(state);
-          }),
-          field('Name', dataValue('CardMasterID')),
-          relationship('npe03__Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
-          field('npe03__Installment_Period__c', dataValue('Occurrence')),
-          field('Type__c', 'Recurring Donation'),
-          field('npe03__Amount__c', dataValue('Amount')),
-          //field('Closeout_Date__c', dataValue('EndDate')),// changed to ISO as below
-          field('Closeout_Date__c', state => {
-            let date = dataValue('EndDate')(state);
-            if (!date) return '2021-07-01';
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          }),
-          //field('npsp__StartDate__c', dataValue('StartDate')),//changed to ISO as below
-          field('npsp__StartDate__c', state => {
-            let date = dataValue('StartDate')(state);
-            if (!date) return null;
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          }),
+alterState(state => {
+  const formatDate = date => {
+    if (!date) return null;
+    date = date.split(' ')[0];
+    const parts = date.match(/(\d+)/g);
+    return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+  };
 
-          //field('npe03__Next_Payment_Date__c', dataValue('NextDate')),//changed to ISO as below
-          field('npe03__Next_Payment_Date__c', state => {
-            let date = dataValue('NextDate')(state);
-            if (!date) return null;
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          }),
-          field('Closeout_Reason__c', dataValue('RecurringCancelReason')),
-          //field('Closeout_Date__c', dataValue('RecurringCancelDate')) //changed to ISO format as below
-          field('Closeout_Date__c', state => {
-            let date = dataValue('RecurringCancelDate')(state);
-            if (!date) return '2021-07-01';
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          })
-        )
-      )(state);
-    } else {
-      return upsert(
-        'Opportunity',
-        'Committed_Giving_ID__c',
-        fields(
-          field('Committed_Giving_ID__c', state => {
-            return `${dataValue('PrimKey')(state)} ${dataValue('CardMasterID')(state)}`;
-          }),
-          relationship('RecordType', 'Name', 'Individual Giving'), // HARDCODED
-          field('AccountId', '0013K00000jOtMNQA0'), // HARDCODED.
-          relationship('npsp__Primary_Contact__r', 'Committed_Giving_Id__c', dataValue('PrimKey')),
-          field('Name', dataValue('CardMasterID')),
-          field('CG_Credit_Card_ID__c', dataValue('CardMasterID')),
-          field('CC_Exp_Month__c', state => {
-            return dataValue('CCExpiry')(state).split('/')[0];
-          }),
-          field('CC_Exp_Year__c', state => {
-            return dataValue('CCExpiry')(state).split('/')[1];
-          }),
-          field('Transaction_Reference_Id__c', dataValue('TransactionReference')),
-          // field('Transaction_Date_Time__c', dataValue('AddedDateTime')),// changed to ISO as below
-          field('Transaction_Date_Time__c', state => {
-            let date = dataValue('AddedDateTime')(state);
-            if (!date) return null;
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          }),
-          //field('npe01__Payment_Date__c', dataValue('AddedDateTime')),//changed to ISO as below-- not in oppotunity but in payment object
-          // field('npe01__Payment_Date__c', state => {
-          // let date = dataValue('AddedDateTime')(state);
-          //if (!date) return null;
-          //  date = date.split(' ')[0];
-          // const parts = date.match(/(\d+)/g);
-          //  return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          //  }),
-          field('Amount', dataValue('Amount')),
-          field('CurrencyIsoCode', 'GBP'),
-          field('StageName', 'Closed Won'),
-          //field('CloseDate', dataValue('LastCredited')) //changed to iso as below
-          field('CloseDate', state => {
-            let date = dataValue('LastCredited')(state);
-            if (!date) return '2021-07-01';
-            date = date.split(' ')[0];
-            const parts = date.match(/(\d+)/g);
-            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          })
-        )
-      )(state).then(state => {
-        const { PrimKey, TransactionReference } = state.data;
-
-        return query(
-          `SELECT Id FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c = '${PrimKey}${TransactionReference}'`
-        )(state).then(state => {
-          const { totalSize } = state.references[0];
-          let date = dataValue('AddedDateTime')(state) ? dataValue('AddedDateTime')(state).split(' ')[0] : null;
-          let dateField = null;
-          if (date) {
-            const parts = date.match(/(\d+)/g);
-            dateField = parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-          }
-
-          const opportunity = `${dataValue('PrimKey')(state)} ${dataValue('CardMasterID')(state)}`;
-          const givingID = `${dataValue('PrimKey')(state)} ${dataValue('TransactionReference')(state)}`;
-
-          if (totalSize > 0) {
-            return update(
-              'npe01__OppPayment__c',
-              fields(
-                field('Committed_Giving_ID__c', givingID),
-                relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', opportunity),
-                field('CurrencyIsoCode', 'GBP'),
-                field('npe01__Payment_Method__c', 'Credit Card'),
-                field('npe01__Paid__c', true),
-                // field('npe01__Payment_Date__c', dataValue('AddedDateTime')),// changed to ISO as below
-                field('npe01__Payment_Date__c', dateField),
-                field('npe01__Payment_Amount__c', dataValue('Amount'))
-              )
-            )(state);
-          } else {
-            return create(
-              'npe01__OppPayment__c',
-              fields(
-                field('Committed_Giving_ID__c', givingID),
-                relationship('npe01__Opportunity__r', 'Committed_Giving_ID__c', opportunity),
-                field('CurrencyIsoCode', 'GBP'),
-                field('npe01__Payment_Method__c', 'Credit Card'),
-                field('npe01__Paid__c', true),
-                // field('npe01__Payment_Date__c', dataValue('AddedDateTime')),// changed to ISO as below
-                field('npe01__Payment_Date__c', dateField),
-                field('npe01__Payment_Amount__c', dataValue('Amount'))
-              )
-            )(state);
-          }
-        });
-      });
+  state.data.json.map(x => {
+    if (x.LastCredited === null) {
+      console.log(`No actions taken for ${x.CardMasterID}.`);
     }
-  } else {
-    console.log(`No actions taken for ${dataValue('CardMasterID')(state)}.`);
-    return state;
-  }
+  });
+
+  const donations = state.data.json
+    .filter(x => x.LastCredited !== null)
+    .filter(x => x.Occurrence === 'Yearly' || x.Occurrence === 'Monthly');
+  // .map(x => {
+  //   // TODO: move fields(...) mapping into here.
+  //   return x;
+  // });
+
+  const opportunities = state.data.json
+    .filter(x => x.LastCredited !== null)
+    .filter(x => x.Occurrence !== 'Yearly' && x.Occurrence !== 'Monthly')
+    .map(x => ({ ...x, cgID: `${x.PrimKey}${x.TransactionReference}` }));
+
+  const cgIDs = opportunities.map(o => `'${o.cgID}'`);
+
+  return { ...state, donations, opportunities, cgIDs, formatDate };
 });
+
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting donations.');
+    return state.donations.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+        Name: x.CardMasterID,
+        'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
+        npe03__Installment_Period__c: x.Occurrence,
+        Type__c: x['Recurring Donation'],
+        npe03__Amount__c: x.Amount,
+        Closeout_Date__c: state.formatDate(x.EndDate),
+        npsp__StartDate__c: state.formatDate(x.StartDate),
+        npe03__Next_Payment_Date__c: state.formatDate(x.NextDate),
+        Closeout_Reason__c: x.RecurringCancelReason,
+        Closeout_Date__c: state.formatDate(x.RecurringCancelDate),
+      };
+    });
+  }
+);
+
+bulk(
+  'Opportunity', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting opportunities.');
+    return state.opportunities.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+        'RecordType.Name': 'Individual Giving', // HARDCODED
+        AccountId: '0013K00000jOtMNQA0', // HARDCODED.
+        'npsp__Primary_Contact__r.Committed_Giving_Id__c': x.PrimKey,
+        Name: x.CardMasterID,
+        CG_Credit_Card_ID__c: x.CardMasterID,
+        CC_Exp_Month__c: x.CCExpiry.split('/')[0],
+        CC_Exp_Year__c: x.CCExpiry.split('/')[1],
+        Transaction_Reference_Id__c: x.TransactionReference,
+        Transaction_Date_Time__c: state.formatDate(x.AddedDateTime),
+        Amount: x.Amount,
+        CurrencyIsoCode: x.GBP,
+        StageName: 'Closed Won',
+        CloseDate: state.formatDate(x.LastCredited),
+      };
+    });
+  }
+);
+
+// TODO: confirm whether or not we need to get the "ID" from Salesforce in this
+// query in order to perform the subsequent update. For create it's all good.
+query(
+  `SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c IN [${state =>
+    state.cgIDs}]`
+);
+
+alterState(state => {
+  const { records } = state.references[0];
+
+  const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
+  const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
+
+  return { ...state, paymentsToCreate, paymentsToUpdate };
+});
+
+bulk(
+  'npe01__OppPayment__c', // the sObject
+  'update', //  the operation
+  {
+    // extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk updating payments.');
+    return state.paymentsToUpdate.map(x => {
+      return {
+        // id: 'ds8908932k3l21j3213j1kl31', // TD thinks that you need this!
+        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+        CurrencyIsoCode: 'GBP',
+        npe01__Payment_Method__c: 'Credit Card',
+        npe01__Paid__c: true,
+        npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
+        npe01__Payment_Amount__c: x.Amount,
+      };
+    });
+  }
+);
+
+bulk(
+  'npe01__OppPayment__c', // the sObject
+  'create', //  the operation
+  {
+    // extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk creating payments.');
+    return state.paymentsToUpdate.map(x => {
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+        CurrencyIsoCode: 'GBP',
+        npe01__Payment_Method__c: 'Credit Card',
+        npe01__Paid__c: true,
+        npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
+        npe01__Payment_Amount__c: x.Amount,
+      };
+    });
+  }
+);
