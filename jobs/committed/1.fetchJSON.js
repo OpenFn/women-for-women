@@ -5,10 +5,10 @@ alterState(state => {
       //'wfwi live sponsorships',
       'wfwi card master',
       'wfwi direct debits',
-       'wfwi transactions - cards',
+      // 'wfwi transactions - cards',
        // 'wfwi custom cc fields',
       // 'wfwi custom dd fields',
-       'wfwi transactions - dd',
+       //'wfwi transactions - dd',
     ];
 
     const files = state.data.filter(
