@@ -23,16 +23,18 @@ bulk(
   },
   state => {
     console.log('Bulk upserting opportunities.');
-    return state.data.json.map(x => {
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
-        AccountId: '0013K00000jOtMNQA0', // HARDCODED
-        Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-        CurrencyIsoCode: 'GBP',
-        StageName: 'Closed Won',
-        CloseDate: state.formatDate(x['Transaction Date']),
-      };
-    });
+    return state.data.json
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
+          AccountId: '0013K00000jOtMNQA0', // HARDCODED
+          Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          CurrencyIsoCode: 'GBP',
+          StageName: 'Closed Won',
+          CloseDate: state.formatDate(x['Transaction Date']),
+        };
+      });
   }
 );
 
@@ -61,20 +63,22 @@ bulk(
   },
   state => {
     console.log('Bulk updating payments.');
-    return state.paymentsToUpdate.map(x => {
-      return {
-        // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
-        CurrencyIsoCode: 'GBP',
-        npe01__Payment_Method__c: 'Credit Card',
-        npe01__Paid__c: true,
-        npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-        npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
-        'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-        wfw_Credit_Card_Type__c: x.CCType,
-        npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
-      };
-    });
+    return state.paymentsToUpdate
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          CurrencyIsoCode: 'GBP',
+          npe01__Payment_Method__c: 'Credit Card',
+          npe01__Paid__c: true,
+          npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
+          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+          wfw_Credit_Card_Type__c: x.CCType,
+          npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
+        };
+      });
   }
 );
 
@@ -88,20 +92,22 @@ bulk(
   },
   state => {
     console.log('Bulk creating payments.');
-    return state.paymentsToCreate.map(x => {
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
-        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-        CurrencyIsoCode: 'GBP',
-        npe01__Payment_Method__c: 'Credit Card',
-        npe01__Paid__c: true,
-        npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-        npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
-        'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-        wfw_Credit_Card_Type__c: x.CCType,
-        npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
-      };
-    });
+    return state.paymentsToCreate
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+          CurrencyIsoCode: 'GBP',
+          npe01__Payment_Method__c: 'Credit Card',
+          npe01__Paid__c: true,
+          npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
+          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+          wfw_Credit_Card_Type__c: x.CCType,
+          npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
+        };
+      });
   }
 );
 

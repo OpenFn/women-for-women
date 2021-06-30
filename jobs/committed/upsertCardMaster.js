@@ -40,21 +40,23 @@ bulk(
   },
   state => {
     console.log('Bulk upserting donations.');
-    return state.donations.map(x => {
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
-        Name: x.CardMasterID,
-        'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
-        npe03__Installment_Period__c: x.Occurrence,
-        Type__c: x['Recurring Donation'],
-        npe03__Amount__c: x.Amount,
-        Closeout_Date__c: state.formatDate(x.EndDate),
-        npsp__StartDate__c: state.formatDate(x.StartDate),
-        npe03__Next_Payment_Date__c: state.formatDate(x.NextDate),
-        Closeout_Reason__c: x.RecurringCancelReason,
-        Closeout_Date__c: state.formatDate(x.RecurringCancelDate),
-      };
-    });
+    return state.donations
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+          Name: x.CardMasterID,
+          'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
+          npe03__Installment_Period__c: x.Occurrence,
+          Type__c: x['Recurring Donation'],
+          npe03__Amount__c: x.Amount,
+          Closeout_Date__c: state.formatDate(x.EndDate),
+          npsp__StartDate__c: state.formatDate(x.StartDate),
+          npe03__Next_Payment_Date__c: state.formatDate(x.NextDate),
+          Closeout_Reason__c: x.RecurringCancelReason,
+          Closeout_Date__c: state.formatDate(x.RecurringCancelDate),
+        };
+      });
   }
 );
 
@@ -68,24 +70,26 @@ bulk(
   },
   state => {
     console.log('Bulk upserting opportunities.');
-    return state.opportunities.map(x => {
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
-        'RecordType.Name': 'Individual Giving', // HARDCODED
-        AccountId: '0013K00000jOtMNQA0', // HARDCODED.
-        'npsp__Primary_Contact__r.Committed_Giving_Id__c': x.PrimKey,
-        Name: x.CardMasterID,
-        CG_Credit_Card_ID__c: x.CardMasterID,
-        CC_Exp_Month__c: x.CCExpiry.split('/')[0],
-        CC_Exp_Year__c: x.CCExpiry.split('/')[1],
-        Transaction_Reference_Id__c: x.TransactionReference,
-        Transaction_Date_Time__c: state.formatDate(x.AddedDateTime),
-        Amount: x.Amount,
-        CurrencyIsoCode: x.GBP,
-        StageName: 'Closed Won',
-        CloseDate: state.formatDate(x.LastCredited),
-      };
-    });
+    return state.opportunities
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+          'RecordType.Name': 'Individual Giving', // HARDCODED
+          AccountId: '0013K00000jOtMNQA0', // HARDCODED.
+          'npsp__Primary_Contact__r.Committed_Giving_Id__c': x.PrimKey,
+          Name: x.CardMasterID,
+          CG_Credit_Card_ID__c: x.CardMasterID,
+          CC_Exp_Month__c: x.CCExpiry.split('/')[0],
+          CC_Exp_Year__c: x.CCExpiry.split('/')[1],
+          Transaction_Reference_Id__c: x.TransactionReference,
+          Transaction_Date_Time__c: state.formatDate(x.AddedDateTime),
+          Amount: x.Amount,
+          CurrencyIsoCode: x.GBP,
+          StageName: 'Closed Won',
+          CloseDate: state.formatDate(x.LastCredited),
+        };
+      });
   }
 );
 
@@ -115,18 +119,20 @@ bulk(
   },
   state => {
     console.log('Bulk updating payments.');
-    return state.paymentsToUpdate.map(x => {
-      return {
-        // id: 'ds8908932k3l21j3213j1kl31', // TD thinks that you need this!
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
-        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-        CurrencyIsoCode: 'GBP',
-        npe01__Payment_Method__c: 'Credit Card',
-        npe01__Paid__c: true,
-        npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
-        npe01__Payment_Amount__c: x.Amount,
-      };
-    });
+    return state.paymentsToUpdate
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          // id: 'ds8908932k3l21j3213j1kl31', // TD thinks that you need this!
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+          CurrencyIsoCode: 'GBP',
+          npe01__Payment_Method__c: 'Credit Card',
+          npe01__Paid__c: true,
+          npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
+          npe01__Payment_Amount__c: x.Amount,
+        };
+      });
   }
 );
 
@@ -140,17 +146,19 @@ bulk(
   },
   state => {
     console.log('Bulk creating payments.');
-    return state.paymentsToCreate.map(x => {
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
-        'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-        CurrencyIsoCode: 'GBP',
-        npe01__Payment_Method__c: 'Credit Card',
-        npe01__Paid__c: true,
-        npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
-        npe01__Payment_Amount__c: x.Amount,
-      };
-    });
+    return state.paymentsToCreate
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+          CurrencyIsoCode: 'GBP',
+          npe01__Payment_Method__c: 'Credit Card',
+          npe01__Paid__c: true,
+          npe01__Payment_Date__c: state.formatDate(x.AddedDateTime),
+          npe01__Payment_Amount__c: x.Amount,
+        };
+      });
   }
 );
 

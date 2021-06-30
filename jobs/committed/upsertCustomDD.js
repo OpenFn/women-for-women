@@ -41,22 +41,24 @@ bulk(
     allowNoOp: true, // what is this?
   },
   state => {
-    return state.newJson.map(x => {
-      const name = x['Notify Name'];
-      const contact = state.names.find(rec => rec.Name === name);
-      return {
-        CG_Credit_Card_ID__c: x.DDID,
-        npsp__Tribute_Type__c: x.FormName,
-        npsp__Honoree_Name__c: x['Honouree / Tributee Name'],
-        wfw_Honoree_City__c: x['Notify Town'],
-        wfw_Honoree_Zip__c: x['Notify Postcode'],
-        wfw_Honoree_State__c: x['Notify County'],
-        wfw_Honoree_Country__c: x['Notify Country'],
-        npsp__Honoree_Contact__c: contact ? contact.id : null,
-        Tribute_Occasion_Text__c: x.Occasion,
-        wfw_Honoree_Address_1__c: x['Notify Add1'],
-        Honoree_Address_2__c: x['Notify Add2'],
-      };
-    });
+    return state.newJson
+      .filter(x => x.DDID)
+      .map(x => {
+        const name = x['Notify Name'];
+        const contact = state.names.find(rec => rec.Name === name);
+        return {
+          CG_Credit_Card_ID__c: x.DDID,
+          npsp__Tribute_Type__c: x.FormName,
+          npsp__Honoree_Name__c: x['Honouree / Tributee Name'],
+          wfw_Honoree_City__c: x['Notify Town'],
+          wfw_Honoree_Zip__c: x['Notify Postcode'],
+          wfw_Honoree_State__c: x['Notify County'],
+          wfw_Honoree_Country__c: x['Notify Country'],
+          npsp__Honoree_Contact__c: contact ? contact.id : null,
+          Tribute_Occasion_Text__c: x.Occasion,
+          wfw_Honoree_Address_1__c: x['Notify Add1'],
+          Honoree_Address_2__c: x['Notify Add2'],
+        };
+      });
   }
 );

@@ -36,21 +36,23 @@ bulk(
     allowNoOp: true, // what is this?
   },
   state => {
-    return state.newJson.map(x => {
-      return {
-        CG_Credit_Card_ID__c: x.CCID,
-        npsp__Tribute_Type__c: x.FormName,
-        Tribute_Occasion_Text__c: x.Occasion,
-        npsp__Honoree_Name__c: x['Honouree / Tributee Name'],
-        Paper_Card_Shipping_City__c: x['Notify Town'],
-        Paper_Card_Shipping_Zip_Postal__c: x['Notify Postcode'],
-        Paper_Card_Shipping_State_Province__c: x['Notify County'],
-        Paper_Card_Shipping_Country__c: x['Notify Country'],
-        Paper_Card_Shipping_Name__c: x['Notify Name'],
-        Paper_Card_Shipping_Address__c: x['Notify Add1'],
-        Paper_Card_Shipping_Address_Line_2__c: x['Notify Add2'],
-        eCard_Recipient_Email__c: x['Notify Email Address'],
-      };
-    });
+    return state.newJson
+      .filter(x => x.CCID)
+      .map(x => {
+        return {
+          CG_Credit_Card_ID__c: x.CCID,
+          npsp__Tribute_Type__c: x.FormName,
+          Tribute_Occasion_Text__c: x.Occasion,
+          npsp__Honoree_Name__c: x['Honouree / Tributee Name'],
+          Paper_Card_Shipping_City__c: x['Notify Town'],
+          Paper_Card_Shipping_Zip_Postal__c: x['Notify Postcode'],
+          Paper_Card_Shipping_State_Province__c: x['Notify County'],
+          Paper_Card_Shipping_Country__c: x['Notify Country'],
+          Paper_Card_Shipping_Name__c: x['Notify Name'],
+          Paper_Card_Shipping_Address__c: x['Notify Add1'],
+          Paper_Card_Shipping_Address_Line_2__c: x['Notify Add2'],
+          eCard_Recipient_Email__c: x['Notify Email Address'],
+        };
+      });
   }
 );
