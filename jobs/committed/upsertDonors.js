@@ -30,6 +30,7 @@ beta.each(
       return state;
       // throw new Error(`Duplicated email found for ${email}`);
     }
+    if (!state.data.PersonRef) return state;
 
     // DATA CLEANING ========================================================
     let zipCode = dataValue('Postcode')(state) || '';
