@@ -24,7 +24,8 @@ bulk(
           Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           npe03__Amount__c: x['Regular amount'],
           Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
-          npsp__ClosedReason__c: x.CancelReason,
+          npsp__Closed_Lost_Reason__c: x.CancelReason, //different field name? 
+          //npsp__ClosedReason__c: x.CancelReason,
           npe03__Installment_Period__c: x.PaymentFrequency,
           npsp__StartDate__c: formatDate(x.StartDate),
           npe03__Date_Established__c: formatDate(x.AddedDateTime),
