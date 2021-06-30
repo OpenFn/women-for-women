@@ -66,7 +66,7 @@ each(
         }
       }
 
-      const jsonSets = chunk(json, 250); // chunking into arrays of 1000 objects
+      const jsonSets = chunk(json, 200); // chunking into arrays of 1000 objects
 
       console.log(jsonSets.length, 'sets.');
 
