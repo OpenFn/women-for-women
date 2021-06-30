@@ -39,10 +39,7 @@ bulk(
 );
 
 // query in order to perform the subsequent update. For create it's all good.
-query(
-  `SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c WHERE Committed_Giving_ID__c IN [${state =>
-    state.cgIDs}]`
-);
+query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
 
 alterState(state => {
   const { records } = state.references[0];
