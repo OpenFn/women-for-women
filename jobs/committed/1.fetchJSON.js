@@ -1,7 +1,7 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      'wfwi donors',
+      //'wfwi donors',
       //'wfwi live sponsorships',
       //'wfwi card master',
       //'wfwi direct debits',
