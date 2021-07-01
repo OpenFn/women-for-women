@@ -31,7 +31,7 @@ bulk(
           npe03__Date_Established__c: formatDate(x.AddedDateTime),
           npe03__Next_Payment_Date__c: formatDate(x.NextDate),
           npsp__EndDate__c: formatDate(x.EndDate),
-          of_Sisters_Requested__c: x['Number of sponsorships'],
+          of_Sisters_Requested__c: x['Number of sponsorships']===' ' ? undefined : x['Number of sponsorships'],
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         };
       });
