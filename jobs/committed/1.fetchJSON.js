@@ -7,8 +7,8 @@ alterState(state => {
       //'wfwi direct debits',
        //'wfwi transactions - cards',
         //'wfwi transactions - dd',
-        'wfwi custom cc fields',
-      // 'wfwi custom dd fields',
+       // 'wfwi custom cc fields',
+       'wfwi custom dd fields',
     ];
 
     const files = state.data.filter(
