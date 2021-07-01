@@ -40,6 +40,7 @@ bulk(
       .filter(x => x.CCID)
       .map(x => {
         return {
+          StageName: 'Closed Won',
           CG_Credit_Card_ID__c: x.CCID,
           npsp__Tribute_Type__c: x.FormName,
           Tribute_Occasion_Text__c: x.Occasion,
