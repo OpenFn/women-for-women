@@ -26,14 +26,16 @@ bulk(
     return state.data.json
       .filter(x => x.PrimKey)
       .map(x => {
+        console.log('x.Amount', x.Amount);
+        const Amount = parseInt(x.Amount) !== 'NaN' ? parseInt(x.Amount) : x.Amount.substring(1, x.Amount.length - 1);
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           AccountId: '0013K00000jOtMNQA0', // HARDCODED
-          Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          Amount,
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
-          npsp__ClosedReason__c: x['Unpaid reason'],
+          npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
         };
       });
   }
