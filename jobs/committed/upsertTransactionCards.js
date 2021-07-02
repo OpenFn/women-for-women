@@ -13,71 +13,71 @@ alterState(state => {
   return { ...state, opportunities, cgIDs, formatDate };
 });
 
-bulk(
-  'Opportunity', // the sObject
-  'upsert', //  the operation
-  {
-    extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk upserting opportunities.');
-    return state.data.json
-      .filter(x => x.PrimKey)
-      .map(x => {
-        return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
-          //AccountId: '0013K00000jOtMNQA0', // HARDCODED
-          Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-          CurrencyIsoCode: 'GBP',
-          StageName: 'Closed Won',
-          CloseDate: state.formatDate(x['Transaction Date']),
-        };
-      });
-  }
-);
+// bulk(
+//   'Opportunity', // the sObject
+//   'upsert', //  the operation
+//   {
+//     extIdField: 'Committed_Giving_ID__c', // the field to match on
+//     failOnError: true, // throw error if just ONE record fails
+//     allowNoOp: true,
+//   },
+//   state => {
+//     console.log('Bulk upserting opportunities.');
+//     return state.data.json
+//       .filter(x => x.PrimKey)
+//       .map(x => {
+//         return {
+//           Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
+//           //AccountId: '0013K00000jOtMNQA0', // HARDCODED
+//           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+//           CurrencyIsoCode: 'GBP',
+//           StageName: 'Closed Won',
+//           CloseDate: state.formatDate(x['Transaction Date']),
+//         };
+//       });
+//   }
+// );
 
-// query in order to perform the subsequent update. For create it's all good.
-query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
+// // query in order to perform the subsequent update. For create it's all good.
+// query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
 
-alterState(state => {
-  const { records } = state.references[0];
+// alterState(state => {
+//   const { records } = state.references[0];
 
-  const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
-  const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
+//   const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
+//   const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
 
-  return { ...state, paymentsToUpdate, paymentsToCreate };
-});
+//   return { ...state, paymentsToUpdate, paymentsToCreate };
+// });
 
-bulk(
-  'npe01__OppPayment__c', // the sObject
-  'update', //  the operation
-  {
-    // extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk updating payments.');
-    return state.paymentsToUpdate
-      .filter(x => x.PrimKey)
-      .map(x => {
-        return {
-          // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
-          CurrencyIsoCode: 'GBP',
-          npe01__Payment_Method__c: 'Credit Card',
-          npe01__Paid__c: true,
-          npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-          npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
-          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-          wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
-        };
-      });
-  }
-);
+// bulk(
+//   'npe01__OppPayment__c', // the sObject
+//   'update', //  the operation
+//   {
+//     // extIdField: 'Committed_Giving_ID__c', // the field to match on
+//     failOnError: true, // throw error if just ONE record fails
+//     allowNoOp: true,
+//   },
+//   state => {
+//     console.log('Bulk updating payments.');
+//     return state.paymentsToUpdate
+//       .filter(x => x.PrimKey)
+//       .map(x => {
+//         return {
+//           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
+//           Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+//           CurrencyIsoCode: 'GBP',
+//           npe01__Payment_Method__c: 'Credit Card',
+//           npe01__Paid__c: true,
+//           npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+//           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
+//           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+//           wfw_Credit_Card_Type__c: x.CCType,
+//           npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
+//         };
+//       });
+//   }
+// );
 
 bulk(
   'npe01__OppPayment__c', // the sObject
