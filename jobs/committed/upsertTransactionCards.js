@@ -13,6 +13,7 @@ alterState(state => {
   return { ...state, opportunities, cgIDs, formatDate };
 });
 
+//NOTE: COMMENTED OUT OPPORTUNITY OPERATIONS TO ISOLATE PAYMENT ISSUES 
 // bulk(
 //   'Opportunity', // the sObject
 //   'upsert', //  the operation
@@ -33,6 +34,7 @@ alterState(state => {
 //           CurrencyIsoCode: 'GBP',
 //           StageName: 'Closed Won',
 //           CloseDate: state.formatDate(x['Transaction Date']),
+//           Name: 'test'
 //         };
 //       });
 //   }
