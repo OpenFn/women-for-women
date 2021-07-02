@@ -36,6 +36,7 @@ bulk(
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
           npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
+          Name: ''
         };
       });
   }
