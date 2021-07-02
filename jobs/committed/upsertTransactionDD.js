@@ -105,7 +105,7 @@ bulk(
 
 bulk(
   'npe01__OppPayment__c', // the sObject
-  'create', //  the operation
+  'insert', //  the operation
   {
     // extIdField: 'Committed_Giving_ID__c', // the field to match on
     failOnError: true, // throw error if just ONE record fails
