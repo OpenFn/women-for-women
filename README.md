@@ -11,15 +11,19 @@ Repository for WfWI integrations for: BambooHR, MS Azure Active Directory
 Women for Women International would like to integrate Committed Giving with Salesforce. OpenFn will sync donation data from Committed Giving to Salesforce. In addition, OpenFn to perform duplicate checking before upserting data.
 
 ### Functional Summary
-
 Flow: Committed Giving --> Salesforce
-1. Weekly OpenFn will extract CSV exports of donation data from sftp server, convert to JSON.
-2. OpenFn will map CSVs to Salesforce objects.
-3. OpenFn to perform duplicate checking before upserting data.
+1. Weekly, OpenFn will extract CSV exports of donation data from sftp server, convert to JSON.
+2. OpenFn will map the converted CSVs to relevant Salesforce objects according to data element mapping specifications defined by WfWI.
+3. OpenFn to perform duplicate checking before upserting data in Salesfroce.
 
 ## 2. Technical Overview
 ### Data Flow
 See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a744ed8/edit?beaconFlowId=53F1EDFE7A9CEC2A&page=0_0#
+
+### Unique Identifiers
+1. **Contacts**: `Legacy_Supporter_ID__c: csv.PersonRef`
+2. **Recurring Donations**: ... 
+3. ...
 
 ### OpenFn Jobs
 1. Job 1 gets the CSV files from Committed Giving and converts them to JSON.
@@ -27,10 +31,12 @@ See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a74
 3. Job 3 Upserts Salesforce Objects.
 
 
-### OpenFn Adapters
- SFTP adapter and Salesforce adapter
+### OpenFn Adaptors
+ SFTP adaptor and Salesforce adaptor
 
-### Change Management Considerations
+### Administrator Notes
+1. This integration automates a complex donor duplicate-check flow before upserting Salesforce `Contacts`. Please see [this diagram XYZ] for a summary of the logic flow. 
+2. We assume that Committed Giving will name the CSV files with the following keywords: `
 
 
 # Bamboo <> HR Integration
