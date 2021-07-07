@@ -13,32 +13,32 @@ alterState(state => {
   return { ...state, opportunities, cgIDs, formatDate };
 });
 
-//NOTE: COMMENTED OUT OPPORTUNITY OPERATIONS TO ISOLATE PAYMENT ISSUES
-// bulk(
-//   'Opportunity', // the sObject
-//   'upsert', //  the operation
-//   {
-//     extIdField: 'Committed_Giving_ID__c', // the field to match on
-//     failOnError: true, // throw error if just ONE record fails
-//     allowNoOp: true,
-//   },
-//   state => {
-//     console.log('Bulk upserting opportunities.');
-//     return state.data.json
-//       .filter(x => x.PrimKey)
-//       .map(x => {
-//         return {
-//           Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
-//           //AccountId: '0013K00000jOtMNQA0', // HARDCODED
-//           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
-//           CurrencyIsoCode: 'GBP',
-//           StageName: 'Closed Won',
-//           CloseDate: state.formatDate(x['Transaction Date']),
-//           Name: 'test'
-//         };
-//       });
-//   }
-// );
+bulk(
+  'Opportunity', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting opportunities.');
+    return state.data.json
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+          //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID? 
+          //AccountId: '0013K00000jOtMNQA0', // HARDCODED
+          Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          CurrencyIsoCode: 'GBP',
+          StageName: 'Closed Won',
+          CloseDate: state.formatDate(x['Transaction Date']),
+          Name: 'test'
+        };
+      });
+  }
+);
 
 // // query in order to perform the subsequent update. For create it's all good.
 query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
@@ -67,7 +67,7 @@ bulk(
       .map(x => {
         return {
           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
@@ -95,7 +95,7 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
