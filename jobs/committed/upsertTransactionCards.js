@@ -29,7 +29,8 @@ bulk(
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID? 
-          AccountId: '0010n00001E2Z3eAAF', // TODO: Find Contact Account, map here
+          //AccountId: '0010n00001E2Z3eAAF', // TODO: Find Contact Account, map here
+          'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
