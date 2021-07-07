@@ -6,7 +6,7 @@ alterState(state => {
     return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.TransactionReference}` }));
+  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.CardMasterID}` }));
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
@@ -29,7 +29,7 @@ bulk(
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID? 
-          //AccountId: '0013K00000jOtMNQA0', // HARDCODED
+          AccountId: '0010n00001E2Z3eAAF', // TODO: Find Contact Account, map here
           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
