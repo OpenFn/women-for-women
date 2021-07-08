@@ -8,7 +8,7 @@ bulk(
   },
   state => {
     const formatDate = date => {
-      if (!date) return null;
+      if (!date || date==='') return null;
       date = date.split(' ')[0];
       const parts = date.match(/(\d+)/g);
       return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
