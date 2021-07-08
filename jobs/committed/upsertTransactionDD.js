@@ -6,7 +6,7 @@ alterState(state => {
     return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}` }));
+  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}${x['Date']}` }));
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
@@ -29,7 +29,8 @@ bulk(
         //console.log('x.Amount', x.Amount);
         const Amount = parseInt(x.Amount) !== 'NaN' ? parseInt(x.Amount) : x.Amount.substring(1, x.Amount.length - 1);
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x['Date']}`,
+          'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           //AccountId: '0013K00000jOtMNQA0', // HARDCODED
           Amount,
           CurrencyIsoCode: 'GBP',
