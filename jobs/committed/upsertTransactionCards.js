@@ -6,7 +6,7 @@ alterState(state => {
     return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.CardMasterID}${x.TransactionDate}`}));
+  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`}));
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
@@ -27,7 +27,7 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionDate}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID? 
           //AccountId: '0010n00001E2Z3eAAF', // TODO: Find Contact Account, map here
@@ -35,7 +35,7 @@ bulk(
           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
-          CloseDate: state.formatDate(x['Transaction Date']),
+          CloseDate: state.formatDate(x.CreatedDate),
           Name: 'test'
         };
       });
@@ -69,7 +69,7 @@ bulk(
       .map(x => {
         return {
           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
@@ -77,7 +77,7 @@ bulk(
           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
+          npe01__Payment_Date__c: state.formatDate(x.CreatedDate),
         };
       });
   }
