@@ -24,7 +24,7 @@ bulk(
   state => {
     console.log('Bulk upserting opportunities.');
     return state.data.json
-      .filter(x => x.PrimKey)
+      .filter(x => x.CC_ID)
       .map(x => {
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
