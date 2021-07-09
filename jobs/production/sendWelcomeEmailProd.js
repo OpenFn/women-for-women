@@ -61,7 +61,7 @@ each(
         }
         return send(
           fields(
-            field('from', 'notifications@womenforwomen.org'), 
+            field('from', 'WfWI Notifications <notifications@womenforwomen.org>'), 
             field('sender', 'WfWI Notifications'),
             field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
             field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
