@@ -27,13 +27,13 @@ each(
     if (activeDivisions.includes(employee.fields.Division)) {
       return send(
         fields(
-          field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
+          field('from', 'notifications@womenforwomen.org'), //TODO: replace with WfW domain
           field('to', 'MatiasA@womenforwomen.org'), //TODO: replace with L30
-          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L31
+          field('cc', 'aleksa@openfn.org, support@openfn.org'), //TODO: replace with L31
           //field('to', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to send TO Division contact
           //field('cc', `helpdesk-us@womenforwomen.org`), //TODO: use when ready to copy help-fesk
           field('subject', state => {
-            var sub = `Account Termination: ${state.name} (${state.division})`;
+            var sub = `Testing 123`;
             console.log(sub);
             return sub;
           }),
