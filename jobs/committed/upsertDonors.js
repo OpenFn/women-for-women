@@ -43,7 +43,7 @@ beta.each(
     const OkToPhone = dataValue('OK to phone')(state) === 'Yes' ? true : false;
     const OkToEmail = dataValue('OK to email')(state) === 'Yes' ? true : false;
     const OkToMail = dataValue('OK to mail')(state) === 'Yes' ? true : false;
-    const TextOptIn = dataValue('Text Opt In')(state) === 'Yes' ? true : false;
+    const TextOptIn = dataValue('OK to text')(state) === 'Yes' ? true : false;
     const Deceased = dataValue('Deceased')(state) === 'Yes' ? true : false;
     const Gift = dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
 
