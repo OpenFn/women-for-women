@@ -17,52 +17,66 @@ each(
     };
 
     const activeDivisions = [
-    'Headquarters',
-    'Headquarters - PM Access',
-    'Afghanistan',
-    'Afghanistan - PM Access',
-    'Iraq',
-    'Iraq - PM Access',
-    //'Kosovo',
-    'Nigeria',
-    'Nigeria - PM Access',
-    //'Rwanda',
-    'South Sudan',
-    'South Sudan - PM Access',
-    'The Democratic Republic of the Congo',
-    'The Democratic Republic of the Congo - PM Access',
-    //'WOC',
-    //'No Division'
-  ]; // Add divisions to turn "on"
-  
+      'Headquarters',
+      'Headquarters - PM Access',
+      'Afghanistan',
+      'Afghanistan - PM Access',
+      'Iraq',
+      'Iraq - PM Access',
+      //'Kosovo',
+      'Nigeria',
+      'Nigeria - PM Access',
+      //'Rwanda',
+      'South Sudan',
+      'South Sudan - PM Access',
+      'The Democratic Republic of the Congo',
+      'The Democratic Republic of the Congo - PM Access',
+      //'WOC',
+      //'No Division'
+    ]; // Add divisions to turn "on"
+
     //const activeDivisions = ['Afghanistan', 'Afghanistan - PM Access', 'Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Old method
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
     state.homeEmail = employee.fields['Home Email']
     state.firstName = employee.fields['First Name'];
+    state.userType = employee.fields['Email User Type'];
     state.name = employee.fields['First name Last name'];
     console.log(state.name, state.workEmail);
 
     if (activeDivisions.includes(employee.fields.Division)) {
-      return send(
-        fields(
-          field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
-          //field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
-          //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
-          field('to', `${state.homeEmail}, ${state.workEmail}`), //TODO: use when ready to send TO employee
-          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
-          field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
-          field('subject', state => {
-            var sub = `Welcome to Women for Women International, ${state.name}!`;
-            console.log(sub);
-            return sub;
-          }),
-          field('html', state => {
-            //WfW welcome template
-            //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
-            var msg = 
-`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+      if (!employee.fields['Work Email']) {
+        console.log(`No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`);
+        return state;
+      } else {
+        if (
+          !employee.fields['Email User Type'] ||
+          employee.fields['Email User Type'] === 'Does not need email account'
+        ) {
+          console.log(
+            `No Azure actions taken because employee 'does not need email account' or email not specified - see Email User Type: ${fields['Email User Type']}`
+          );
+          return state;
+        }
+        return send(
+          fields(
+            field('from', 'womenforwomen@irc.openfn.org'), //TODO: replace with WfW domain
+            //field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+            //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
+            field('to', `${state.homeEmail}, ${state.workEmail}`), //TODO: use when ready to send TO employee
+            field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+            field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
+            field('subject', state => {
+              var sub = `Welcome to Women for Women International, ${state.firstName}!`;
+              console.log(sub);
+              return sub;
+            }),
+            field('html', state => {
+              //WfW welcome template
+              //var msg = `paste email template with ${state.dynamicFields} below within back ticks`; 
+              var msg =
+                `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -216,7 +230,7 @@ each(
                                     >
                                       <tr>
                                         <td
-                                          style="background:#f5b2ad;color:#ffffff;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;padding-top:10px;padding-bottom:10px;font-size:22px;line-height:28px;text-align:center"
+                                          style="background:#f5b2ad;color:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;padding-top:10px;padding-bottom:10px;font-size:22px;line-height:28px;text-align:center"
                                         >
                                           <div>Temporary Credentials</div>
                                         </td>
@@ -247,7 +261,7 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
+                                          style="color:#ffffff;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
                                         >
                                           ${state.name}
                                         </td>
@@ -261,8 +275,8 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
-                                          > <font color="#ffffff">${state.workEmail}</font>
+                                          style="color:#ffffff;background:#018374;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;text-transform:capitalize;line-height:24px;text-align:left;padding:10px"
+                                          > <a href='#' style='text-decoration:none'>${state.workEmail}</a>
                                         </td>
                                       </tr>
                                       <tr>
@@ -276,7 +290,7 @@ each(
                                         </td>
                                         <td
                                           valign="middle"
-                                          style="color:#2f2f2f;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
+                                          style="color:#ffffff;background:#01c5af;font-family:&#39;Mulish&#39;,Calibri,Arial,sans-serif;font-size:18px;line-height:24px;text-align:left;padding:10px"
                                         >
                                           You&#39;ll Never Walk Alone!
                                         </td>
@@ -530,88 +544,11 @@ each(
                             <td align="center" style="padding-bottom: 20px">
                               <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.instagram.com/womenforwomen/"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/59BQ3Wd/instagram.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.facebook.com/womenforwomen"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/xGJmDgD/facebook.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://www.linkedin.com/company/women-for-women-international/"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/BzyvWbv/linkedin.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                  <td
-                                    width="40"
-                                    style="
-                                      font-size: 0pt;
-                                      line-height: 0pt;
-                                      text-align: left;
-                                    "
-                                  >
-                                    <a
-                                      href="https://twitter.com/WomenforWomen"
-                                      target="_blank"
-                                      ><img
-                                        src="https://i.ibb.co/DWLmY7L/twitter.png"
-                                        width="32"
-                                        height="32"
-                                        style="max-width: 32px"
-                                        border="0"
-                                        alt=""
-                                    /></a>
-                                  </td>
-                                </tr>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.instagram.com/womenforwomen/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/59BQ3Wd/instagram.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.facebook.com/womenforwomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/xGJmDgD/facebook.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://www.linkedin.com/company/women-for-women-international/" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/BzyvWbv/linkedin.png" alt="" width="32" height="32" border="0" /></a></td>
+<td style="font-size: 0pt; line-height: 0pt; text-align: center;" width="40"><a href="https://twitter.com/WomenforWomen" target="_blank" rel="noopener"><img style="max-width: 32px; display: block; margin-left: auto; margin-right: auto;" src="https://i.ibb.co/DWLmY7L/twitter.png" alt="" width="32" height="32" border="0" /></a></td>
+</tr>
                               </table>
                             </td>
                           </tr>
@@ -628,10 +565,11 @@ each(
     </div>
   </body>
 </html>`;
-            return msg;
-          })
-        )
-      )(state);
+              return msg;
+            })
+          )
+        )(state);
+      }
     } else {
       console.log('Employee not member of activated Division. No automation executed.');
       return state;
