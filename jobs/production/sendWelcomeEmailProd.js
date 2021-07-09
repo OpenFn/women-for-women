@@ -61,12 +61,14 @@ each(
         }
         return send(
           fields(
-            field('from', 'notifications@womenforwomen.org'), //TODO: replace with WfW domain
-            //field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
-            //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
-            field('to', `${state.homeEmail}, ${state.workEmail}`), //TODO: use when ready to send TO employee
-            field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
-            field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
+            field('from', 'WfWI Notifications <notifications@womenforwomen.org<'), //TODO: replace with WfW domain
+            field('to', 'MAverbuj@womenforwomen.org'), //TODO: replace with L29
+            field('cc', 'aleksa@openfn.org, jed@openfn.org'), //TODO: replace with L30
+            field('h:Reply-To', 'helpdesk@womenforwomen.org'),
+            
+            // field('to', `${state.homeEmail}, ${state.workEmail}`), //TODO: use when ready to send TO employee
+            // field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division contact
+            // field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
             field('subject', state => {
               var sub = `Welcome to Women for Women International, ${state.firstName}!`;
               console.log(sub);
