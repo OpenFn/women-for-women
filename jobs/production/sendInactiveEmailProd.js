@@ -50,7 +50,9 @@ each(
     if (activeDivisions.includes(employee.fields.Division)) {
       return send(
         fields(
-          field('from', 'notifications@womenforwomen.org'), //TODO: replace with WfW domain
+          field('from', 'WfWI Notifications <notifications@womenforwomen.org>'), 
+          field('sender', 'WfWI Notifications'),
+          field('h:Reply-To', 'helpdesk@womenforwomen.org'),
           //field('to', 'MAverbuj@womenforwomen.org'), //FOR TESTING
           //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
           field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
