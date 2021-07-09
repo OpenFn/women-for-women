@@ -48,11 +48,11 @@ each(
       return send(
         fields(
           field('from', 'notifications@womenforwomen.org'),
-          //field('to', 'MAverbujA@womenforwomen.org'), //FOR TESTING
-          //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
-          field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
-          field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division HR contact
-          field('bcc', `maverbuj@womenforwomen.org, mmoisethoams@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
+          field('to', 'MAverbujA@womenforwomen.org'), //FOR TESTING
+          field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
+          // field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
+          // field('cc', `${divisionEmailMap[employee.fields.Division]}`), //TODO: use when ready to copy Division HR contact
+          // field('bcc', `maverbuj@womenforwomen.org, mmoisethoams@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
           field('subject', state => {
             var sub = `New Account: ${state.name} (${state.division})`;
             console.log(sub);
