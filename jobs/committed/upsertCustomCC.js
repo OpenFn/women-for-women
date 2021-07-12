@@ -3,13 +3,12 @@ alterState(state => {
   const newJson = [];
 
   function reduceArray(array) {
-    const arr = array.reduce((r, a) => {
+    return array.reduce((r, a) => {
       r[a.CCID] = r[a.CCID] || [];
       r[a.CCID].push(a);
 
       return r;
     }, Object.create(null));
-    return arr;
   }
 
   const group = reduceArray(json);
@@ -22,7 +21,6 @@ alterState(state => {
     newJson.push(newObj);
   }
 
-  // state.group = group;
   state.newJson = newJson;
   return state;
 });

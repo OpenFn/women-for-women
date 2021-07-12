@@ -27,7 +27,6 @@ bulk(
     return state.data.json
       .filter(x => x.PrimKey)
       .map(x => {
-        //console.log('x.Amount', x.Amount);
         const Amount = parseInt(x.Amount) !== 'NaN' ? parseInt(x.Amount) : x.Amount.substring(1, x.Amount.length - 1);
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x['Date']}`,
@@ -38,7 +37,7 @@ bulk(
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
           npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
-          Name: 'test'
+          Name: 'test',
         };
       });
   }
