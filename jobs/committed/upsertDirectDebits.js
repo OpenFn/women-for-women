@@ -8,10 +8,11 @@ bulk(
   },
   state => {
     const formatDate = date => {
-      if (!date || date==='') return null;
+      if (!date) return null;
       date = date.split(' ')[0];
       const parts = date.match(/(\d+)/g);
-      return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+      const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
+      return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
     };
 
     return state.data.json
