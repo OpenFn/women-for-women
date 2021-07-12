@@ -3,10 +3,11 @@ alterState(state => {
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+    const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
+    return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`}));
+  const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` }));
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
@@ -29,14 +30,14 @@ bulk(
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
-          //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID? 
+          //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID?
           AccountId: '0010n00001E2Z3eAAF', // TODO: Find Contact Account, map here
           'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x.CreatedDate),
-          Name: 'test'
+          Name: 'test',
         };
       });
   }
