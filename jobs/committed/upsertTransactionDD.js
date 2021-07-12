@@ -97,7 +97,7 @@ bulk(
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Direct Debit',
           npe01__Paid__c: true,
-          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+          'Primary_Campaign__r.Source_Code__c': x.PromoCode,
           npe01__Payment_Date__c: state.formatDate(x.Date),
         };
       });
@@ -124,7 +124,7 @@ bulk(
           npe01__Payment_Method__c: 'Direct Debit',
           npe01__Paid__c: true,
           npe01__Payment_Amount__c: x.Amount,
-          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+          'Primary_Campaign__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
           npe01__Payment_Date__c: state.formatDate(x.Date),
         };
