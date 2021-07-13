@@ -231,6 +231,7 @@ beta.each(
               )(state);
             } else {
               upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+              console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
               return update(
                 'Contact',
                 fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
@@ -289,6 +290,7 @@ beta.each(
           )(state);
         } else {
           // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+          console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
           return update(
             'Contact',
             fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
