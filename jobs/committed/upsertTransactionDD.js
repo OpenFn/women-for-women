@@ -29,7 +29,7 @@ bulk(
       .map(x => {
         const Amount = parseInt(x.Amount) !== 'NaN' ? parseInt(x.Amount) : x.Amount.substring(1, x.Amount.length - 1);
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x['Date']}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
           Amount,
