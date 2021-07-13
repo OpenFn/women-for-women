@@ -94,7 +94,7 @@ bulk(
       .map(x => {
         return {
           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Direct Debit',
@@ -120,7 +120,7 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Direct Debit',
