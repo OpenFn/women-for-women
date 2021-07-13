@@ -39,6 +39,7 @@ bulk(
           npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
          'Campaign.Source_Code__c': x['PromoCode'],
           Name: 'test',
+          Donation_Type__c: x['TransType']==='Sponsorship' ? 'Sponsorship' : 'Recurring Donation'
         };
       });
   }
