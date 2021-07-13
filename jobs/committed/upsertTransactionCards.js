@@ -37,7 +37,7 @@ bulk(
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x.CreatedDate),
-          'CampaignId.Source_Code__c': x['PromoCode'],
+          'Campaign.Source_Code__c': x['PromoCode'],
           Name: 'test',
         };
       });
