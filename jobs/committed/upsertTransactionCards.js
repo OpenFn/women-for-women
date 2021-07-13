@@ -108,7 +108,7 @@ bulk(
           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x['Transaction Date']),
+          npe01__Payment_Date__c: state.formatDate(x.CreatedDate),
         };
       });
   }
