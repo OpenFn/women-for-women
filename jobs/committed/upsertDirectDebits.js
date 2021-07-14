@@ -8,6 +8,8 @@ bulk(
   },
   state => {
     const formatDate = date => {
+      console.log('date', date);
+      if (isNaN(new Date(date).getTime())) return null;
       if (!date) return null;
       date = date.split(' ')[0];
       const parts = date.match(/(\d+)/g);
@@ -25,14 +27,14 @@ bulk(
           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
           Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
-          Closeout_Reason__c: x.CancelReason, //different field name? 
+          Closeout_Reason__c: x.CancelReason, //different field name?
           //npsp__ClosedReason__c: x.CancelReason,
           npe03__Installment_Period__c: x.PaymentFrequency,
           npsp__StartDate__c: x.StartDate ? formatDate(x.StartDate) : x.StartDate,
           npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
           npe03__Next_Payment_Date__c: x.NextDate ? formatDate(x.NextDate) : x.NextDate,
           npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
-          of_Sisters_Requested__c: x['Number of sponsorships']===' ' ? undefined : x['Number of sponsorships'],
+          of_Sisters_Requested__c: x['Number of sponsorships'] === ' ' ? undefined : x['Number of sponsorships'],
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         };
       });
