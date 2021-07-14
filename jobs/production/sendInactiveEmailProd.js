@@ -185,7 +185,7 @@ each(
                                                             <br />
                                                             <a
                                                               moz-do-not-send="true"
-                                                              href="https://help.womenforwomen.org/portal/4/create/64"
+                                                              href="https://wfwi.atlassian.net/servicedesk/customer/portal/4/group/27/create/90"
                                                               >USER TERMINATION FORM</a
                                                             ><br />
                                                             <br />
