@@ -28,7 +28,7 @@ bulk(
       .filter(x => x.CC_ID)
       .map(x => {
         return {
-          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x.Transaction Date}`,
+          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID?
           'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
@@ -72,7 +72,7 @@ bulk(
       .map(x => {
         return {
           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x.Transaction Date}`,
+          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
@@ -101,8 +101,8 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
-          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
+          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
+          'npe01__Opportunity__r.Committed_Giving_ID__c': x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
