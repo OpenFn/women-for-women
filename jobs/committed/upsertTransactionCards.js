@@ -36,7 +36,7 @@ bulk(
           Amount: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
-          CloseDate: state.formatDate(x.CreatedDate),
+          CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x['Transaction Date']),
           'Campaign.Source_Code__c': x['PromoCode'],
           Name: 'test',
         };
@@ -71,7 +71,7 @@ bulk(
       .map(x => {
         return {
           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
+          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x.Transaction Date}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
@@ -79,7 +79,7 @@ bulk(
           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x.CreatedDate),
+          npe01__Payment_Date__c: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x['Transaction Date']),
         };
       });
   }
@@ -104,11 +104,11 @@ bulk(
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
-          npe01__Payment_Amount__c: x.Amount ? x.Amount.replace(/\£/g, '').substring(1, x.Amount.length - 1) : '',
+          npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x.CreatedDate),
+          npe01__Payment_Date__c: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x['Transaction Date']),
         };
       });
   }
