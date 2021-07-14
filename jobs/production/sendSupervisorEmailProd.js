@@ -35,6 +35,7 @@ each(
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
+    state.homeEmail = employee.fields['Home Email'];
     state.name = employee.fields['First name Last name'];
     state.firstName = employee.fields['First Name'];
     state.division = employee.fields['Division'];
