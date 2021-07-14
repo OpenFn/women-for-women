@@ -28,7 +28,7 @@ bulk(
       .filter(x => x.CC_ID)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.CC_ID}${x.CreatedDate}`,
+          Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x.Transaction Date}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
           //Committed_Giving_ID__c: `${x.PrimKey}${x.TransactionReference}${x['Transaction Date']}`, //Wrong UID?
           'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
