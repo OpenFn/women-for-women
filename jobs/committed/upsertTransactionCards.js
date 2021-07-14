@@ -104,7 +104,7 @@ bulk(
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Credit Card',
           npe01__Paid__c: true,
-          npe01__Payment_Amount__c: x.Amount ? x.Amount.substring(1, x.Amount.length - 1) : '',
+          npe01__Payment_Amount__c: x.Amount ? x.Amount.replace(/\£/g, '').substring(1, x.Amount.length - 1) : '',
           npsp__Payment_Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
           wfw_Credit_Card_Type__c: x.CCType,
