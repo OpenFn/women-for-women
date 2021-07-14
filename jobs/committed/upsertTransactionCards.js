@@ -25,7 +25,7 @@ bulk(
   state => {
     console.log('Bulk upserting opportunities.');
     return state.data.json
-      .filter(x => x.CC_ID)
+      //.filter(x => x.CC_ID) //TODO: Comment back in? Will we map CC_ID OR CardMasterID
       .map(x => {
         return {
           Committed_Giving_ID__c: x.CC_ID ? `${x.PrimKey}${x.CC_ID}${x.CreatedDate}` : `${x.PrimKey}${x.CardMasterID}${x['Transaction Date']}`,
