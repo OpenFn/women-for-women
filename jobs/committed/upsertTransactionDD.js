@@ -45,66 +45,66 @@ bulk(
   }
 );
 
-bulk(
-  'npe03__Recurring_Donation__c', // the sObject
-  'upsert', //  the operation
-  {
-    extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk upserting donations.');
+// bulk(
+//   'npe03__Recurring_Donation__c', // the sObject
+//   'upsert', //  the operation
+//   {
+//     extIdField: 'Committed_Giving_ID__c', // the field to match on
+//     failOnError: true, // throw error if just ONE record fails
+//     allowNoOp: true,
+//   },
+//   state => {
+//     console.log('Bulk upserting donations.');
 
-    return state.data.json
-      .filter(x => x.PrimKey)
-      .map(x => {
-        return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
-          Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
-        };
-      });
-  }
-);
+//     return state.data.json
+//       .filter(x => x.PrimKey)
+//       .map(x => {
+//         return {
+//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+//           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
+//         };
+//       });
+//   }
+// );
 
-// query in order to perform the subsequent update. For create it's all good.
-query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
+// // query in order to perform the subsequent update. For create it's all good.
+// query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
 
-alterState(state => {
-  const { records } = state.references[0];
+// alterState(state => {
+//   const { records } = state.references[0];
 
-  const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
-  const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
+//   const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
+//   const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
 
-  return { ...state, paymentsToUpdate, paymentsToCreate };
-});
+//   return { ...state, paymentsToUpdate, paymentsToCreate };
+// });
 
-bulk(
-  'npe01__OppPayment__c', // the sObject
-  'update', //  the operation
-  {
-    // extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk updating payments.');
-    return state.paymentsToUpdate
-      .filter(x => x.PrimKey)
-      .map(x => {
-        return {
-          // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
-          CurrencyIsoCode: 'GBP',
-          npe01__Payment_Method__c: 'Direct Debit',
-          npe01__Paid__c: true,
-          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-          npe01__Payment_Date__c: state.formatDate(x.Date),
-        };
-      });
-  }
-);
+// bulk(
+//   'npe01__OppPayment__c', // the sObject
+//   'update', //  the operation
+//   {
+//     // extIdField: 'Committed_Giving_ID__c', // the field to match on
+//     failOnError: true, // throw error if just ONE record fails
+//     allowNoOp: true,
+//   },
+//   state => {
+//     console.log('Bulk updating payments.');
+//     return state.paymentsToUpdate
+//       .filter(x => x.PrimKey)
+//       .map(x => {
+//         return {
+//           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
+//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+//           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
+//           CurrencyIsoCode: 'GBP',
+//           npe01__Payment_Method__c: 'Direct Debit',
+//           npe01__Paid__c: true,
+//           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+//           npe01__Payment_Date__c: state.formatDate(x.Date),
+//         };
+//       });
+//   }
+// );
 
 bulk(
   'npe01__OppPayment__c', // the sObject
