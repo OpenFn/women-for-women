@@ -57,7 +57,8 @@ upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', state => {
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}`,
           Committed_Giving_Direct_Debit_ID__c: x.DDId,
-          'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
+          npe03__Contact__c: '0030n00000qsDggAAE',
+          //'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
           Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
