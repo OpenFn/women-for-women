@@ -107,32 +107,32 @@ alterState(state => {
 //   }
 // );
 
-bulk(
-  'npe01__OppPayment__c', // the sObject
-  'upsert', //  the operation
-  {
-    extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk creating payments.');
-    return state.paymentsToCreate
-      .filter(x => x.PrimKey)
-      .map(x => {
-        return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-          CurrencyIsoCode: 'GBP',
-          npe01__Payment_Method__c: 'Direct Debit',
-          npe01__Paid__c: true,
-          npe01__Payment_Amount__c: x.Amount,
-          'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-          wfw_Credit_Card_Type__c: x.CCType,
-          npe01__Payment_Date__c: state.formatDate(x.Date),
-        };
-      });
-  }
+// bulk(
+//   'npe01__OppPayment__c', // the sObject
+//   'upsert', //  the operation
+//   {
+//     extIdField: 'Committed_Giving_ID__c', // the field to match on
+//     failOnError: true, // throw error if just ONE record fails
+//     allowNoOp: true,
+//   },
+//   state => {
+//     console.log('Bulk creating payments.');
+//     return state.paymentsToCreate
+//       .filter(x => x.PrimKey)
+//       .map(x => {
+//         return {
+//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+//           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+//           CurrencyIsoCode: 'GBP',
+//           npe01__Payment_Method__c: 'Direct Debit',
+//           npe01__Paid__c: true,
+//           npe01__Payment_Amount__c: x.Amount,
+//           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
+//           wfw_Credit_Card_Type__c: x.CCType,
+//           npe01__Payment_Date__c: state.formatDate(x.Date),
+//         };
+//       });
+//   }
 );
 
 alterState(state => {
