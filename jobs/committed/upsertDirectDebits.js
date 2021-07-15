@@ -67,8 +67,8 @@ upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', state => {
           npe03__Installment_Period__c: x.PaymentFrequency,
           npe03__Date_Established__c: '2015-08-25',
           //npe03__Date_Established__c: x.StartDate ? formatDate(x.StartDate) : x.StartDate, //TODO: Confirm with Torian this triggers payments
-          npe03__Next_Payment_Date__c: x.NextDate ? formatDate(x.NextDate) : x.NextDate,
-          npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
+          npe03__Next_Payment_Date__c: x.NextDate ? formatDate(x.NextDate) : undefined,
+          npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : undefined,
           of_Sisters_Requested__c: x['Number of sponsorships'] === ' ' ? undefined : x['Number of sponsorships'],
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         };
