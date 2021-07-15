@@ -41,7 +41,7 @@ bulk(
           Name: 'test',
           Donation_Type__c: x['TransType']==='Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           Payment_Type__c: Amount > 0 ? 'Payment' : 'Refund', //TODO: CHANGE TO REFUND IF -
-          npe03__Recurring_Donation__c: 'a090n0000036wpbAAA' //TODO: UPDATE how this is set
+          npe03__Recurring_Donation__c: 'a090n0000036wpcAAA' //TODO: UPDATE how this is set
         };
       });
   }
