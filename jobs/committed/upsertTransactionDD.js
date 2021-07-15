@@ -68,16 +68,16 @@ bulk(
 // );
 
 // // query in order to perform the subsequent update. For create it's all good.
-// query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
+query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
 
-// alterState(state => {
-//   const { records } = state.references[0];
+alterState(state => {
+  const { records } = state.references[0];
 
-//   const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
-//   const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
+  const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
+  const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
 
-//   return { ...state, paymentsToUpdate, paymentsToCreate };
-// });
+  return { ...state, paymentsToUpdate, paymentsToCreate };
+});
 
 // bulk(
 //   'npe01__OppPayment__c', // the sObject
