@@ -121,7 +121,7 @@ bulk(
       .map(x => {
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
+          'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           CurrencyIsoCode: 'GBP',
           npe01__Payment_Method__c: 'Direct Debit',
           npe01__Paid__c: true,
