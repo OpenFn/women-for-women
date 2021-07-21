@@ -50,7 +50,7 @@ beta.each(
     // ======================================================================
 
     await query(
-      `SELECT Id, FirstName, LastName, MailingStreet, Email, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
+      `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
       FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
     )(state).then(async state => {
       const { FirstName, EmailAddress } = state.data;
@@ -60,9 +60,9 @@ beta.each(
       if (sizeLegacyMatch === 0) {
         // A. If no matching Contact has been found...
         await query(
-          `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
+          `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
           FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
-          AND Email = '${EmailAddress}'`
+          AND npe01__HomeEmail__c = '${EmailAddress}'`
         )(state).then(async state => {
           const { records } = state.references[0];
           const sizeEmailMatch = state.references[0].totalSize;
@@ -70,7 +70,7 @@ beta.each(
           if (sizeEmailMatch === 0) {
             // A1. If no matching Contact has been found...
             await query(
-              `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
+              `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
               FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
               AND MailingStreet = '${address}'`
             )(state).then(async state => {
@@ -80,8 +80,8 @@ beta.each(
                 // A11. If no matching Contact has been found...
                 if (originalEmail !== '') {
                   await query(
-                    `SELECT Id, FirstName, Email, LastName, MailingStreet, LastModifiedDate 
-                  FROM CONTACT WHERE Email = '${EmailAddress}'`
+                    `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+                  FROM CONTACT WHERE npe01__HomeEmail__c = '${EmailAddress}'`
                   )(state).then(async state => {
                     const sizeEmailMatch2 = state.references[0].totalSize;
 
@@ -181,7 +181,7 @@ beta.each(
           } else {
             console.log('modified', records[0].LastModifiedDate);
             const { LastModifiedDate, Id } = records[0];
-            const EmailSF = records[0].Email;
+            const EmailSF = records[0].npe01__HomeEmail__c;
             // A2. If a matching Contact has been found...
             if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
               // If CG is more recent than SF
@@ -241,7 +241,7 @@ beta.each(
         });
       } else {
         const { LastModifiedDate, Id } = records[0];
-        const EmailSF = records[0].Email;
+        const EmailSF = records[0].npe01__HomeEmail__c;
         // B. If a matching Contact has been found...
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
           // If CG is more recent than SF
