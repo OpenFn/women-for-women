@@ -105,7 +105,7 @@ beta.each(
                           field('MailingCountry', dataValue('Country')),
                           field('HomePhone', dataValue('TelNumber1')),
 
-                          field('npe01__PreferredPhone__c', phone),
+                          field('npe01__PreferredPhone__c', 'Home'),
                           field('MobilePhone', dataValue('Tel2Number')),
                           field('npe01__HomeEmail__c', email),
                           field('npe01__Preferred_Email__c', 'Personal'),
@@ -151,7 +151,7 @@ beta.each(
                       field('MailingCountry', dataValue('Country')),
                       field('HomePhone', dataValue('TelNumber1')),
 
-                      field('npe01__PreferredPhone__c', phone),
+                      field('npe01__PreferredPhone__c', 'Home'),
                       field('MobilePhone', dataValue('Tel2Number')),
                       field('npe01__HomeEmail__c', email),
                       field('npe01__Preferred_Email__c', 'Personal'),
@@ -203,7 +203,7 @@ beta.each(
                   field('MailingCountry', dataValue('Country')),
                   field('HomePhone', dataValue('TelNumber1')),
 
-                  field('npe01__PreferredPhone__c', phone),
+                  field('npe01__PreferredPhone__c', 'Home'),
                   field('MobilePhone', dataValue('Tel2Number')),
                   field('npe01__HomeEmail__c', state => {
                     if (EmailSF !== null) return undefined;
@@ -263,7 +263,7 @@ beta.each(
               field('MailingCountry', dataValue('Country')),
               field('HomePhone', dataValue('TelNumber1')),
 
-              field('npe01__PreferredPhone__c', phone),
+              field('npe01__PreferredPhone__c', 'Home'),
               field('MobilePhone', dataValue('Tel2Number')),
               field('npe01__HomeEmail__c', state => {
                 if (EmailSF !== null) return undefined;
