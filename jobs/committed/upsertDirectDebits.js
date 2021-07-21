@@ -26,7 +26,7 @@ bulk(
           'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
-          Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
+          npsp_Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
           Closeout_Reason__c: x.CancelReason, //different field name?
           //npsp__ClosedReason__c: x.CancelReason,
           npe03__Installment_Period__c: x.PaymentFrequency,
@@ -61,7 +61,7 @@ bulk(
 //           //'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
 //           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
 //           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
-//           Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
+//           npsp_Status__c: x.Status === 'live' ? 'Active' : 'Canceled',
 //           Closeout_Reason__c: x.CancelReason, //different field name?
 //           //npsp__ClosedReason__c: x.CancelReason,
 //           npe03__Installment_Period__c: x.PaymentFrequency,
