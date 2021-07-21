@@ -108,7 +108,7 @@ beta.each(
                           field('npe01__PreferredPhone__c', phone),
                           field('MobilePhone', dataValue('Tel2Number')),
                           field('npe01__HomeEmail__c', email),
-                          field('npe01__Preferred_Email__c', email),
+                          field('npe01__Preferred_Email__c', 'Personal'),
                           field('Call_Opt_In__c', OkToPhone),
                           field('Email_Opt_in__c', OkToEmail),
                           field('Mail_Opt_in__c', OkToMail),
@@ -154,7 +154,7 @@ beta.each(
                       field('npe01__PreferredPhone__c', phone),
                       field('MobilePhone', dataValue('Tel2Number')),
                       field('npe01__HomeEmail__c', email),
-                      field('npe01__Preferred_Email__c', email),
+                      field('npe01__Preferred_Email__c', 'Personal'),
                       field('Call_Opt_In__c', OkToPhone),
                       field('Email_Opt_in__c', OkToEmail),
                       field('Mail_Opt_in__c', OkToMail),
@@ -209,10 +209,11 @@ beta.each(
                     if (EmailSF !== null) return undefined;
                     return email;
                   }),
-                  field('npe01__Preferred_Email__c', state => {
+                  field('npe01__Preferred_Email__c', 'Personal'),
+                  /*state => {
                     if (EmailSF !== null) return undefined;
                     return email;
-                  }),
+                  }),*/
                   field('Call_Opt_In__c', OkToPhone),
                   field('Email_Opt_in__c', OkToEmail),
                   field('Mail_Opt_in__c', OkToMail),
@@ -268,10 +269,10 @@ beta.each(
                 if (EmailSF !== null) return undefined;
                 return email;
               }),
-              field('npe01__Preferred_Email__c', state => {
+              field('npe01__Preferred_Email__c', 'Personal'), /*state => {
                 if (EmailSF !== null) return undefined;
                 return email;
-              }),
+              }),*/
               field('Call_Opt_In__c', OkToPhone),
               field('Email_Opt_in__c', OkToEmail),
               field('Mail_Opt_in__c', OkToMail),
