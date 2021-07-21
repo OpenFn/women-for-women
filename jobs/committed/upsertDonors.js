@@ -107,7 +107,7 @@ beta.each(
 
                           field('npe01__PreferredPhone__c', phone),
                           field('MobilePhone', dataValue('Tel2Number')),
-                          field('Email', email),
+                          field('npe01__HomeEmail__c', email),
                           field('npe01__Preferred_Email__c', email),
                           field('Call_Opt_In__c', OkToPhone),
                           field('Email_Opt_in__c', OkToEmail),
@@ -153,7 +153,7 @@ beta.each(
 
                       field('npe01__PreferredPhone__c', phone),
                       field('MobilePhone', dataValue('Tel2Number')),
-                      field('Email', email),
+                      field('npe01__HomeEmail__c', email),
                       field('npe01__Preferred_Email__c', email),
                       field('Call_Opt_In__c', OkToPhone),
                       field('Email_Opt_in__c', OkToEmail),
@@ -205,7 +205,7 @@ beta.each(
 
                   field('npe01__PreferredPhone__c', phone),
                   field('MobilePhone', dataValue('Tel2Number')),
-                  field('Email', state => {
+                  field('npe01__HomeEmail__c', state => {
                     if (EmailSF !== null) return undefined;
                     return email;
                   }),
@@ -264,7 +264,7 @@ beta.each(
 
               field('npe01__PreferredPhone__c', phone),
               field('MobilePhone', dataValue('Tel2Number')),
-              field('Email', state => {
+              field('npe01__HomeEmail__c', state => {
                 if (EmailSF !== null) return undefined;
                 return email;
               }),
