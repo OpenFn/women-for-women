@@ -26,7 +26,7 @@ The CSV files map to these Salesforce objects as shown below:
 2. `Direct Debit`	-> `Recurring Donations`
 3. `Transaction-card`	-> `Opportunity` and `Payment`
 4. `Transaction-DD`	-> `Recurring Donation`, `Opportunity` and `Payment`
-5. `Custom CC details` -> 	`Opportunity
+5. `Custom CC details` -> 	`Opportunity`
 6. `Custom DD details`	-> `Opportunity`
 
 
