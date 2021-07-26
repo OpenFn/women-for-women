@@ -22,12 +22,14 @@ See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a74
 
 ### Data Mappings
 The CSV files map to these Salesforce objects as shown below:
-1. `Donors`	-> `Contact` (This also looksup `Accounts`)
-2. `Direct Debit`	-> `Recurring Donations`
-3. `Transaction-card`	-> `Opportunity` and `Payment`
-4. `Transaction-DD`	-> `Recurring Donation`, `Opportunity` and `Payment`
-5. `Custom CC details` -> 	`Opportunity`
-6. `Custom DD details`	-> `Opportunity`
+1. `Donors` CSV triggers `upsertDonors.js` job, which upserts Salesforce objects `Contact` (This also looksup `Accounts`). 
+2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce object `Recurring Donations`.
+3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , which upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
+4. `Custom DD details`	CSV triggers `upsertCustomDD.js` job, which upserts Salesforce object `Opportunity`
+5. `Card master` CSV triggers `upsertCardMaster.js` job, which upserts Salesforce object `Recurring Donation`, `Opportunity` and `Payment`
+6. `Transaction-card`	CSV triggers `upsertTransactionCards.js` job, which upserts Salesforce objects `Opportunity` and `Payment`
+7. `Custom CC details` CSV triggers `upsertCustomCC.js` job, which upserts Salesforce object `Opportunity`
+8. 
 
 
 ### Unique Identifiers
@@ -43,7 +45,7 @@ The CSV files map to these Salesforce objects as shown below:
 
 ### Flow Triggers
 Trigger Type: Message Filter
-A message filter trigger has been configured for Job 1 above. The job will run when a CSV file with the matching message filter is recieved in the project inbox. 
+A message filter trigger has been configured for each above. The job will run when a CSV file with the matching message filter is recieved in the project inbox. 
 
 ### OpenFn Adaptors
  SFTP adaptor and Salesforce adaptor
