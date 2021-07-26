@@ -41,7 +41,7 @@ The CSV files map to these Salesforce objects as shown below:
 2. Job 2 maps the JSON objects to Salesforce and checks for duplicates.
 3. Job 3 Upserts Salesforce Objects.
 
-**###Flow Triggers**
+### Flow Triggers
 Trigger Type: Message Filter
 A message filter trigger has been configured for Job 1 above. The job will run when a CSV file with the matching message filter is recieved in the project inbox. 
 
