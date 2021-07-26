@@ -20,16 +20,30 @@ Flow: Committed Giving --> Salesforce
 ### Data Flow
 See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a744ed8/edit?beaconFlowId=53F1EDFE7A9CEC2A&page=0_0#
 
+### Data Mappings
+The CSV files map to these Salesforce objects as shown below:
+1. `Donors`	-> `Contact` (This also looksup `Accounts`)
+2. `Direct Debit`	-> `Recurring Donations`
+3. `Transaction-card`	-> `Opportunity` and `Payment`
+4. `Transaction-DD`	-> `Recurring Donation`, `Opportunity` and `Payment`
+5. `Custom CC details` -> 	`Opportunity
+6. `Custom DD details`	-> `Opportunity`
+
+
 ### Unique Identifiers
 1. **Contacts**: `Legacy_Supporter_ID__c: csv.PersonRef`
-2. **Recurring Donations**: ... 
-3. ...
+2. **Recurring Donations**: Configured External ID `Committed_Giving_ID__c` 
+3. **Opportunity**: Configured External ID `Committed_Giving_ID__c`
+4. **Payment**: Configured External ID `Committed_Giving_ID__c`
 
 ### OpenFn Jobs
-1. Job 1 gets the CSV files from Committed Giving and converts them to JSON.
+1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	.
 2. Job 2 maps the JSON objects to Salesforce and checks for duplicates.
 3. Job 3 Upserts Salesforce Objects.
 
+**###Flow Triggers**
+Trigger Type: Message Filter
+A message filter trigger has been configured for Job 1 above. The job will run when a CSV file with the matching message filter is recieved in the project inbox. 
 
 ### OpenFn Adaptors
  SFTP adaptor and Salesforce adaptor
