@@ -49,11 +49,15 @@ The CSV files map to these Salesforce objects as shown below:
    For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`.
 
 3. **Opportunity**: 
+
  For transaction cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID` . 
+ 
  For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
 
 4. **Payment**: 
+
  For transaction cards and card master, configured External ID  `Committed_Giving_ID__c` comes from `PrimKey`  +`TransactionReference`
+ 
  For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
 
 ### OpenFn Jobs
