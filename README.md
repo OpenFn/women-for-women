@@ -42,7 +42,9 @@ The CSV files map to these Salesforce objects as shown below:
 
 2. **Recurring Donations**: 
    For direct debits, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDId`.
+   
    For card master, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`.
+   
    For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`.
 
 3. **Opportunity**: 
