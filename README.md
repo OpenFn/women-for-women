@@ -26,7 +26,7 @@ The CSV files map to these Salesforce objects as shown below:
 
 2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce object `Recurring Donations`.
 
-3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , which upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
+3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , that checks for dulicates and upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
 
 4. `Custom DD details`	CSV triggers `upsertCustomDD.js` job, which upserts Salesforce object `Opportunity`.
 
@@ -38,10 +38,20 @@ The CSV files map to these Salesforce objects as shown below:
 
 
 ### Unique Identifiers
-1. **Contacts**: `Legacy_Supporter_ID__c: csv.PersonRef`
-2. **Recurring Donations**: Configured External ID `Committed_Giving_ID__c` 
-3. **Opportunity**: Configured External ID `Committed_Giving_ID__c`
-4. **Payment**: Configured External ID `Committed_Giving_ID__c`
+1. **Contacts**: `Legacy_Supporter_ID__c` comes from `PersonRef`.
+
+2. **Recurring Donations**: 
+   For direct debits, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDId`.
+   For card master, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`.
+   For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`.
+
+3. **Opportunity**: 
+ For transaction cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID` . 
+ For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
+
+4. **Payment**: 
+ For transaction cards and card master, configured External ID  `Committed_Giving_ID__c` comes from `PrimKey`  +`TransactionReference`
+ For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
 
 ### OpenFn Jobs
 1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
