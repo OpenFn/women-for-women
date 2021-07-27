@@ -41,6 +41,7 @@ The CSV files map to these Salesforce objects as shown below:
 1. **Contacts**: `Legacy_Supporter_ID__c` comes from `PersonRef`.
 
 2. **Recurring Donations**: 
+
    For direct debits, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDId`.
    
    For card master, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`.
