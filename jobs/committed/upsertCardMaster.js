@@ -48,6 +48,7 @@ bulk(
           Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
           Name: x.CardMasterID,
           'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
+          'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
           npe03__Installment_Period__c: x.Occurrence,
           Type__c: x['Recurring Donation'],
           npe03__Amount__c: x.Amount,
