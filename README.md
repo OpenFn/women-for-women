@@ -44,9 +44,21 @@ The CSV files map to these Salesforce objects as shown below:
 4. **Payment**: Configured External ID `Committed_Giving_ID__c`
 
 ### OpenFn Jobs
-1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	.
-2. Job 2 maps the JSON objects to Salesforce and checks for duplicates.
-3. Job 3 Upserts Salesforce Objects.
+1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
+
+2. The `upsertDonors.js` job  checks for duplicates and upserts Salesforce objects `Contact`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDonors.js
+
+3. The`upsertDirectDebits.js` job upserts Salesforce object `Recurring Donations`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDirectDebits.js
+
+4. The `upsertTransactionDD.js` job upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionDD.js
+
+5. The `upsertCustomDD.js` job  upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomDD.js
+
+6. The `upsertCardMaster.js` job,  upserts Salesforce object `Recurring Donation`, `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCardMaster.js
+
+7. The`upsertTransactionCards.js` upserts Salesforce objects `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionCards.js
+
+8. The `upsertCustomCC.js` job upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomCC.js
 
 ### Flow Triggers
 Trigger Type: Message Filter
