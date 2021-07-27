@@ -22,11 +22,11 @@ See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a74
 
 ### Data Mappings
 The CSV files map to these Salesforce objects as shown below:
-1. `Donors` CSV triggers `upsertDonors.js` job, which upserts Salesforce objects `Contact` (This also looksup `Accounts`). 
+1. `Donors` CSV triggers `upsertDonors.js` job, that checks for duplicates and upserts Salesforce objects `Contact` (This also looksup `Accounts`). 
 
 2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce object `Recurring Donations`.
 
-3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , that checks for dulicates and upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
+3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , that upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
 
 4. `Custom DD details`	CSV triggers `upsertCustomDD.js` job, which upserts Salesforce object `Opportunity`.
 
