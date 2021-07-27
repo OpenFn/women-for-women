@@ -78,9 +78,20 @@ A message filter trigger has been configured for each above. The job will run wh
  SFTP adaptor and Salesforce adaptor
 
 ### Administrator Notes
-1. This integration automates a complex donor duplicate-check flow before upserting Salesforce `Contacts`. Please see [this diagram XYZ] for a summary of the logic flow. 
-2. We assume that Committed Giving will name the CSV files with the following keywords: `
+1. This integration automates a complex donor duplicate-check flow before upserting Salesforce `Contacts`. Please see [this diagram: CG <> Salesforce Contact Integration Flow] https://lucid.app/lucidchart/4d0b44a8-3299-431f-84b5-4b00bc713cd7/edit?beaconFlowId=BD5CBE391A037FF2&page=yw0MswWCJIR2#  for a summary of the WfWI CG Contacts Duplicate Checking & Sync Logic. 
 
+2. We assume that Committed Giving will name the CSV files with the following keywords: `
+      `wfwi donors'
+      'wfwi card master'
+      'wfwi direct debits'
+      'wfwi transactions - cards'
+      'wfwi transactions - dd'
+      'wfwi custom cc fields'
+      'wfwi custom dd fields'
+      
+ 3. New campaign codes will be added directly in Salesforce.
+
+ 4. All donations prior to 01/01/2020 should be logged in Salesforce already.
 
 # Bamboo <> HR Integration
 ## 1. Solution Overview
