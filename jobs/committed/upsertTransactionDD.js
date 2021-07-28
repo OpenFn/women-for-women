@@ -46,7 +46,7 @@ bulk(
       });
   }
 );
-
+// NOTE: REDUNDANT STEP? We're not adding any new information to Recurring Donations
 // bulk(
 //   'npe03__Recurring_Donation__c', // the sObject
 //   'upsert', //  the operation
@@ -69,6 +69,7 @@ bulk(
 //   }
 // );
 
+//=== NOTE: AK COMMENTED OUT WHILE TROUBLESHOOTING PAYMENT ISSUE ====//
 // // query in order to perform the subsequent update. For create it's all good.
 // query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
 
