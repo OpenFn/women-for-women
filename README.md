@@ -26,13 +26,13 @@ The CSV files map to these Salesforce objects as shown below:
 
 2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce object `Recurring Donations`.
 
-3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job , that upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. 
+3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job, which upserts Salesforce objects `Recurring Donation`. 
 
 4. `Custom DD details`	CSV triggers `upsertCustomDD.js` job, which upserts Salesforce object `Opportunity`.
 
-5. `Card master` CSV triggers `upsertCardMaster.js` job, which upserts Salesforce object `Recurring Donation`, `Opportunity` and `Payment`.
+5. `Card master` CSV triggers `upsertCardMaster.js` job, which upserts Salesforce object `Recurring Donation`.
 
-6. `Transaction-card`	CSV triggers `upsertTransactionCards.js` job, which upserts Salesforce objects `Opportunity` and `Payment`.
+6. `Transaction-card` CSV triggers `upsertTransactionCards.js` job, which upserts Salesforce object `Recurring Donation` and `Opportunity`.
 
 7. `Custom CC details` CSV triggers `upsertCustomCC.js` job, which upserts Salesforce object `Opportunity`
 
@@ -47,18 +47,16 @@ The CSV files map to these Salesforce objects as shown below:
    For card master, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`.
    
    For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`.
+   
+   For transactions cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`+`TransactionReference`.
+
 
 3. **Opportunity**: 
 
- For transaction cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID` . 
+ For transaction cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`+`TransactionReference` . 
  
  For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
 
-4. **Payment**: 
-
- For transaction cards and card master, configured External ID  `Committed_Giving_ID__c` comes from `PrimKey`  +`TransactionReference`
- 
- For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
 
 ### OpenFn Jobs
 1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
@@ -67,13 +65,13 @@ The CSV files map to these Salesforce objects as shown below:
 
 3. The`upsertDirectDebits.js` job upserts Salesforce object `Recurring Donations`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDirectDebits.js
 
-4. The `upsertTransactionDD.js` job upserts Salesforce objects `Recurring Donation`, `Opportunity` and `Payment`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionDD.js
+4. The `upsertTransactionDD.js` job upserts Salesforce objects `Recurring Donation`. Salesforce authomatically creates related `Opportunity` and `Payment`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionDD.js
 
 5. The `upsertCustomDD.js` job  upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomDD.js
 
-6. The `upsertCardMaster.js` job,  upserts Salesforce object `Recurring Donation`, `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCardMaster.js
+6. The `upsertCardMaster.js` job,  upserts Salesforce object `Recurring Donation` then Salesforce automatically  creates related Salesforce Objects `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCardMaster.js
 
-7. The`upsertTransactionCards.js` upserts Salesforce objects `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionCards.js
+7. The`upsertTransactionCards.js`  upserts Salesforce object `Recurring Donation` of Type `Sponsorship`, if the amount is a multiple of 22. Otherwise, it upserts Salesforce objects `Recurring Donation` of Type `Recurring Donation` and creates Salesforce object `Opportunity` with `Stage` of `Closed Won`.  In addition, if the amount is NOT a multiple of 22 and the count of transactions on a card master is more than one, it creates Salesforce object `Opportunity` with a `Donation Type` of `General Giving` and `Stage` of `Closed Won`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionCards.js
 
 8. The `upsertCustomCC.js` job upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomCC.js
 
@@ -99,6 +97,8 @@ A message filter trigger has been configured for each above. The job will run wh
  3. New campaign codes will be added directly in Salesforce.
 
  4. All donations prior to 01/01/2020 should be logged in Salesforce already.
+
+ 5. For every `Recurring Donation` created, Salesforce automatically creates  related `Opportunity` and `Payment`.
 
 # Bamboo <> HR Integration
 ## 1. Solution Overview
