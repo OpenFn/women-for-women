@@ -1,14 +1,14 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      //'wfwi donors',
+      'wfwi donors',
       //'wfwi live sponsorships',
       //'wfwi card master',
       //'wfwi direct debits',
       // 'wfwi transactions - cards',
         //'wfwi transactions - dd',
        // 'wfwi custom cc fields',
-       'wfwi custom dd fields',
+       //'wfwi custom dd fields',
     ];
 
     const files = state.data.filter(
