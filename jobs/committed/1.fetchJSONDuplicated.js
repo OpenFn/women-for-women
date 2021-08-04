@@ -80,7 +80,7 @@ each(
       }
       // =======================================================================================
 
-      const arrayReduced = reduceArray(json, 'CardMasterID');
+      let arrayReduced = reduceArray(json, 'CardMasterID');
       const group = [];
       for (key in arrayReduced) group.push(arrayReduced[key]);
       arrayReduced = [];
