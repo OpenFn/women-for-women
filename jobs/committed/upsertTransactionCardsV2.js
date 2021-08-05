@@ -68,6 +68,29 @@ bulk(
   }
 );
 
+bulk(
+  'npe03__Recurring_Donation__c',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting Recurring Donation with count transaction greater than 1.');
+    return state.CardMasterIDGreaterThan1.map(x => {
+      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
+      return {
+        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
+        Credit_Card_Type__c: x.CCType,
+        Type__c: 'Recurring Donation',
+        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
+        npe03__Amount__c: Amount,
+      };
+    });
+  }
+);
+
 alterState(state => {
   return { ...state, opportunities: [], cgIDs: {} };
 });
