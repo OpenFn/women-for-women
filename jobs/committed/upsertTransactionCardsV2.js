@@ -112,6 +112,26 @@ bulk(
   }
 );
 
+alterState(state => {
+  return query(
+    `Select Id, CloseDate FROM Opportunity 
+    WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in ('${state.selectIDs.join('", "')}')`
+  )(state).then(state => {
+    const { records } = state.references[0];
+    const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
+    const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
+
+    const transactionsToUpdate = state.TransactionsToMatch.filter(
+      t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
+    );
+    const transactionsToCreate = state.TransactionsToMatch.filter(
+      t =>
+        !SFMonth.includes(t['Transaction Date'].split('/')[1]) || !SFYear.includes(t['Transaction Date'].split('/')[2])
+    );
+
+    return { ...state, transactionsToUpdate, transactionsToCreate };
+  });
+});
 
 alterState(state => {
   return { ...state, opportunities: [], cgIDs: {} };
