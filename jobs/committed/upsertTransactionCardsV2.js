@@ -133,6 +133,49 @@ alterState(state => {
   });
 });
 
+bulk(
+  'Opportunity',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting new Opportunities without match.');
+    return state.transactionsToCreate.map(x => {
+      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
+      return {
+        StageName: 'Closed Won',
+        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
+        Amount,
+        CloseDate: x['Transaction Date'],
+        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+      };
+    });
+  }
+);
+
+bulk(
+  'Opportunity',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting new Opportunities with match.');
+    return state.transactionsToUpdate.map(x => {
+      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
+      return {
+        StageName: 'Closed Won',
+        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
+      };
+    });
+  }
+);
+
 alterState(state => {
   return { ...state, opportunities: [], cgIDs: {} };
 });
