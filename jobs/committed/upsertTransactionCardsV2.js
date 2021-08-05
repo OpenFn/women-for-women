@@ -32,8 +32,33 @@ alterState(state => {
     const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
     return Number(Amount) % 22 !== 0;
   });
+  const cgIDLess1s = CardMasterIDLessThan1.map(cm => cm.CardMasterID);
 
-  return { ...state, CardMasterIDLessThan1, formatDate };
+  const CardMasterIDGreaterThan1 = state.data.json
+    .filter(x => !cgIDLess1s.includes(x.CardMasterID))
+    .filter(x => {
+      const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
+      return Number(Amount) % 22 !== 0;
+    });
+  const cgIDMore1s = CardMasterIDGreaterThan1.map(cm => cm.CardMasterID);
+
+  const TransactionMultiple22 = state.data.json.filter(
+    x => !cgIDLess1s.includes(x.CardMasterID) && !cgIDMore1s.includes(x.CardMasterID)
+  );
+
+  const TransactionsToMatch = state.data.json.filter(x => !cgIDLess1s.includes(x.CardMasterID));
+
+  const selectIDs = TransactionsToMatch.map(x => `${x.PrimKey}${x.CardMasterID}`);
+
+  return {
+    ...state,
+    CardMasterIDLessThan1,
+    CardMasterIDGreaterThan1,
+    TransactionMultiple22,
+    TransactionsToMatch,
+    selectIDs,
+    formatDate,
+  };
 });
 
 bulk(
@@ -49,10 +74,6 @@ bulk(
     return state.CardMasterIDLessThan1.map(x => {
       const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
       return {
-        Credit_Card_Type__c: x.CCType,
-        Type__c: 'Recurring Donation',
-        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKWEB',
-        npe03__Amount__c: Amount,
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
         Amount,
@@ -90,6 +111,7 @@ bulk(
     });
   }
 );
+
 
 alterState(state => {
   return { ...state, opportunities: [], cgIDs: {} };
