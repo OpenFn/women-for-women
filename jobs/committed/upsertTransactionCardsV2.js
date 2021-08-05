@@ -1,4 +1,4 @@
-alterState(state => {
+fn(state => {
   const formatDate = date => {
     if (!date) return null;
     date = date.split(' ')[0];
@@ -112,7 +112,7 @@ bulk(
   }
 );
 
-alterState(state => {
+fn(state => {
   return query(
     `Select Id, CloseDate FROM Opportunity 
     WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in ('${state.selectIDs.join('", "')}')`
@@ -176,6 +176,6 @@ bulk(
   }
 );
 
-alterState(state => {
+fn(state => {
   return { ...state, opportunities: [], cgIDs: {} };
 });
