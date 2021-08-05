@@ -17,7 +17,7 @@ fn(state => {
     .filter(x => x.LastCredited !== null)
     .filter(x => x.Occurrence === 'Yearly' || x.Occurrence === 'Monthly');
 
-  return { ...state, donations, cgIDs, formatDate };
+  return { ...state, donations, formatDate };
 });
 
 bulk(
@@ -60,5 +60,5 @@ bulk(
 
 fn(state => {
   // lighten state
-  return { ...state, donations: [], cgIDs: {} };
+  return { ...state, donations: [] };
 });

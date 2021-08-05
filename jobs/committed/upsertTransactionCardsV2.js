@@ -177,5 +177,5 @@ bulk(
 );
 
 fn(state => {
-  return { ...state, opportunities: [], cgIDs: {} };
+  return { ...state, opportunities: [] };
 });
