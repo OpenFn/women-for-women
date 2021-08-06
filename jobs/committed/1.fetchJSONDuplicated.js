@@ -64,21 +64,23 @@ each(
       });
 
       // Handling duplicated emails ============================================================
-      for (i = 0; i < json.length - 1; i++) {
-        let index = [];
-        for (j = i + 1; j < json.length; j++) {
-          if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
-            if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
-              index.push(j);
-            }
-          }
-        }
-        if (index.length > 0) {
-          index.forEach((ind, k) => {
-            json[ind]['EmailAddress'] = `${json[ind]['EmailAddress']}up${k + 1}`;
-          });
-        }
-      }
+      // const EmailList = json.map(js => js['EmailAddress']);
+      // THIS SECTION NEEDS PERFORMANCE IMPROVEMENTS
+      // function getAllIndexes(arr, val, indexes, i) {
+      //   for (j = i + 1; j < arr.length; j++) if (arr[j] === val) indexes.push(j);
+      //   return indexes;
+      // }
+
+      // for (i = 0; i < json.length - 1; i++) {
+      //   let indexes = [];
+      //   getAllIndexes(json, json[i]['EmailAddress'], indexes, i);
+
+      //   if (indexes.length > 0) {
+      //     indexes.forEach((ind, k) => {
+      //       json[ind]['EmailAddress'] = `${json[ind]['EmailAddress']}up${k + 1}`;
+      //     });
+      //   }
+      // }
       // =======================================================================================
 
       // let arrayReduced = reduceArray(json, 'CardMasterID');
