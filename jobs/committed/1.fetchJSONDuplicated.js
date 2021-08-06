@@ -3,7 +3,8 @@ alterState(state => {
     // prettier-ignore
     const fileNames = [
       // 'wfwi card master', 
-      'wfwi transactions - cards'
+      // 'wfwi transactions - cards',
+      'wfwi transactions - dd'
     ];
 
     const files = state.data.filter(
@@ -80,7 +81,8 @@ each(
       }
       // =======================================================================================
 
-      let arrayReduced = reduceArray(json, 'CardMasterID');
+      // let arrayReduced = reduceArray(json, 'CardMasterID');
+      let arrayReduced = reduceArray(json, 'DDRefforBank'); // NOTE: USE THIS ONE ONLY FOR "transaction dd". Check issue #71.
       const group = [];
       for (key in arrayReduced) group.push(arrayReduced[key]);
       arrayReduced = [];
