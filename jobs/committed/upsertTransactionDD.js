@@ -9,9 +9,14 @@ alterState(state => {
 
   const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}${x['Date']}` }));
 
+  const donations = state.data.json.filter(x => {
+    const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
+    return Number(Amount) % 22 === 0;
+  });
+
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
-  return { ...state, opportunities, cgIDs, formatDate };
+  return { ...state, opportunities, donations, cgIDs, formatDate };
 });
 
 bulk(
@@ -37,37 +42,38 @@ bulk(
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
           npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
-         'Campaign.Source_Code__c': x['PromoCode'],
+          'Campaign.Source_Code__c': x['PromoCode'],
           Name: 'test',
-          Donation_Type__c: x['TransType']==='Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
+          Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           Payment_Type__c: Amount > 0 ? 'Payment' : 'Refund', //TODO: CHANGE TO REFUND IF -
-          npe03__Recurring_Donation__c: 'a090n0000036wpdAAA' //TODO: UPDATE how this is set
+          npe03__Recurring_Donation__c: 'a090n0000036wpdAAA', //TODO: UPDATE how this is set
         };
       });
   }
 );
 // NOTE: REDUNDANT STEP? We're not adding any new information to Recurring Donations
-// bulk(
-//   'npe03__Recurring_Donation__c', // the sObject
-//   'upsert', //  the operation
-//   {
-//     extIdField: 'Committed_Giving_ID__c', // the field to match on
-//     failOnError: true, // throw error if just ONE record fails
-//     allowNoOp: true,
-//   },
-//   state => {
-//     console.log('Bulk upserting donations.');
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c', // the field to match on
+    failOnError: true, // throw error if just ONE record fails
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting donations.');
 
-//     return state.data.json
-//       .filter(x => x.PrimKey)
-//       .map(x => {
-//         return {
-//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
-//           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
-//         };
-//       });
-//   }
-// );
+    return state.data.json
+      .filter(x => x.PrimKey)
+      .map(x => {
+        return {
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+          Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
+          of_Sisters_Requested__c: Number(x.Amount) / 22,
+        };
+      });
+  }
+);
 
 //=== NOTE: AK COMMENTED OUT WHILE TROUBLESHOOTING PAYMENT ISSUE ====//
 // // query in order to perform the subsequent update. For create it's all good.
