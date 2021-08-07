@@ -122,13 +122,13 @@ beta.each(
                             const parts = date.match(/(\d+)/g);
                             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
                           }),
-                          field('CG_Opt_In_Date__c', state => {
+                          /*field('CG_Opt_In_Date__c', state => {
                             let date = dataValue('Gift Aid date')(state);
                             if (!date) return null;
                             date = date.split(' ')[0];
                             const parts = date.match(/(\d+)/g);
                             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                          }),*/
                           field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                           field('wfw_Method_of_Confirmation__c', 'Online')
                           
@@ -178,13 +178,13 @@ beta.each(
                         const parts = date.match(/(\d+)/g);
                         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
                       }),
-                      field('CG_Opt_In_Date__c', state => {
+                      /*field('CG_Opt_In_Date__c', state => {
                             let date = dataValue('Gift Aid date')(state);
                             if (!date) return null;
                             date = date.split(' ')[0];
                             const parts = date.match(/(\d+)/g);
                             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                          }),*/
                       field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                       field('wfw_Method_of_Confirmation__c', 'Online')
 
@@ -246,13 +246,13 @@ beta.each(
                     const parts = date.match(/(\d+)/g);
                     return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
                   }),
-                  field('CG_Opt_In_Date__c', state => {
+                  /*field('CG_Opt_In_Date__c', state => {
                             let date = dataValue('Gift Aid date')(state);
                             if (!date) return null;
                             date = date.split(' ')[0];
                             const parts = date.match(/(\d+)/g);
                             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                          }),*/
                   field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                   field('wfw_Method_of_Confirmation__c', 'Online')
 
@@ -314,13 +314,13 @@ beta.each(
                 const parts = date.match(/(\d+)/g);
                 return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
               }),
-              field('CG_Opt_In_Date__c', state => {
+              /*field('CG_Opt_In_Date__c', state => {
                             let date = dataValue('Gift Aid date')(state);
                             if (!date) return null;
                             date = date.split(' ')[0];
                             const parts = date.match(/(\d+)/g);
                             return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                          }),*/
               field('wfw_Donor_Source__c ', dataValue('DonorSource')),
               field('wfw_Method_of_Confirmation__c', 'Online')
 
