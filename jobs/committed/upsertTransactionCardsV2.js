@@ -83,7 +83,9 @@ bulk(
         npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
         CC_Type__c: x.CCType,
         Transaction_Reference_Id__c: x.TransactionReference,
-        CloseDate: x.SettlementDate,
+        //CloseDate: x.SettlementDate,
+        CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
+
       };
     });
   }
