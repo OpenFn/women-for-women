@@ -87,7 +87,6 @@ bulk(
         Transaction_Reference_Id__c: x.TransactionReference,
         //CloseDate: x.SettlementDate,
         CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
-
       };
     });
   }
@@ -156,7 +155,7 @@ bulk(
         StageName: 'Closed Won',
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         Amount,
-        CloseDate: x['Transaction Date'],
+        CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
         'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
       };
     });
