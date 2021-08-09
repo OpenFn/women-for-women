@@ -34,7 +34,7 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         const of_Sisters_Requested__c =
-          Number(x.Amount) % 22 === 0 ? (x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 12) : undefined;
+          Number(x.Amount) % 22 === 0 ? (x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22) : undefined;
 
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
