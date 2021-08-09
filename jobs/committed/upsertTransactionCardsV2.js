@@ -76,6 +76,7 @@ bulk(
       return {
         Name: x.TransactionReference,
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
+        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
         //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
         Amount,
         'RecordType.Name': 'Individual Giving',
@@ -106,6 +107,7 @@ bulk(
       const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
       return {
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
+        'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
         Credit_Card_Type__c: x.CCType,
         Type__c: 'Recurring Donation',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
@@ -150,6 +152,7 @@ bulk(
       const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
       return {
         Name: x.TransactionReference,
+        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
         StageName: 'Closed Won',
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         Amount,
