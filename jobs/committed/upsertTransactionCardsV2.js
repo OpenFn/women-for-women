@@ -156,7 +156,7 @@ bulk(
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         Amount,
         CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+        //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
       };
     });
   }
