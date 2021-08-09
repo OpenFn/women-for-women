@@ -74,6 +74,7 @@ bulk(
     return state.CardMasterIDLessThan1.map(x => {
       const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
       return {
+        Name: x.TransactionReference,
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
         Amount,
@@ -148,6 +149,7 @@ bulk(
     return state.transactionsToCreate.map(x => {
       const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
       return {
+        Name: x.TransactionReference,
         StageName: 'Closed Won',
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         Amount,
