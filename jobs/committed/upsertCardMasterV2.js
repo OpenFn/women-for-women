@@ -7,14 +7,13 @@ fn(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  state.data.json.map(x => {
-    if (x.LastCredited === null) {
-      console.log(`No actions taken for ${x.CardMasterID}.`);
-    }
-  });
+  // state.data.json.map(x => {
+  //   if (x.LastCredited === null) {
+  //     console.log(`No actions taken for ${x.CardMasterID}.`);
+  //   }
+  // });
 
   const donations = state.data.json
-    .filter(x => x.LastCredited !== null)
     .filter(x => x.Occurrence === 'Yearly' || x.Occurrence === 'Monthly');
 
   return { ...state, donations, formatDate };
