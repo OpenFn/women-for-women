@@ -77,7 +77,7 @@ bulk(
         Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
         //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
         Amount,
-        RecordTypeId: 'Individual Giving',
+        'RecordTypeId.Name': 'Individual Giving',
         Donation_Type__c: 'General Giving',
         StageName: 'Closed Won',
         npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
