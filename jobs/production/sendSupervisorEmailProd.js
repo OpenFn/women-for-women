@@ -270,6 +270,7 @@ each(
           })
         )
       )(state);
+       }
     } else {
       console.log('Employee not member of activated Division. No automation executed.');
       return state;
