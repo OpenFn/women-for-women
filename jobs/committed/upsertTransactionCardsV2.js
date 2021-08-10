@@ -1,3 +1,10 @@
+// Note that we get _almost_ entirely empty records in the initial state.
+// We are assuming that they should be silently discarded. Is this the case?
+fn(state => {
+  const json = state.data.json.filter(x => x.CardMasterID);
+  return { ...state, data: { ...state.data, json } };
+});
+
 fn(state => {
   const formatDate = date => {
     if (!date) return null;
@@ -15,6 +22,7 @@ fn(state => {
       return r;
     }, Object.create(null));
   }
+
   const flattenArray = obj => {
     const json = [];
     for (key of obj) {
@@ -27,37 +35,116 @@ fn(state => {
   const groupedCardMaster = [];
   for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
 
-  let CardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
-  CardMasterIDLessThan1 = flattenArray(CardMasterIDLessThan1).filter(x => {
+  let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
+
+  cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1).filter(x => {
     const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
     return Number(Amount) % 22 !== 0;
   });
-  const cgIDLess1s = CardMasterIDLessThan1.map(cm => cm.CardMasterID);
 
-  const CardMasterIDGreaterThan1 = state.data.json
+  const cgIDLess1s = cardMasterIDLessThan1.map(cm => cm.CardMasterID);
+
+  const cardMasterIDGreaterThan1 = state.data.json
     .filter(x => !cgIDLess1s.includes(x.CardMasterID))
     .filter(x => {
       const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
       return Number(Amount) % 22 !== 0;
     });
-  const cgIDMore1s = CardMasterIDGreaterThan1.map(cm => cm.CardMasterID);
 
-  const TransactionMultiple22 = state.data.json.filter(
-    x => !cgIDLess1s.includes(x.CardMasterID) && !cgIDMore1s.includes(x.CardMasterID)
-  );
+  const transactionsToMatch = state.data.json.filter(x => !cgIDLess1s.includes(x.CardMasterID));
 
-  const TransactionsToMatch = state.data.json.filter(x => !cgIDLess1s.includes(x.CardMasterID));
-
-  const selectIDs = TransactionsToMatch.map(x => `${x.PrimKey}${x.CardMasterID}`);
+  const selectIDs = transactionsToMatch.map(x => `${x.PrimKey}${x.CardMasterID}`);
 
   return {
     ...state,
-    CardMasterIDLessThan1,
-    CardMasterIDGreaterThan1,
-    TransactionMultiple22,
-    TransactionsToMatch,
+    cardMasterIDLessThan1,
+    cardMasterIDGreaterThan1,
+    transactionsToMatch,
     selectIDs,
     formatDate,
+  };
+});
+
+query(
+  state => `Select Id, CloseDate FROM Opportunity
+  WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
+  ('${state.selectIDs.join('", "')}')`
+);
+
+fn(state => {
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsToMatch } = state;
+  const { records } = state.references[0];
+  const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
+  const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
+
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
+
+  const selectAmount = item => {
+    if (item.Amount) {
+      return isNaN(item.Amount) ? item.Amount.substring(1) : parseInt(item.Amount);
+    }
+    return undefined;
+  };
+
+  const recurringDonations = cardMasterIDGreaterThan1.map(x => ({
+    Committed_Giving_ID__c: selectGivingId(x),
+    'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
+    Credit_Card_Type__c: x.CCType,
+    Type__c: 'Recurring Donation',
+    'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
+    npe03__Amount__c: selectAmount(x),
+  }));
+
+  // 1st type of opportunities in this array
+  const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
+    Name: x.TransactionReference,
+    Committed_Giving_ID__c: selectGivingId(x),
+    'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+    //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+    Amount: selectAmount(x),
+    'RecordType.Name': 'Individual Giving',
+    Donation_Type__c: 'General Giving',
+    StageName: 'Closed Won',
+    npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
+    CC_Type__c: x.CCType,
+    Transaction_Reference_Id__c: x.TransactionReference,
+    //CloseDate: x.SettlementDate,
+    CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
+  }));
+
+  // 2nd type of opportunity in this array
+  const transactionsToUpdate = transactionsToMatch
+    .filter(
+      t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
+    )
+    .map(x => ({ StageName: 'Closed Won', Committed_Giving_ID__c: selectGivingId(x) }));
+
+  // 3rd type of opportunity in this array
+  const transactionsToCreate = transactionsToMatch
+    .filter(
+      t =>
+        !SFMonth.includes(t['Transaction Date'].split('/')[1]) || !SFYear.includes(t['Transaction Date'].split('/')[2])
+    )
+    .map(x => {
+      return {
+        Name: x.TransactionReference,
+        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+        StageName: 'Closed Won',
+        Committed_Giving_ID__c: selectGivingId(x),
+        Amount: selectAmount(x),
+        CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+        //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+      };
+    });
+
+  console.log('Count of "Less than 1" opportunities:', transactionLessThan1.length);
+  console.log('Count of "To create" opportunities:', transactionsToCreate.length);
+  console.log('Count of "To update" opportunities:', transactionsToUpdate.length);
+
+  return {
+    ...state,
+    recurringDonations,
+    transactions: [...transactionLessThan1, ...transactionsToCreate, ...transactionsToUpdate],
   };
 });
 
@@ -69,27 +156,7 @@ bulk(
     failOnError: true,
     allowNoOp: true,
   },
-  state => {
-    console.log('Bulk upserting Opportunities with count transaction less than 1.');
-    return state.CardMasterIDLessThan1.map(x => {
-      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
-      return {
-        Name: x.TransactionReference,
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
-        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-        //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-        Amount,
-        'RecordType.Name': 'Individual Giving',
-        Donation_Type__c: 'General Giving',
-        StageName: 'Closed Won',
-        npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
-        CC_Type__c: x.CCType,
-        Transaction_Reference_Id__c: x.TransactionReference,
-        //CloseDate: x.SettlementDate,
-        CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
-      };
-    });
-  }
+  state => state.transactions
 );
 
 bulk(
@@ -102,86 +169,6 @@ bulk(
   },
   state => {
     console.log('Bulk upserting Recurring Donation with count transaction greater than 1.');
-    return state.CardMasterIDGreaterThan1.map(x => {
-      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
-      return {
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
-        'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
-        Credit_Card_Type__c: x.CCType,
-        Type__c: 'Recurring Donation',
-        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
-        npe03__Amount__c: Amount,
-      };
-    });
+    return state.recurringDonations;
   }
 );
-
-fn(state => {
-  return query(
-    `Select Id, CloseDate FROM Opportunity 
-    WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in ('${state.selectIDs.join('", "')}')`
-  )(state).then(state => {
-    const { records } = state.references[0];
-    const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
-    const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
-
-    const transactionsToUpdate = state.TransactionsToMatch.filter(
-      t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
-    );
-    const transactionsToCreate = state.TransactionsToMatch.filter(
-      t =>
-        !SFMonth.includes(t['Transaction Date'].split('/')[1]) || !SFYear.includes(t['Transaction Date'].split('/')[2])
-    );
-
-    return { ...state, transactionsToUpdate, transactionsToCreate };
-  });
-});
-
-bulk(
-  'Opportunity',
-  'upsert',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk upserting new Opportunities without match.');
-    return state.transactionsToCreate.map(x => {
-      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
-      return {
-        Name: x.TransactionReference,
-        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-        StageName: 'Closed Won',
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
-        Amount,
-        CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-        //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-      };
-    });
-  }
-);
-
-bulk(
-  'Opportunity',
-  'upsert',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk upserting new Opportunities with match.');
-    return state.transactionsToUpdate.map(x => {
-      const Amount = x.Amount ? x.Amount.replace(/\£/g, '') : x.Amount;
-      return {
-        StageName: 'Closed Won',
-        Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`,
-      };
-    });
-  }
-);
-
-fn(state => {
-  return { ...state, opportunities: [] };
-});
