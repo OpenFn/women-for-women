@@ -46,6 +46,19 @@ each(
     console.log(state.name, state.workEmail, state.firstName, state.division, state.supervisor, state.superEmail);
 
     if (activeDivisions.includes(employee.fields.Division)) {
+      if (!employee.fields['Work Email']) {
+        console.log(`No Azure actions taken because 'Work Email' not provided for ${fields['First name Last name']}.`);
+        return state;
+      } else {
+        if (
+          !employee.fields['Email User Type'] ||
+          employee.fields['Email User Type'] === 'Does not need email account'
+        ) {
+          console.log(
+            `No Azure actions taken because employee 'does not need email account' or email not specified - see Email User Type: ${employee.fields['Email User Type']}`
+          );
+          return state;
+        }
       return send(
         fields(
           field('from', 'WfWI Notifications <notifications@womenforwomen.org>'), 
