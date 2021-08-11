@@ -24,14 +24,13 @@ bulk(
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}`,
           Committed_Giving_Direct_Debit_ID__c: x.DDId,
           'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
-          'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
+          'Sponsor__r.Committed_Giving_Id__c': x.PrimKey, //TODO: Overwrite in custom DD mappings? 
           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
+          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
           npsp__Status__c: x.Status === 'live' ? 'Active' : 'Closed',
           Closeout_Reason__c: x.CancelReason, //different field name?
-          //npsp__ClosedReason__c: x.CancelReason,
           npe03__Installment_Period__c: x.PaymentFrequency,
-          //npe03__Date_Established__c: '2015-08-25',
           //npe03__Date_Established__c: x.StartDate ? formatDate(x.StartDate) : x.StartDate, //TODO: Confirm with Torian this triggers payments
           npe03__Next_Payment_Date__c: x.NextDate ? formatDate(x.NextDate) : x.NextDate,
           npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
