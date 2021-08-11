@@ -7,16 +7,22 @@ alterState(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
+  const selectAmount = item => {
+    if (item.Amount) {
+      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
+    }
+    return undefined;
+  };
+
   const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}${x['Date']}` }));
 
   const donations = state.data.json.filter(x => {
-    const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
-    return Number(Amount) % 22 === 0;
+    return Number(selectAmount(x.Amount)) % 22 === 0;
   });
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
 
-  return { ...state, opportunities, donations, cgIDs, formatDate };
+  return { ...state, opportunities, donations, cgIDs, formatDate, selectAmount };
 });
 
 bulk(
@@ -29,15 +35,15 @@ bulk(
   },
   state => {
     console.log('Bulk upserting opportunities.');
+
     return state.data.json
       .filter(x => x.PrimKey)
       .map(x => {
-        const Amount = parseInt(x.Amount) !== 'NaN' ? parseInt(x.Amount) : x.Amount.substring(1, x.Amount.length - 1);
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
           'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
-          Amount,
+          Amount: state.selectAmount(x.Amount),
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
