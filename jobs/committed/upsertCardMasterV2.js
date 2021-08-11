@@ -51,7 +51,7 @@ fn(state => {
       return {
         ...generateMapping(x),
         ...{
-          Type__c: 'Recurring Donations',
+          Type__c: 'Recurring Donation',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
         },
       };
