@@ -66,7 +66,7 @@ fn(state => {
 });
 
 query(
-  state => `Select Id, CloseDate FROM Opportunity
+  state => `Select Id, CloseDate, Campaign.Source_Code__c FROM Opportunity
   WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
   ('${state.selectIDs.join('", "')}')`
 );
@@ -76,6 +76,7 @@ fn(state => {
   const { records } = state.references[0];
   const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
   const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
+  const SFcampaign = records.map(rec => rec['Campaign.Source_Code__c']);
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
 
@@ -93,9 +94,10 @@ fn(state => {
     Type__c: 'Recurring Donation',
     'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
     npe03__Amount__c: selectAmount(x),
+    npsp__PaymentMethod__c: 'Credit Card'
   }));
 
-  // 1st type of opportunities in this array
+  // 1st type of opportunities in this array ==> Regular once-off donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
     Name: x.TransactionReference,
     Committed_Giving_ID__c: selectGivingId(x),
@@ -112,10 +114,11 @@ fn(state => {
     //CloseDate: x.SettlementDate,
     CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId
+    CG_Credit_Card_ID__c: x.CardTransId,
+    'Campaign.Source_Code__c': 'UKWEB',
   }));
 
-  // 2nd type of opportunity in this array
+  // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
   const transactionsToUpdate = transactionsToMatch
     .filter(
       t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
@@ -127,10 +130,11 @@ fn(state => {
       Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
       CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
       Committed_Giving_ID__c: selectGivingId(x),
-      CG_Credit_Card_ID__c: x.CardTransId
+      CG_Credit_Card_ID__c: x.CardTransId,
+      //'Campaign.Source_Code__c': 'CODE', //TODO: Amount = multiple of 22 ? 'UKSPCC' : 'UKRG'; 
     }));
 
-  // 3rd type of opportunity in this array
+  // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
   const transactionsToCreate = transactionsToMatch
     .filter(
       t =>
@@ -146,8 +150,9 @@ fn(state => {
         Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
         CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
         Method_of_Payment__c: 'Credit',
-        CG_Credit_Card_ID__c: x.CardTransId
-        //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+        CG_Credit_Card_ID__c: x.CardTransId,
+        'Campaign.Source_Code__c': 'UKWEB',
+        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //Q: Can we assume there will always be a RD? Do we need to create the RD?
       };
     });
 
