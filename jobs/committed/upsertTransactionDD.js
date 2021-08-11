@@ -17,7 +17,7 @@ alterState(state => {
   const opportunities = state.data.json.map(x => ({ ...x, cgID: `${x.PrimKey}${x.DDRefforBank}${x['Date']}` }));
 
   const donations = state.data.json.filter(x => {
-    return Number(selectAmount(x.Amount)) % 22 === 0;
+    return Number(selectAmount(x)) % 22 === 0;
   });
 
   const cgIDs = opportunities.map(o => `'${o.cgID}'`);
