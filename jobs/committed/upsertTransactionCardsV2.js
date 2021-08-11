@@ -76,7 +76,6 @@ fn(state => {
   const { records } = state.references[0];
   const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
   const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
-  const SFcampaign = records.map(rec => rec['Campaign.Source_Code__c']);
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
 
