@@ -7,57 +7,88 @@ fn(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  // state.data.json.map(x => {
-  //   if (x.LastCredited === null) {
-  //     console.log(`No actions taken for ${x.CardMasterID}.`);
-  //   }
-  // });
+  const selectAmount = item => {
+    if (item.Amount) {
+      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
+    }
+    return undefined;
+  };
+
+  const generateMapping = x => {
+    return {
+      Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+      Name: x.CardMasterID,
+      'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
+      npe03__Installment_Period__c: x.Occurrence,
+      npe03__Amount__c: x.Amount,
+      Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
+      npsp__StartDate__c: formatDate(x.StartDate),
+      npe03__Next_Payment_Date__c: formatDate(x.NextDate),
+      Closeout_Reason__c: x.RecurringCancelReason,
+      Closeout_Date__c: formatDate(x.RecurringCancelDate), // THIS IS DUPLICATED - TO CHECK
+      of_Sisters_Requested__c: x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22,
+      'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
+    };
+  };
+
+  const sponsorships = state.data.json
+    .filter(x => x.PrimKey && Number(selectAmount(x)) % 22 === 0)
+    .map(x => {
+      return {
+        ...generateMapping(x),
+        ...{
+          Type__c: 'Sponsorship',
+          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
+        },
+      };
+    });
+
+  const sponsorshipIDs = sponsorships.map(x => x.Name);
 
   const donations = state.data.json
-    .filter(x => x.Occurrence === 'Yearly' || x.Occurrence === 'Monthly');
+    .filter(x => !sponsorshipIDs.includes(x.CardMasterID) && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly'))
+    .map(x => {
+      return {
+        ...generateMapping(x),
+        ...{
+          Type__c: 'Recurring Donations',
+          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
+        },
+      };
+    });
 
-  return { ...state, donations, formatDate };
+  return { ...state, sponsorships, donations, formatDate };
 });
 
 bulk(
-  'npe03__Recurring_Donation__c', // the sObject
-  'upsert', //  the operation
+  'npe03__Recurring_Donation__c',
+  'upsert',
   {
-    extIdField: 'Committed_Giving_ID__c', // the field to match on
-    failOnError: true, // throw error if just ONE record fails
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting Sponsorship.');
+    return state.sponsorships;
+  }
+);
+
+bulk(
+  'npe03__Recurring_Donation__c',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
     allowNoOp: true,
   },
   state => {
     console.log('Bulk upserting donations.');
-    return state.donations
-      .filter(x => x.PrimKey)
-      .map(x => {
-        const of_Sisters_Requested__c =
-          Number(x.Amount) % 22 === 0 ? (x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22) : undefined;
-
-        return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
-          Name: x.CardMasterID,
-          'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
-          npe03__Installment_Period__c: x.Occurrence,
-          npe03__Amount__c: x.Amount,
-          Closeout_Date__c: state.formatDate(x.EndDate),
-          npsp__StartDate__c: state.formatDate(x.StartDate),
-          npe03__Next_Payment_Date__c: state.formatDate(x.NextDate),
-          Closeout_Reason__c: x.RecurringCancelReason,
-          Closeout_Date__c: state.formatDate(x.RecurringCancelDate),
-
-          Type__c: Number(x.Amount) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
-          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': Number(x.Amount) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-          of_Sisters_Requested__c,
-
-          'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
-        };
-      });
+    return state.donations;
   }
 );
 
 fn(state => {
   // lighten state
-  return { ...state, donations: [] };
+  return { ...state, sponsorships: [], donations: [] };
 });
