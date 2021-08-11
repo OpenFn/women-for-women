@@ -102,6 +102,7 @@ fn(state => {
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
     //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Amount: selectAmount(x),
+    Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
     Donation_Type__c: 'General Giving',
     StageName: 'Closed Won',
@@ -110,6 +111,8 @@ fn(state => {
     Transaction_Reference_Id__c: x.TransactionReference,
     //CloseDate: x.SettlementDate,
     CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
+    Method_of_Payment__c: 'Credit',
+    CG_Credit_Card_ID__c: x.CardTransId
   }));
 
   // 2nd type of opportunity in this array
@@ -117,7 +120,15 @@ fn(state => {
     .filter(
       t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
     )
-    .map(x => ({ StageName: 'Closed Won', Committed_Giving_ID__c: selectGivingId(x) }));
+    .map(x => ({
+      StageName: 'Closed Won',
+      Method_of_Payment__c: 'Credit',
+      Amount: selectAmount(x),
+      Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
+      CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
+      Committed_Giving_ID__c: selectGivingId(x),
+      CG_Credit_Card_ID__c: x.CardTransId
+    }));
 
   // 3rd type of opportunity in this array
   const transactionsToCreate = transactionsToMatch
@@ -132,7 +143,10 @@ fn(state => {
         StageName: 'Closed Won',
         Committed_Giving_ID__c: selectGivingId(x),
         Amount: selectAmount(x),
+        Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
         CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+        Method_of_Payment__c: 'Credit',
+        CG_Credit_Card_ID__c: x.CardTransId
         //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
       };
     });
