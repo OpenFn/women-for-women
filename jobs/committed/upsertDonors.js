@@ -9,6 +9,8 @@ alterState(state => {
 beta.each(
   dataPath('json[*]'),
   alterState(async state => {
+    const trimValue = val => val.replace(/\s/g, '');
+
     const { PersonRef, LastChangedDateTime } = state.data;
 
     let upsertCondition = 0;
@@ -51,7 +53,7 @@ beta.each(
 
     await query(
       `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
-      FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${PersonRef}'`
+      FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef)}'`
     )(state).then(async state => {
       const { FirstName, EmailAddress } = state.data;
       const sizeLegacyMatch = state.references[0].totalSize;
@@ -61,8 +63,8 @@ beta.each(
         // A. If no matching Contact has been found...
         await query(
           `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-          FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
-          AND npe01__HomeEmail__c = '${EmailAddress}'`
+          FROM CONTACT WHERE FirstName = '${trimValue(FirstName.replace(/'/g, "\\'"))}' 
+          AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
         )(state).then(async state => {
           const { records } = state.references[0];
           const sizeEmailMatch = state.references[0].totalSize;
@@ -71,8 +73,8 @@ beta.each(
             // A1. If no matching Contact has been found...
             await query(
               `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-              FROM CONTACT WHERE FirstName = '${FirstName.replace(/'/g, "\\'")}' 
-              AND MailingStreet = '${address}'`
+              FROM CONTACT WHERE FirstName = '${trimValue(FirstName.replace(/'/g, "\\'"))}' 
+              AND MailingStreet = '${trimValue(address)}'`
             )(state).then(async state => {
               const sizeMailingMatch = state.references[0].totalSize;
 
@@ -81,7 +83,7 @@ beta.each(
                 if (originalEmail !== '') {
                   await query(
                     `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-                  FROM CONTACT WHERE npe01__HomeEmail__c = '${EmailAddress}'`
+                  FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
                   )(state).then(async state => {
                     const sizeEmailMatch2 = state.references[0].totalSize;
 
@@ -131,8 +133,6 @@ beta.each(
                           }),
                           field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                           field('wfw_Method_of_Confirmation__c', 'Online')
-                          
-
                         )
                       )(state);
                     } else {
@@ -179,15 +179,14 @@ beta.each(
                         return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
                       }),
                       field('CG_Opt_In_Date__c', state => {
-                            let date = dataValue('Gift Aid date')(state);
-                            if (!date) return null;
-                            date = date.split(' ')[0];
-                            const parts = date.match(/(\d+)/g);
-                            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                        let date = dataValue('Gift Aid date')(state);
+                        if (!date) return null;
+                        date = date.split(' ')[0];
+                        const parts = date.match(/(\d+)/g);
+                        return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+                      }),
                       field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                       field('wfw_Method_of_Confirmation__c', 'Online')
-
                     )
                   )(state);
                 }
@@ -247,15 +246,14 @@ beta.each(
                     return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
                   }),
                   field('CG_Opt_In_Date__c', state => {
-                            let date = dataValue('Gift Aid date')(state);
-                            if (!date) return null;
-                            date = date.split(' ')[0];
-                            const parts = date.match(/(\d+)/g);
-                            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                    let date = dataValue('Gift Aid date')(state);
+                    if (!date) return null;
+                    date = date.split(' ')[0];
+                    const parts = date.match(/(\d+)/g);
+                    return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+                  }),
                   field('wfw_Donor_Source__c ', dataValue('DonorSource')),
                   field('wfw_Method_of_Confirmation__c', 'Online')
-
                 )
               )(state);
             } else {
@@ -297,10 +295,10 @@ beta.each(
                 if (EmailSF !== null) return undefined;
                 return email;
               }),
-              field('npe01__Preferred_Email__c', 'Personal'), /*state => {
+              field('npe01__Preferred_Email__c', 'Personal') /*state => {
                 if (EmailSF !== null) return undefined;
                 return email;
-              }),*/
+              }),*/,
               field('Call_Opt_In__c', OkToPhone),
               field('Email_Opt_in__c', OkToEmail),
               field('Mail_Opt_in__c', OkToMail),
@@ -315,15 +313,14 @@ beta.each(
                 return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
               }),
               field('CG_Opt_In_Date__c', state => {
-                            let date = dataValue('Gift Aid date')(state);
-                            if (!date) return null;
-                            date = date.split(' ')[0];
-                            const parts = date.match(/(\d+)/g);
-                            return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
-                          }),
+                let date = dataValue('Gift Aid date')(state);
+                if (!date) return null;
+                date = date.split(' ')[0];
+                const parts = date.match(/(\d+)/g);
+                return parts ? new Date(parts[2], parts[1] - 1, parts[0]).toISOString() : parts;
+              }),
               field('wfw_Donor_Source__c ', dataValue('DonorSource')),
               field('wfw_Method_of_Confirmation__c', 'Online')
-
             )
           )(state);
         } else {
