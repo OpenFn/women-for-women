@@ -51,7 +51,7 @@ bulk(
           'Campaign.Source_Code__c': x['PromoCode'],
           Name: 'test',
           Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
-          Payment_Type__c: Amount > 0 ? 'Payment' : 'Refund', //TODO: CHANGE TO REFUND IF -
+          Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund', //TODO: CHANGE TO REFUND IF -
           npe03__Recurring_Donation__c: 'a090n0000036wpdAAA', //TODO: UPDATE how this is set
         };
       });
