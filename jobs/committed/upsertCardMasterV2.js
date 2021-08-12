@@ -31,8 +31,12 @@ fn(state => {
     };
   };
 
-  const sponsorships = state.data.json
-    .filter(x => x.PrimKey && Number(selectAmount(x)) % 22 === 0)
+  const donationsYearlyOrMonthly = state.data.json.filter(
+    x => x.PrimKey && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
+  );
+
+  const sponsorships = donationsYearlyOrMonthly
+    .filter(x => Number(selectAmount(x)) % 22 === 0)
     .map(x => {
       return {
         ...generateMapping(x),
@@ -45,8 +49,8 @@ fn(state => {
 
   const sponsorshipIDs = sponsorships.map(x => x.Name);
 
-  const donations = state.data.json
-    .filter(x => !sponsorshipIDs.includes(x.CardMasterID) && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly'))
+  const donations = donationsYearlyOrMonthly
+    .filter(x => !sponsorshipIDs.includes(x.CardMasterID))
     .map(x => {
       return {
         ...generateMapping(x),
