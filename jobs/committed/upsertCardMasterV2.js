@@ -24,6 +24,8 @@ fn(state => {
       Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
       npsp__StartDate__c: formatDate(x.StartDate),
       npe03__Next_Payment_Date__c: formatDate(x.NextDate),
+      npsp__PaymentMethod__c: 'Credit Card',
+      npe03__Date_Established__c: formatDate(x.AddedDateTime),
       Closeout_Reason__c: x.RecurringCancelReason,
       Closeout_Date__c: formatDate(x.RecurringCancelDate), // THIS IS DUPLICATED - TO CHECK
       of_Sisters_Requested__c: x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22,
