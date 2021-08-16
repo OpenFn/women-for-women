@@ -94,6 +94,8 @@ fn(state => {
     'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
     npe03__Amount__c: selectAmount(x),
     npsp__PaymentMethod__c: 'Credit Card',
+    npe03__Date_Established__c: formatDate(x['Transaction Date']), // ADDED TO MAPPING
+
   }));
 
   // 1st type of opportunities in this array ==> Regular once-off donations to insert
@@ -115,6 +117,7 @@ fn(state => {
     Method_of_Payment__c: 'Credit',
     CG_Credit_Card_ID__c: x.CardTransId,
     'Campaign.Source_Code__c': 'UKWEB',
+    Transaction_Date_Time__c:formatDate(x['Transaction Date']), // ADDED TO MAPPING
   }));
 
   // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
