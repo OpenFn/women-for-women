@@ -21,7 +21,7 @@ fn(state => {
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: x.Occurrence,
       npe03__Amount__c: x.Amount,
-      Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
+     // Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
       npsp__StartDate__c: formatDate(x.StartDate),
       npe03__Next_Payment_Date__c: formatDate(x.NextDate),
       npsp__PaymentMethod__c: 'Credit Card',
