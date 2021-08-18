@@ -86,17 +86,27 @@ fn(state => {
     return undefined;
   };
 
-  const recurringDonations = cardMasterIDGreaterThan1.map(x => ({
-    Committed_Giving_ID__c: selectGivingId(x),
-    'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
-    Credit_Card_Type__c: x.CCType,
-    Type__c: 'Recurring Donation',
-    'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
-    npe03__Amount__c: selectAmount(x),
-    npsp__PaymentMethod__c: 'Credit Card',
-    npe03__Date_Established__c: state.formatDate(x['Transaction Date']), // ADDED TO MAPPING
+  const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
 
-  }));
+  const recurringDonations = cardMasterIDGreaterThan1.map(x => {
+    let npe03__Installment_Period__c = '';
+    if ((multipleOf22(x) && selectAmount(x) < 264) || selectAmount(x) < 22) {
+      npe03__Installment_Period__c = 'Monthly';
+    } else if (selectAmount(x) > 22 && !multipleOf22(x)) {
+      npe03__Installment_Period__c = 'Yearly';
+    }
+    return {
+      Committed_Giving_ID__c: selectGivingId(x),
+      'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
+      Credit_Card_Type__c: x.CCType,
+      Type__c: 'Recurring Donation',
+      'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
+      npe03__Amount__c: selectAmount(x),
+      npsp__PaymentMethod__c: 'Credit Card',
+      npe03__Date_Established__c: state.formatDate(x['Transaction Date']), // ADDED TO MAPPING
+      npe03__Installment_Period__c,
+    };
+  });
 
   // 1st type of opportunities in this array ==> Regular once-off donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
