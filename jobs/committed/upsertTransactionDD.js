@@ -27,7 +27,7 @@ alterState(state => {
 
 bulk(
   'Opportunity', // the sObject
-  'upsert', //  the operation
+  'upsert', // TODO: either upsert OR update depending on if an Opportunity for that Transaction Date already exists
   {
     extIdField: 'Committed_Giving_ID__c', // the field to match on
     failOnError: true, // throw error if just ONE record fails
@@ -59,7 +59,6 @@ bulk(
       });
   }
 );
-// NOTE: REDUNDANT STEP? We're not adding any new information to Recurring Donations
 bulk(
   'npe03__Recurring_Donation__c', // the sObject
   'upsert', //  the operation
