@@ -28,7 +28,7 @@ bulk(
           Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
           npe03__Amount__c: x['Current amount'], //Changed from Regular amount
-          npsp__Status__c: x.Status === 'live' ? 'Active' : 'Closed',
+          npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
           Closeout_Reason__c: x.CancelReason, //different field name?
           npe03__Installment_Period__c: x.PaymentFrequency,
           //npe03__Date_Established__c: x.StartDate ? formatDate(x.StartDate) : x.StartDate, //TODO: Confirm with Torian this triggers payments

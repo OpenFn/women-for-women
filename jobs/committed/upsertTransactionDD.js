@@ -40,19 +40,21 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`,
           'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
           'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
           Amount: state.selectAmount(x),
           CurrencyIsoCode: 'GBP',
           StageName: 'Closed Won',
           CloseDate: state.formatDate(x['Date']),
-          npsp__Closed_Lost_Reason__c: x['Unpaid reason'],
+          Transaction_Date_Time__c: state.formatDate(x['Date']),
+          npsp__Closed_Lost_Reason__c: x['Unpaid reason'], //Map from DirectDebit? 
           'Campaign.Source_Code__c': x['PromoCode'],
-          Name: 'test',
+          Name: x.DDRefforBank,
           Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
-          Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund', //TODO: CHANGE TO REFUND IF -
-          npe03__Recurring_Donation__c: 'a090n0000036wpdAAA', //TODO: UPDATE how this is set
+          Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund', //REFUND IF negative amount
+          'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
+          Method_of_Payment__c: 'Debit',
         };
       });
   }
@@ -73,81 +75,13 @@ bulk(
       .filter(x => x.PrimKey)
       .map(x => {
         return {
-          Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}`,
+          Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}`,
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
           of_Sisters_Requested__c: Number(x.Amount) / 22,
         };
       });
   }
 );
-
-//=== NOTE: AK COMMENTED OUT WHILE TROUBLESHOOTING PAYMENT ISSUE ====//
-// // query in order to perform the subsequent update. For create it's all good.
-// query(`SELECT id, Committed_Giving_ID__c FROM npe01__OppPayment__c`);
-
-// alterState(state => {
-//   const { records } = state.references[0];
-
-//   const paymentsToUpdate = state.opportunities.filter(o => records.includes(o.cgID));
-//   const paymentsToCreate = state.opportunities.filter(o => !records.includes(o.cgID));
-
-//   return { ...state, paymentsToUpdate, paymentsToCreate };
-// });
-
-// bulk(
-//   'npe01__OppPayment__c', // the sObject
-//   'update', //  the operation
-//   {
-//     // extIdField: 'Committed_Giving_ID__c', // the field to match on
-//     failOnError: true, // throw error if just ONE record fails
-//     allowNoOp: true,
-//   },
-//   state => {
-//     console.log('Bulk updating payments.');
-//     return state.paymentsToUpdate
-//       .filter(x => x.PrimKey)
-//       .map(x => {
-//         return {
-//           // id: 'ds8908932k3l21j3213j1kl31', // Is this needed??
-//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-//           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}`,
-//           CurrencyIsoCode: 'GBP',
-//           npe01__Payment_Method__c: 'Direct Debit',
-//           npe01__Paid__c: true,
-//           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-//           npe01__Payment_Date__c: state.formatDate(x.Date),
-//         };
-//       });
-//   }
-// );
-
-// bulk(
-//   'npe01__OppPayment__c', // the sObject
-//   'upsert', //  the operation
-//   {
-//     extIdField: 'Committed_Giving_ID__c', // the field to match on
-//     failOnError: true, // throw error if just ONE record fails
-//     allowNoOp: true,
-//   },
-//   state => {
-//     console.log('Bulk creating payments.');
-//     return state.paymentsToCreate
-//       .filter(x => x.PrimKey)
-//       .map(x => {
-//         return {
-//           Committed_Giving_ID__c: `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-//           'npe01__Opportunity__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDRefforBank}${x.Date}`,
-//           CurrencyIsoCode: 'GBP',
-//           npe01__Payment_Method__c: 'Direct Debit',
-//           npe01__Paid__c: true,
-//           npe01__Payment_Amount__c: x.Amount,
-//           'Opportunity_Primary_Campaign_Source__r.Source_Code__c': x.PromoCode,
-//           wfw_Credit_Card_Type__c: x.CCType,
-//           npe01__Payment_Date__c: state.formatDate(x.Date),
-//         };
-//       });
-//   }
-// );
 
 alterState(state => {
   // lighten state
