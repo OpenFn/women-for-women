@@ -83,21 +83,32 @@ fn(state => {
       };
     });
 
-  return { ...state, opportunities: [...opportunitiesToUpdate, ...opportunitiesToCreate] };
+  return { ...state, opportunitiesToUpdate, opportunitiesToCreate };
 });
 
 bulk(
   'Opportunity',
-  'upsert',
+  'update',
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
     allowNoOp: true,
   },
-  state => state.opportunities
+  state => state.opportunitiesToUpdate
+);
+
+bulk(
+  'Opportunity',
+  'insert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => state.opportunitiesToCreate
 );
 
 alterState(state => {
   // lighten state
-  return { ...state, opportunities: [], selectIDs: [] };
+  return { ...state, opportunitiesToCreate: [], opportunitiesToUpdate: [], selectIDs: [] };
 });
