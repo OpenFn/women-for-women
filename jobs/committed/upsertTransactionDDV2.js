@@ -32,7 +32,7 @@ fn(state => {
 query(
   state => `Select Id, CloseDate FROM Opportunity
   WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
-  ('${state.selectIDs.join('", "')}')`
+  ('${state.selectIDs.join("', '")}')`
 );
 
 fn(state => {
@@ -64,7 +64,7 @@ fn(state => {
     .filter(
       o =>
         state.selectIDs.includes(`${o.PrimKey}${o.DDId}`) &&
-        SFMonth.inlcludes(o.Date.split('/')[1]) &&
+        SFMonth.includes(o.Date.split('/')[1]) &&
         SFYear.includes(o.Date.split('/')[2])
     )
     .map(x => {
