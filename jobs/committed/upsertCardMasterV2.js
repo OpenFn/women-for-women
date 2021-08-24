@@ -14,7 +14,7 @@ fn(state => {
     return undefined;
   };
 
-  const generateMapping = x => {
+  const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
       Name: x.CardMasterID,
@@ -41,7 +41,7 @@ fn(state => {
     .filter(x => Number(selectAmount(x)) % 22 === 0)
     .map(x => {
       return {
-        ...generateMapping(x),
+        ...baseMapping(x),
         ...{
           Type__c: 'Sponsorship',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
@@ -55,7 +55,7 @@ fn(state => {
     .filter(x => !sponsorshipIDs.includes(x.CardMasterID))
     .map(x => {
       return {
-        ...generateMapping(x),
+        ...baseMapping(x),
         ...{
           Type__c: 'Recurring Donation',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',

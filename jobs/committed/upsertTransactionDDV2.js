@@ -40,7 +40,7 @@ fn(state => {
   const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
   const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
 
-  const generateMapping = x => {
+  const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
@@ -69,7 +69,7 @@ fn(state => {
     )
     .map(x => {
       return {
-        ...generateMapping(x),
+        ...baseMapping(x),
       };
     });
 
@@ -79,7 +79,7 @@ fn(state => {
     .filter(o => !opportunitiesToUpdateIDs.includes(o.DDId))
     .map(x => {
       return {
-        ...generateMapping(x),
+        ...baseMapping(x),
       };
     });
 
