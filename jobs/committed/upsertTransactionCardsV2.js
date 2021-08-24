@@ -68,7 +68,7 @@ fn(state => {
 query(
   state => `Select Id, CloseDate, Campaign.Source_Code__c FROM Opportunity
   WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
-  ('${state.selectIDs.join('", "')}')`
+  ('${state.selectIDs.join("', '")}')`
 );
 
 fn(state => {
