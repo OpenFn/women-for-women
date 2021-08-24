@@ -37,7 +37,7 @@ bulk(
           npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
           of_Sisters_Requested__c: x['Number of sponsorships'] === ' ' ? undefined : x['Number of sponsorships'],
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
-          Method_of_Payment__c:'Direct Debit Transfer', // ADDED TO MAPPING
+          npsp__PaymentMethod__c:'Direct Debit Transfer', // ADDED TO MAPPING
           
         };
       });
