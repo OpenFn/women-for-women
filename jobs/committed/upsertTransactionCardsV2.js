@@ -105,6 +105,7 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']), // ADDED TO MAPPING
       npe03__Installment_Period__c,
+      Committed_Giving_Credit_Master_ID__c: x.CardMasterID
     };
   });
 
