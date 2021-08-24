@@ -17,6 +17,7 @@ fn(state => {
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
+      CG_Credit_Card_ID__c: x.CardMasterID,
       Name: x.CardMasterID,
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: x.Occurrence,
