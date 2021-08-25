@@ -26,7 +26,7 @@ fn(state => {
       Closeout_Date__c: formatDate(x.RecurringCancelDate),
       Closeout_Reason__c: x.RecurringCancelReason,
       npsp__StartDate__c: formatDate(x.StartDate),
-      npe03__Next_Payment_Date__c: formatDate(x.NextDate),
+      //npe03__Next_Payment_Date__c: formatDate(x.NextDate), REMOVED MAPPING ON NEXT DONATION DATE
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: formatDate(x.AddedDateTime),
       of_Sisters_Requested__c: x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22,
