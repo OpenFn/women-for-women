@@ -18,7 +18,7 @@ fn(state => {
     let dateEstablished = formatDate(date);
     const month = new Date(dateEstablished).getUTCMonth();
     dateEstablished = new Date(dateEstablished).setUTCMonth(month + 1);
-    return new Date(dateEstablished);
+    return new Date(dateEstablished).toISOString();
   };
 
   const baseMapping = x => {
