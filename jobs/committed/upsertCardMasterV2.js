@@ -14,6 +14,13 @@ fn(state => {
     return undefined;
   };
 
+  const increaseMonth = date => {
+    let dateEstablished = formatDate(date);
+    const month = new Date(dateEstablished).getUTCMonth();
+    dateEstablished = new Date(dateEstablished).setUTCMonth(month + 1);
+    return new Date(dateEstablished);
+  };
+
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
@@ -28,7 +35,7 @@ fn(state => {
       npsp__StartDate__c: formatDate(x.StartDate),
       //npe03__Next_Payment_Date__c: formatDate(x.NextDate), REMOVED MAPPING ON NEXT DONATION DATE
       npsp__PaymentMethod__c: 'Credit Card',
-      npe03__Date_Established__c: formatDate(x.AddedDateTime),
+      npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       of_Sisters_Requested__c: x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22,
       //'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
     };
