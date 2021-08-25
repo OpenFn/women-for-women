@@ -143,7 +143,7 @@ fn(state => {
       CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
       Committed_Giving_ID__c: selectGivingId(x),
       CG_Credit_Card_ID__c: x.CardTransId,
-      'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 !== 0 ? 'UKSPCC' : 'UKRG',
+      'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
     }));
 
   // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
@@ -163,9 +163,9 @@ fn(state => {
         CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
         Method_of_Payment__c: 'Credit',
         CG_Credit_Card_ID__c: x.CardTransId,
-        'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 !== 0 ? 'UKSPCC' : 'UKRG',
+        'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
         'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //Q: Can we assume there will always be a RD? Do we need to create the RD?
-        Donation_Type__c: Number(selectAmount(x)) % 22 !== 0 ? 'Sponsorship' : 'General Giving',
+        Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
       };
     });
 
