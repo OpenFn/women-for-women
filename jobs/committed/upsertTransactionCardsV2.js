@@ -165,6 +165,7 @@ fn(state => {
         CG_Credit_Card_ID__c: x.CardTransId,
         'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 !== 0 ? 'UKSPCC' : 'UKRG',
         'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //Q: Can we assume there will always be a RD? Do we need to create the RD?
+        Donation_Type__c: Number(selectAmount(x)) % 22 !== 0 ? 'Sponsorship' : 'General Giving',
       };
     });
 
