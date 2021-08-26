@@ -1,4 +1,9 @@
 fn(state => {
+  const json = state.data.json.filter(x => x.PrimKey);
+  return { ...state, data: { ...state.data, json } };
+});
+
+fn(state => {
   const formatDate = date => {
     if (!date) return null;
     date = date.split(' ')[0];
@@ -27,7 +32,7 @@ fn(state => {
       CG_Credit_Card_ID__c: x.CardMasterID,
       Name: x.CardMasterID,
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
-      npe03__Installment_Period__c: x.Occurrence,
+      npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
       npe03__Amount__c: x.Amount,
       //Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
       Closeout_Date__c: formatDate(x.RecurringCancelDate),
@@ -36,31 +41,29 @@ fn(state => {
       //npe03__Next_Payment_Date__c: formatDate(x.NextDate), REMOVED MAPPING ON NEXT DONATION DATE
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
-      of_Sisters_Requested__c: x.Occurrence === 'Yearly' ? x.Amount / 264 : x.Amount / 22,
+      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? x.Amount / 264 : x.Amount / 22,
       //'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
     };
   };
 
-  const donationsYearlyOrMonthly = state.data.json.filter(
-    x => x.PrimKey && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
-  );
+  // Filter all csv rows that have Amount (x.Amount) that is a multiple of 22
+  const multipleOf22 = state.data.json.filter(x => Number(selectAmount(x)) % 22 === 0);
 
-  const sponsorships = donationsYearlyOrMonthly
-    .filter(x => Number(selectAmount(x)) % 22 === 0)
-    .map(x => {
-      return {
-        ...baseMapping(x),
-        ...{
-          Type__c: 'Sponsorship',
-          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
-        },
-      };
-    });
+  const sponsorships = multipleOf22.map(x => {
+    return {
+      ...baseMapping(x),
+      ...{
+        Type__c: 'Sponsorship',
+        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
+      },
+    };
+  });
 
-  const sponsorshipIDs = sponsorships.map(x => x.Name);
+  const multipleOf22IDs = multipleOf22.map(x => x.Name);
 
-  const donations = donationsYearlyOrMonthly
-    .filter(x => !sponsorshipIDs.includes(x.CardMasterID))
+  const donations = state.data.json
+    .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
+    .filter(x => x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
     .map(x => {
       return {
         ...baseMapping(x),
