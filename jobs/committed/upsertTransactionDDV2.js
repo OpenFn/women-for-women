@@ -114,7 +114,7 @@ bulk(
 
 bulk(
   'Opportunity',
-  'insert',
+  'upsert',
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
