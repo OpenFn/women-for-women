@@ -32,7 +32,7 @@ each(
     const { DDID } = state.data;
     return query(
       `Select Id, CloseDate FROM Opportunity 
-      WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c = '${DDID}'
+      WHERE npe03__Recurring_Donation__r.Committed_Giving_Direct_Debit_ID__c = '${DDID}'
       ORDER BY CloseDate ASC LIMIT 1`
     )(state).then(state => {
       const { records } = state.references[0];
