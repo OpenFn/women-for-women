@@ -68,8 +68,8 @@ fn(state => {
       return {
         ...baseMapping(x),
         ...{
-          Type__c: 'Recurring Donation',
-          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
+          Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
+          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
         },
       };
     });
