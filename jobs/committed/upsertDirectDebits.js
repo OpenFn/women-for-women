@@ -29,6 +29,7 @@ bulk(
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
           npe03__Amount__c: x['Current amount'],
           npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
+          Active__c: x.Status === 'Live' ? true : false, //TO TEST
           Closeout_Reason__c: x.CancelReason,
           npe03__Installment_Period__c: x.PaymentFrequency,
           npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime, //NOTE: Returning 'null' value?
