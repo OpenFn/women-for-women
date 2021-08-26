@@ -133,9 +133,21 @@ fn(state => {
 
   // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
   const transactionsToUpdate = transactionsToMatch
-    .filter(
-      t => SFMonth.includes(t['Transaction Date'].split('/')[1]) && SFYear.includes(t['Transaction Date'].split('/')[2])
-    )
+    .filter(t => {
+      const date = t['Transaction Date'].split(' ')[0];
+      let csvMonth = date.split('/')[1];
+      csvMonth = csvMonth.length < 2 ? `0${csvMonth}` : csvMonth;
+      const csvYear = date.split('/')[2];
+      let match = null;
+      SFMonth.forEach((month, i) => {
+        if (month === csvMonth) {
+          if (SFYear[i] === csvYear) {
+            match = t;
+          }
+        }
+      });
+      return match;
+    })
     .map(x => ({
       StageName: 'Closed Won',
       Method_of_Payment__c: 'Credit',
@@ -148,12 +160,11 @@ fn(state => {
       'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
     }));
 
+  const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
+
   // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
   const transactionsToCreate = transactionsToMatch
-    .filter(
-      t =>
-        !SFMonth.includes(t['Transaction Date'].split('/')[1]) || !SFYear.includes(t['Transaction Date'].split('/')[2])
-    )
+    .filter(t => !transactionsToUpdateIDs.includes(selectGivingId(t)))
     .map(x => {
       return {
         Name: x.TransactionReference,
