@@ -106,7 +106,8 @@ A message filter trigger has been configured for each above. The job will run wh
 [See here](https://www.youtube.com/watch?v=WKgb-UiTcMg&feature=youtu.be&hd=1) for the video walkthrough of the OpenFn setup. 
 
 ### Functional Summary
-This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their BambooHR system and Microsoft Azure AD. 
+This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their `BambooHR` system and `Microsoft Azure AD` (via the `Microsoft Graph API`). 
+
 OpenFn configured a prototype integration to pilot this data flow by first focusing on automation for new Employee registrations & updates. In subsequent phases, we may expand this automation to handle other employee scenarios (i.e., employee termination, contractor employees, etc.).
 
 Please see this data diagram for a review of the solution: [Data Flow Diagram](https://lucid.app/lucidchart/3da00134-e1d3-4a10-9bed-ada88e89c4fd/edit?page=TDoNVVxjmfJp#?folder_id=home&browser=icon)
@@ -164,7 +165,7 @@ For this pilot integration setup, OpenFn will sync BambooHR `Employee` informati
     `Creating a new user for ${employee.fields.First name Last name} ...`
 
 ### Authorization with Azure
-OpenFn is leveraging the adaptor `language-http` to connect with the Microsoft Graph API. 
+OpenFn is leveraging the adaptor `language-http` to connect with the `Microsoft Graph API` in order to perform operations in Azure AD and across other Microsoft products. **See API Docs:** https://docs.microsoft.com/en-us/graph/
 
 1. We are authorizing with Azure AD `on behalf of a user` - [see docs here](https://docs.microsoft.com/en-us/graph/auth-v2-user?context=graph/api/1.0)
 2. To enable this, Admin users needs to grant `Delegated Permissions` via the API Permissions menu item in the [Azure AD Portal](https://portal.azure.com/?feature.checklist=true#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/a699c0b6-e5c2-4d12-9350-5f5f13154a06/isMSAApp/)
