@@ -40,9 +40,11 @@ fn(state => {
   const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
   const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
 
+  const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`;
+
   const baseMapping = x => {
     return {
-      Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`,
+      Committed_Giving_ID__c: selectGivingId(x),
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
       Amount: state.selectAmount(x),
@@ -61,27 +63,40 @@ fn(state => {
   };
 
   const opportunitiesToUpdate = state.data.json
-    .filter(
-      o =>
-        state.selectIDs.includes(`${o.PrimKey}${o.DDId}`) &&
-        SFMonth.includes(o.Date.split('/')[1]) &&
-        SFYear.includes(o.Date.split('/')[2])
-    )
+    .filter(o => state.selectIDs.includes(`${o.PrimKey}${o.DDId}`))
+    .filter(o => {
+      const date = o.Date.split(' ')[0];
+      let csvMonth = date.split('/')[1];
+      csvMonth = csvMonth.length < 2 ? `0${csvMonth}` : csvMonth;
+      const csvYear = date.split('/')[2];
+      let match = null;
+      SFMonth.forEach((month, i) => {
+        if (month === csvMonth) {
+          if (SFYear[i] === csvYear) {
+            match = o;
+          }
+        }
+      });
+      return match;
+    })
     .map(x => {
       return {
         ...baseMapping(x),
       };
     });
 
-  const opportunitiesToUpdateIDs = opportunitiesToUpdate.map(o => o.DDId);
+  const opportunitiesToUpdateIDs = opportunitiesToUpdate.map(o => o.Committed_Giving_ID__c);
 
   const opportunitiesToCreate = state.data.json
-    .filter(o => !opportunitiesToUpdateIDs.includes(o.DDId))
+    .filter(o => !opportunitiesToUpdateIDs.includes(selectGivingId(o)))
     .map(x => {
       return {
         ...baseMapping(x),
       };
     });
+
+  console.log('Count of "To create" opportunities:', opportunitiesToCreate.length);
+  console.log('Count of "To update" opportunities:', opportunitiesToUpdate.length);
 
   return { ...state, opportunitiesToUpdate, opportunitiesToCreate };
 });
