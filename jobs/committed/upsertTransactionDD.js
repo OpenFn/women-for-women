@@ -76,7 +76,7 @@ bulk(
         return {
           Committed_Giving_ID__c: `${x.PrimKey}${x.DDId}`,
           Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
-          of_Sisters_Requested__c: Number(x.Amount) / 22,
+          of_Sisters_Requested__c: Math.abs(Number(x.Amount) / 22),
         };
       });
   }

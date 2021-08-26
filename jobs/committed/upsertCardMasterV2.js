@@ -41,7 +41,7 @@ fn(state => {
       //npe03__Next_Payment_Date__c: formatDate(x.NextDate), REMOVED MAPPING ON NEXT DONATION DATE
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
-      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? x.Amount / 264 : x.Amount / 22,
+      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x.Amount / 264) : Math.abs(x.Amount / 22),
       //'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
     };
   };
