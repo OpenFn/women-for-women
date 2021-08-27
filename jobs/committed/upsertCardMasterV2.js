@@ -34,13 +34,12 @@ fn(state => {
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
       npe03__Amount__c: x.Amount,
-      //Closeout_Date__c: formatDate(x.EndDate), // THIS IS DUPLICATED - TO CHECK
       Closeout_Date__c: formatDate(x.RecurringCancelDate),
       Closeout_Reason__c: x.RecurringCancelReason,
       npsp__StartDate__c: formatDate(x.StartDate),
-      //
       npsp__PaymentMethod__c: 'Credit Card',
-      npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
+      npe03__Date_Established__c: formatMonth(x.AddedDateTime),
+      npsp__StartDate__c: increaseMonth(x.AddedDateTime),
       //npe03__Date_Established__c: formatDate(x.AddedDateTime),
       //npe03__Next_Payment_Date__c: increaseMonth(x.AddedDateTime), //Note: This is required to trigger auto-insert of related Opps
       //npe03__Next_Payment_Date__c: formatDate(x.NextDate), //TODO: Later update RD to include this? 
