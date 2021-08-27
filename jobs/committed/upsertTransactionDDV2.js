@@ -39,11 +39,14 @@ fn(state => {
   const { records } = state.references[0];
   const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
   const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
+  const SFRecurringDonationIds = records.map(rec => rec.npe03__Recurring_Donation__r);
+  const Ids = records.map(rec => rec.Id);
 
   const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`;
 
   const baseMapping = x => {
     return {
+      Id: x.Id,
       Committed_Giving_ID__c: selectGivingId(x),
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       'Account.Committed_Giving_ID__c': `${x.PrimKey}`,
