@@ -66,21 +66,31 @@ fn(state => {
   };
 
   const opportunitiesToUpdate = state.data.json
-    .filter(o => state.selectIDs.includes(`${o.PrimKey}${o.DDId}`))
-    .filter(o => {
+    // .filter(o => state.selectIDs.includes(`${o.PrimKey}${o.DDId}`))
+    .map(o => {
+      let match = null;
       const date = o.Date.split(' ')[0];
       let csvMonth = date.split('/')[1];
       csvMonth = csvMonth.length < 2 ? `0${csvMonth}` : csvMonth;
       const csvYear = date.split('/')[2];
-      let match = null;
+      const csvRecurringDonationId = `${o.PrimKey}${o.DDId}`; // Building Id of current csv donation
+
+      // for each month for salesforce records
       SFMonth.forEach((month, i) => {
+        // if that month matches one with a csv row...
         if (month === csvMonth) {
+          //...and the year of that month matches the year of that same csv row
           if (SFYear[i] === csvYear) {
-            match = o;
+            // ... and the recurring donation ID of that SF records matches the csv donation ID
+            if (
+              SFRecurringDonationIds[i] &&
+              SFRecurringDonationIds[i].Committed_Giving_ID__c === csvRecurringDonationId
+            ) {
+              match = { ...o, Id: Ids[i] };
+            }
           }
         }
       });
-      console.log('match', match);
       return match;
     })
     .map(x => {
@@ -105,27 +115,27 @@ fn(state => {
   return { ...state, opportunitiesToUpdate, opportunitiesToCreate };
 });
 
-// bulk(
-//   'Opportunity',
-//   'update',
-//   {
-//     extIdField: 'Committed_Giving_ID__c',
-//     failOnError: true,
-//     allowNoOp: true,
-//   },
-//   state => state.opportunitiesToUpdate
-// );
+bulk(
+  'Opportunity',
+  'update',
+  {
+    extIdField: 'Id',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => state.opportunitiesToUpdate
+);
 
-// bulk(
-//   'Opportunity',
-//   'upsert',
-//   {
-//     extIdField: 'Committed_Giving_ID__c',
-//     failOnError: true,
-//     allowNoOp: true,
-//   },
-//   state => state.opportunitiesToCreate
-// );
+bulk(
+  'Opportunity',
+  'upsert',
+  {
+    extIdField: 'Id',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => state.opportunitiesToCreate
+);
 
 alterState(state => {
   // lighten state
