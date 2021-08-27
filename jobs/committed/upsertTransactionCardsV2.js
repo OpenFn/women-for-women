@@ -103,7 +103,7 @@ fn(state => {
       'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
       npe03__Amount__c: selectAmount(x),
       npsp__PaymentMethod__c: 'Credit Card',
-      npe03__Date_Established__c: state.formatDate(x['Transaction Date']), // ADDED TO MAPPING
+      npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
     };
   });
@@ -128,7 +128,7 @@ fn(state => {
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': 'UKWEB',
-    Transaction_Date_Time__c: state.formatDate(x['Transaction Date']), // ADDED TO MAPPING
+    Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
   }));
 
   // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
@@ -158,6 +158,7 @@ fn(state => {
       CG_Credit_Card_ID__c: x.CardTransId,
       CG_Credit_Card_Master_ID__c: x.CardMasterID,
       'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`
     }));
 
   const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
@@ -178,7 +179,7 @@ fn(state => {
         CG_Credit_Card_ID__c: x.CardTransId,
         CG_Credit_Card_Master_ID__c: x.CardMasterID,
         'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //Q: Can we assume there will always be a RD? Do we need to create the RD?
+        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING 
         Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
       };
     });

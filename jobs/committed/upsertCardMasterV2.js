@@ -39,7 +39,7 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
-      //npe03__Next_Payment_Date__c: increaseMonth(x.AddedDateTime), //Note: This is required to trigger auto-insert of related Opps
+      npe03__Next_Payment_Date__c: increaseMonth(x.AddedDateTime), //Note: This is required to trigger auto-insert of related Opps
       //npe03__Next_Payment_Date__c: formatDate(x.NextDate), //TODO: Later update RD to include this? 
       of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x.Amount / 264) : Math.abs(x.Amount / 22),
     };
