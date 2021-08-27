@@ -30,7 +30,7 @@ fn(state => {
 });
 
 query(
-  state => `Select Id, CloseDate FROM Opportunity
+  state => `Select Id, CloseDate, npe03__Recurring_Donation__r.Committed_Giving_ID__c FROM Opportunity
   WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
   ('${state.selectIDs.join("', '")}')`
 );
@@ -77,6 +77,7 @@ fn(state => {
           }
         }
       });
+      console.log('match', match);
       return match;
     })
     .map(x => {
@@ -101,27 +102,27 @@ fn(state => {
   return { ...state, opportunitiesToUpdate, opportunitiesToCreate };
 });
 
-bulk(
-  'Opportunity',
-  'update',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => state.opportunitiesToUpdate
-);
+// bulk(
+//   'Opportunity',
+//   'update',
+//   {
+//     extIdField: 'Committed_Giving_ID__c',
+//     failOnError: true,
+//     allowNoOp: true,
+//   },
+//   state => state.opportunitiesToUpdate
+// );
 
-bulk(
-  'Opportunity',
-  'upsert',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => state.opportunitiesToCreate
-);
+// bulk(
+//   'Opportunity',
+//   'upsert',
+//   {
+//     extIdField: 'Committed_Giving_ID__c',
+//     failOnError: true,
+//     allowNoOp: true,
+//   },
+//   state => state.opportunitiesToCreate
+// );
 
 alterState(state => {
   // lighten state
