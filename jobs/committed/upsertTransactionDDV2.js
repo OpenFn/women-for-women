@@ -93,6 +93,7 @@ fn(state => {
       });
       return match;
     })
+    .filter(x => x)
     .map(x => {
       return {
         ...baseMapping(x),
