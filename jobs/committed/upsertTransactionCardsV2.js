@@ -106,7 +106,8 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
-      CG_Credit_Card_ID__c: x.CardMasterID
+      CG_Credit_Card_ID__c: x.CardMasterID,
+
     };
   });
 
@@ -150,38 +151,13 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-    Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
+    Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
   }));
 
-  // const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
-
-  // // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
-  // const transactionsToCreate = transactionsToMatch
-  //   .filter(t => !transactionsToUpdateIDs.includes(selectGivingId(t)))
-  //   .map(x => {
-  //     return {
-  //       Name: x.TransactionReference,
-  //       'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-  //       StageName: 'Closed Won',
-  //       Committed_Giving_ID__c: selectGivingId(x),
-  //       Amount: selectAmount(x),
-  //       Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
-  //       CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-  //       Method_of_Payment__c: 'Credit',
-  //       CG_Credit_Card_ID__c: x.CardTransId,
-  //       CG_Credit_Card_Master_ID__c: x.CardMasterID,
-  //       'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-  //       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-  //       Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
-  //       'RecordType.Name': 'Individual Giving',
-  //     };
-  //   });
-  console.log('Count of RDs to upsert:', uniqueRDs.length);
-  console.log('Count of "Less than 1" opportunities to upsert:', transactionLessThan1.length);
-  console.log('Count of RD opportunities to upsert:', transactionsToUpsert.length);
-  //console.log('Count of "To create" opportunities:', transactionsToCreate.length);
-  //console.log('Count of "To update" opportunities:', transactionsToUpdate.length);
+  console.log('Count of new "RDs" to upsert:', uniqueRDs.length);
+  console.log('Count of "Less than 1" Opps to upsert:', transactionLessThan1.length);
+  console.log('Count of "recurring" Opps to upsert:', transactionsToUpsert.length);
 
   return {
     ...state,
