@@ -109,6 +109,10 @@ fn(state => {
     };
   });
 
+  const uniqueRDs = Array.from(new Set(recurringDonations.map(x => x.CardMasterID))).map(CardMasterID => {
+    return recurringDonations.find(c => CardMasterID === c.CardMasterID);
+  });
+
   // 1st type of opportunities in this array ==> Regular once-off donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
     Name: x.TransactionReference,
@@ -121,9 +125,7 @@ fn(state => {
     Donation_Type__c: 'General Giving',
     StageName: 'Closed Won',
     npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
-    CC_Type__c: x.CCType,
     Transaction_Reference_Id__c: x.TransactionReference,
-    //CloseDate: x.SettlementDate,
     CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
     Method_of_Payment__c: 'Credit',
     CG_Credit_Card_ID__c: x.CardTransId,
@@ -134,23 +136,22 @@ fn(state => {
   }));
 
   // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
-  const transactionsToUpsert = transactionsToMatch
-    .map(x => ({
-      Name: x.TransactionReference,
-      'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-      StageName: 'Closed Won',
-      Committed_Giving_ID__c: selectGivingId(x),
-      Amount: selectAmount(x),
-      Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
-      CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-      Method_of_Payment__c: 'Credit',
-      CG_Credit_Card_ID__c: x.CardTransId,
-      CG_Credit_Card_Master_ID__c: x.CardMasterID,
-      'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-      Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
-      'RecordType.Name': 'Individual Giving',
-    }));
+  const transactionsToUpsert = transactionsToMatch.map(x => ({
+    Name: x.TransactionReference,
+    'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+    StageName: 'Closed Won',
+    Committed_Giving_ID__c: selectGivingId(x),
+    Amount: selectAmount(x),
+    Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
+    CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+    Method_of_Payment__c: 'Credit',
+    CG_Credit_Card_ID__c: x.CardTransId,
+    CG_Credit_Card_Master_ID__c: x.CardMasterID,
+    'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+    Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
+    'RecordType.Name': 'Individual Giving',
+  }));
 
   // const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
 
@@ -175,7 +176,7 @@ fn(state => {
   //       'RecordType.Name': 'Individual Giving',
   //     };
   //   });
-
+  console.log('Count of RDs to upsert:', uniqueRDs.length);
   console.log('Count of "Less than 1" opportunities to upsert:', transactionLessThan1.length);
   console.log('Count of RD opportunities to upsert:', transactionsToUpsert.length);
   //console.log('Count of "To create" opportunities:', transactionsToCreate.length);
@@ -184,6 +185,7 @@ fn(state => {
   return {
     ...state,
     recurringDonations,
+    uniqueRDs,
     transactions: [...transactionLessThan1, ...transactionsToUpsert],
   };
 });
@@ -198,7 +200,7 @@ bulk(
   },
   state => {
     console.log('Bulk upserting Recurring Donation with count transaction greater than 1.');
-    return state.recurringDonations;
+    return state.uniqueRDs;
   }
 );
 
@@ -215,5 +217,3 @@ bulk(
     return state.transactions;
   }
 );
-
-
