@@ -79,6 +79,8 @@ fn(state => {
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
 
+  const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
+
   const selectAmount = item => {
     if (item.Amount) {
       return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
@@ -96,7 +98,7 @@ fn(state => {
       npe03__Installment_Period__c = 'Yearly';
     }
     return {
-      Committed_Giving_ID__c: selectGivingId(x),
+      Committed_Giving_ID__c: selectRDId(x),
       'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
       Type__c: 'Recurring Donation',
       'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
