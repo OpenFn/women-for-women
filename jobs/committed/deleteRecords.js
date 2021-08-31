@@ -11,13 +11,9 @@ fn(state => {
     return R;
   };
 
-  const chunks = chunk(IDOpportunities, 200);
+  const chunkOpportunities = chunk(IDOpportunities, 200);
 
-  return { ...state, chunks, chunk };
-});
-
-each('chunks[*]', state => {
-  return destroy('Opportunity', state => state.data)(state);
+  return { ...state, chunkOpportunities, chunk };
 });
 
 query(`SELECT Id FROM npe03__Recurring_Donation__c`);
@@ -27,11 +23,15 @@ fn(state => {
 
   const IDDonations = records.map(rec => rec.Id);
 
-  const chunks = state.chunk(IDDonations, 200);
+  const chunkDonations = state.chunk(IDDonations, 200);
 
-  return { ...state, chunks };
+  return { ...state, chunkDonations };
 });
 
-each('chunks[*]', state => {
+each('chunkDonations[*]', state => {
   return destroy('npe03__Recurring_Donation__c', state => state.data)(state);
+});
+
+each('chunkOpportunities[*]', state => {
+  return destroy('Opportunity', state => state.data)(state);
 });
