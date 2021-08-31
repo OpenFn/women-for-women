@@ -98,7 +98,6 @@ fn(state => {
     return {
       Committed_Giving_ID__c: selectGivingId(x),
       'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
-      Credit_Card_Type__c: x.CCType,
       Type__c: 'Recurring Donation',
       'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
       npe03__Amount__c: selectAmount(x),
@@ -133,70 +132,73 @@ fn(state => {
   }));
 
   // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
-  const transactionsToUpdate = transactionsToMatch
-    .filter(t => {
-      const date = t['Transaction Date'].split(' ')[0];
-      let csvMonth = date.split('/')[1];
-      csvMonth = csvMonth.length < 2 ? `0${csvMonth}` : csvMonth;
-      const csvYear = date.split('/')[2];
-      let match = null;
-      SFMonth.forEach((month, i) => {
-        if (month === csvMonth) {
-          if (SFYear[i] === csvYear) {
-            match = t;
-          }
-        }
-      });
-      return match;
-    })
+  const transactionsToUpsert = transactionsToMatch
     .map(x => ({
+      Name: x.TransactionReference,
+      'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
       StageName: 'Closed Won',
-      Method_of_Payment__c: 'Credit',
+      Committed_Giving_ID__c: selectGivingId(x),
       Amount: selectAmount(x),
       Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
-      CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
-      Committed_Giving_ID__c: selectGivingId(x),
+      CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+      Method_of_Payment__c: 'Credit',
       CG_Credit_Card_ID__c: x.CardTransId,
       CG_Credit_Card_Master_ID__c: x.CardMasterID,
       'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+      Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
       'RecordType.Name': 'Individual Giving',
     }));
 
-  const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
+  // const transactionsToUpdateIDs = transactionsToUpdate.map(x => x.Committed_Giving_ID__c);
 
-  // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
-  const transactionsToCreate = transactionsToMatch
-    .filter(t => !transactionsToUpdateIDs.includes(selectGivingId(t)))
-    .map(x => {
-      return {
-        Name: x.TransactionReference,
-        'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-        StageName: 'Closed Won',
-        Committed_Giving_ID__c: selectGivingId(x),
-        Amount: selectAmount(x),
-        Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
-        CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-        Method_of_Payment__c: 'Credit',
-        CG_Credit_Card_ID__c: x.CardTransId,
-        CG_Credit_Card_Master_ID__c: x.CardMasterID,
-        'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-        'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-        Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
-        'RecordType.Name': 'Individual Giving',
-      };
-    });
+  // // 3rd type of opportunity in this array ==> New Opportunities to insert related to Recurring Donations
+  // const transactionsToCreate = transactionsToMatch
+  //   .filter(t => !transactionsToUpdateIDs.includes(selectGivingId(t)))
+  //   .map(x => {
+  //     return {
+  //       Name: x.TransactionReference,
+  //       'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+  //       StageName: 'Closed Won',
+  //       Committed_Giving_ID__c: selectGivingId(x),
+  //       Amount: selectAmount(x),
+  //       Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
+  //       CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+  //       Method_of_Payment__c: 'Credit',
+  //       CG_Credit_Card_ID__c: x.CardTransId,
+  //       CG_Credit_Card_Master_ID__c: x.CardMasterID,
+  //       'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
+  //       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+  //       Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'General Giving',
+  //       'RecordType.Name': 'Individual Giving',
+  //     };
+  //   });
 
-  console.log('Count of "Less than 1" opportunities:', transactionLessThan1.length);
-  console.log('Count of "To create" opportunities:', transactionsToCreate.length);
-  console.log('Count of "To update" opportunities:', transactionsToUpdate.length);
+  console.log('Count of "Less than 1" opportunities to upsert:', transactionLessThan1.length);
+  console.log('Count of RD opportunities to upsert:', transactionsToUpsert.length);
+  //console.log('Count of "To create" opportunities:', transactionsToCreate.length);
+  //console.log('Count of "To update" opportunities:', transactionsToUpdate.length);
 
   return {
     ...state,
     recurringDonations,
-    transactions: [...transactionLessThan1, ...transactionsToCreate, ...transactionsToUpdate],
+    transactions: [...transactionLessThan1, ...transactionsToUpsert],
   };
 });
+
+bulk(
+  'npe03__Recurring_Donation__c',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting Recurring Donation with count transaction greater than 1.');
+    return state.recurringDonations;
+  }
+);
 
 bulk(
   'Opportunity',
@@ -212,16 +214,4 @@ bulk(
   }
 );
 
-bulk(
-  'npe03__Recurring_Donation__c',
-  'upsert',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => {
-    console.log('Bulk upserting Recurring Donation with count transaction greater than 1.');
-    return state.recurringDonations;
-  }
-);
+
