@@ -206,7 +206,10 @@ bulk(
     failOnError: true,
     allowNoOp: true,
   },
-  state => state.transactions
+  state => {
+    console.log('Bulk upserting Opps.');
+    return state.transactions;
+  }
 );
 
 bulk(
