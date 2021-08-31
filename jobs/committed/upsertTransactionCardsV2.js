@@ -31,56 +31,6 @@ fn(state => {
     return json;
   };
 
-  let arrayReduced = reduceArray(state.data.json, 'CardMasterID');
-  const groupedCardMaster = [];
-  for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
-
-  let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
-
-  cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1).filter(x => {
-    const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
-    return Number(Amount) % 22 !== 0;
-  });
-
-  const cgIDLess1s = cardMasterIDLessThan1.map(cm => cm.CardMasterID);
-
-  const cardMasterIDGreaterThan1 = state.data.json
-    .filter(x => !cgIDLess1s.includes(x.CardMasterID))
-    .filter(x => {
-      const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
-      return Number(Amount) % 22 !== 0;
-    });
-
-  const transactionsToMatch = state.data.json.filter(x => !cgIDLess1s.includes(x.CardMasterID));
-
-  const selectIDs = transactionsToMatch.map(x => `${x.PrimKey}${x.CardMasterID}`);
-
-  return {
-    ...state,
-    cardMasterIDLessThan1,
-    cardMasterIDGreaterThan1,
-    transactionsToMatch,
-    selectIDs,
-    formatDate,
-  };
-});
-
-query(
-  state => `Select Id, CloseDate, Campaign.Source_Code__c FROM Opportunity
-  WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
-  ('${state.selectIDs.join("', '")}')`
-);
-
-fn(state => {
-  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsToMatch } = state;
-  const { records } = state.references[0];
-  const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
-  const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
-
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
-
-  const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
-
   const selectAmount = item => {
     if (item.Amount) {
       return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
@@ -90,11 +40,63 @@ fn(state => {
 
   const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
 
+  // We build arrays of transactions with amount multiple of 22 and not multiple.
+  const transactionsMultipleOf22 = state.data.json.filter(x => multipleOf22(x));
+  const transactionsNotMultipleOf22 = state.data.json.filter(x => !multipleOf22(x));
+
+  // We group transactions by 'CardMasterID'
+  let arrayReduced = reduceArray(transactionsNotMultipleOf22, 'CardMasterID');
+  const groupedCardMaster = [];
+  for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
+
+  let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
+
+  cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1);
+
+  const cgIDLess1s = cardMasterIDLessThan1.map(cm => cm.CardMasterID);
+
+  const cardMasterIDGreaterThan1 = transactionsNotMultipleOf22.filter(x => !cgIDLess1s.includes(x.CardMasterID));
+
+  return {
+    ...state,
+    transactionsMultipleOf22,
+    cardMasterIDLessThan1,
+    cardMasterIDGreaterThan1,
+    formatDate,
+    selectAmount,
+    multipleOf22,
+  };
+});
+
+fn(state => {
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
+
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
+
+  const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
+
+  const opportunities = transactionsMultipleOf22.map(x => ({
+    Name: x.TransactionReference,
+    'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+    StageName: 'Closed Won',
+    Committed_Giving_ID__c: selectGivingId(x),
+    Amount: state.selectAmount(x),
+    Payment_Type__c: sstate.electAmount(x) < 0 ? 'Refund' : 'Payment',
+    CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+    Method_of_Payment__c: 'Credit',
+    CG_Credit_Card_ID__c: x.CardTransId,
+    CG_Credit_Card_Master_ID__c: x.CardMasterID,
+    'Campaign.Source_Code__c': multipleOf22(x) ? 'UKSPCC' : 'UKRG',
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+    Donation_Type__c: multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
+    'RecordType.Name': 'Individual Giving',
+  }));
+
   const recurringDonations = cardMasterIDGreaterThan1.map(x => {
     let npe03__Installment_Period__c = '';
-    if ((multipleOf22(x) && selectAmount(x) < 264) || selectAmount(x) < 22) {
+    if ((state.multipleOf22(x) && state.selectAmount(x) < 264) || state.selectAmount(x) < 22) {
       npe03__Installment_Period__c = 'Monthly';
-    } else if (selectAmount(x) > 22 && !multipleOf22(x)) {
+    } else if (state.selectAmount(x) > 22 && !state.multipleOf22(x)) {
       npe03__Installment_Period__c = 'Yearly';
     }
     return {
@@ -107,7 +109,6 @@ fn(state => {
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
       CG_Credit_Card_ID__c: x.CardMasterID,
-
     };
   });
 
@@ -120,9 +121,8 @@ fn(state => {
     Name: x.TransactionReference,
     Committed_Giving_ID__c: selectGivingId(x),
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-    //'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-    Amount: selectAmount(x),
-    Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
+    Amount: state.selectAmount(x),
+    Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
     Donation_Type__c: 'General Giving',
     StageName: 'Closed Won',
@@ -137,33 +137,13 @@ fn(state => {
     'RecordType.Name': 'Individual Giving',
   }));
 
-  // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
-  const transactionsToUpsert = transactionsToMatch.map(x => ({
-    Name: x.TransactionReference,
-    'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
-    StageName: 'Closed Won',
-    Committed_Giving_ID__c: selectGivingId(x),
-    Amount: selectAmount(x),
-    Payment_Type__c: selectAmount(x) < 0 ? 'Refund' : 'Payment',
-    CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
-    Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
-    CG_Credit_Card_Master_ID__c: x.CardMasterID,
-    'Campaign.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-    Donation_Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
-    'RecordType.Name': 'Individual Giving',
-  }));
-
   console.log('Count of new "RDs" to upsert:', uniqueRDs.length);
   console.log('Count of "Less than 1" Opps to upsert:', transactionLessThan1.length);
-  console.log('Count of "recurring" Opps to upsert:', transactionsToUpsert.length);
 
   return {
     ...state,
-    recurringDonations,
     uniqueRDs,
-    transactions: [...transactionLessThan1, ...transactionsToUpsert],
+    transactions: [...transactionLessThan1, ...opportunities],
   };
 });
 
