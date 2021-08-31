@@ -81,14 +81,14 @@ fn(state => {
     StageName: 'Closed Won',
     Committed_Giving_ID__c: selectGivingId(x),
     Amount: state.selectAmount(x),
-    Payment_Type__c: sstate.electAmount(x) < 0 ? 'Refund' : 'Payment',
+    Payment_Type__c: state.electAmount(x) < 0 ? 'Refund' : 'Payment',
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
-    'Campaign.Source_Code__c': multipleOf22(x) ? 'UKSPCC' : 'UKRG',
+    'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG',
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
-    Donation_Type__c: multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
+    Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
   }));
 
