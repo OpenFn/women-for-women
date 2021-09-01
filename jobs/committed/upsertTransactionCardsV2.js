@@ -83,6 +83,7 @@ fn(state => {
     Amount: state.selectAmount(x),
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+    Transaction_Date_Time__c: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
