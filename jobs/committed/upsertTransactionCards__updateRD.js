@@ -83,8 +83,8 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
   }));
 
-  console.log('Count of Opp to upsert with RD lookup:', transactionsToUpsert.length);
-  console.log('Count of Opp to upsert with RD lookup:', sponsorsToUpsert.length);
+  console.log('Count of RD Opps to upsert with RD lookup:', transactionsToUpsert.length);
+  console.log('Count of Sponsor Opps to upsert with RD lookup:', sponsorsToUpsert.length);
 
 
   return {
