@@ -57,9 +57,7 @@ fn(state => {
   const { transactionsToMatch } = state;
   //const { records } = state.references[0];
 
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
-
-  const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
 
   // const selectAmount = item => {
   //     if (item.Amount) {
