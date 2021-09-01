@@ -62,7 +62,7 @@ fn(state => {
 
   const donations = state.data.json
     .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
-    .filter(x => x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
+    .filter(x => x.Occurrence === 'Monthly' && x.LastCredited !== 'MISSING' || x.Occurrence === 'Yearly' && x.LastCredited !== 'MISSING')
     .map(x => {
       return {
         ...baseMapping(x),
