@@ -61,12 +61,9 @@ fn(state => {
       };
     });
 
-  const slicedOpps = opportunities.slice(0, 1);
-
   console.log('Count of opportunities:', opportunities.length);
-  console.log('Count of batch of opportunities:', slicedOpps);
 
-  return { ...state, opportunities, slicedOpps };
+  return { ...state, opportunities };
 });
 
 
@@ -78,7 +75,7 @@ bulk(
     failOnError: true,
     allowNoOp: true,
   },
-  state => state.slicedOpps
+  state => state.opportunities
 );
 
 alterState(state => {
