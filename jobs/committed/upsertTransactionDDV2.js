@@ -29,32 +29,21 @@ fn(state => {
   };
 });
 
-// query(
-//   state => `Select Id, CloseDate, npe03__Recurring_Donation__r.Committed_Giving_ID__c FROM Opportunity
-//   WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
-//   ('${state.selectIDs.join("', '")}')`
-// );
 
 fn(state => {
-  // const { records } = state.references[0];
-  // const SFMonth = records.map(rec => rec.CloseDate.split('-')[1]);
-  // const SFYear = records.map(rec => rec.CloseDate.split('-')[0]);
-  // const SFRecurringDonationIds = records.map(rec => rec.npe03__Recurring_Donation__r);
-  // const Ids = records.filter(rec => rec).map(rec => rec.Id);
-
   const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`;
 
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: selectGivingId(x),
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
-      //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //SHOULD WE MAP ACCTS?
+      //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
       CurrencyIsoCode: 'GBP',
       StageName: 'Closed Won',
       CloseDate: state.formatDate(x['Date']),
       Transaction_Date_Time__c: state.formatDate(x['Date']),
-      npsp__Closed_Lost_Reason__c: x['Unpaid reason'], //Map from DirectDebit?
+      npsp__Closed_Lost_Reason__c: x['Unpaid reason'], //Q: Map from DirectDebit?
       'Campaign.Source_Code__c': x['PromoCode'],
       Name: x.DDRefforBank,
       Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
@@ -95,5 +84,4 @@ bulk(
 alterState(state => {
   // lighten state
   return { ...state, opportunities: [] };
-  //return { ...state, opportunitiesToCreate: [], opportunitiesToUpdate: [], selectIDs: [] };
 });
