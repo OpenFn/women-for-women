@@ -141,7 +141,7 @@ fn(state => {
     Amount: state.selectAmount(x),
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
-    Donation_Type__c: 'General Giving',
+    Donation_Type__c: 'General Donation',
     StageName: 'Closed Won',
     npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
     Transaction_Reference_Id__c: x.TransactionReference,
