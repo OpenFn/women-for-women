@@ -46,7 +46,6 @@ each(
           'Opportunity',
           fields(
             field(StageName, 'Closed Won'),
-            field(CG_Credit_Card_ID__c, CCID),
             field(npsp__Tribute_Type__c, dataValue('FormName')),
             field(Tribute_Occasion_Text__c, dataValue('Occasion')),
             field(npsp__Honoree_Name__c, dataValue('Honouree / Tributee Name')),
