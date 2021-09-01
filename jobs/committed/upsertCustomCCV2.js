@@ -45,7 +45,7 @@ each(
         return update(
           'Opportunity',
           fields(
-            field(npsp__Tribute_Type__c, dataValue('FormName')),
+            field(npsp__Tribute_Type__c, dataValue('FormName')(state)),
             field(Tribute_Occasion_Text__c, dataValue('Occasion')),
             field(npsp__Honoree_Name__c, dataValue('Honouree / Tributee Name')),
             field(Paper_Card_Shipping_City__c, dataValue('Notify Town')),
