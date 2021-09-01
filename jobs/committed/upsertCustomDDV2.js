@@ -44,6 +44,7 @@ each(
         return update(
           'Opportunity',
           fields(
+            field('Id', records[0].Id),
             field('npsp__Tribute_Type__c', dataValue('FormName')),
             field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
             field('wfw_Honoree_City__c', dataValue('Notify Town')),
