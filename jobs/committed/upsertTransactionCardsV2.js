@@ -71,7 +71,7 @@ fn(state => {
 fn(state => {
   const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
 
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.TransactionReference}`;
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
 
   const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
 
@@ -116,6 +116,23 @@ fn(state => {
     return recurringDonations.find(c => CardMasterID === c.CardMasterID);
   });
 
+  const transactionGreaterThan1 = cardMasterIDGreaterThan1.map(x => ({
+    Name: x.TransactionReference,
+    'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
+    StageName: 'Closed Won',
+    Committed_Giving_ID__c: selectGivingId(x),
+    Amount: state.selectAmount(x),
+    Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
+    CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
+    Method_of_Payment__c: 'Credit',
+    CG_Credit_Card_ID__c: x.CardTransId,
+    CG_Credit_Card_Master_ID__c: x.CardMasterID,
+    'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG',
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+    Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
+    'RecordType.Name': 'Individual Giving',
+  }));
+
   // 1st type of opportunities in this array ==> Regular once-off donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
     Name: x.TransactionReference,
@@ -139,11 +156,13 @@ fn(state => {
 
   console.log('Count of new "RDs" to upsert:', uniqueRDs.length);
   console.log('Count of "Less than 1" Opps to upsert:', transactionLessThan1.length);
+  console.log('Count of "RD Opps" to upsert:', opportunities.length);
+  console.log('Count of "Recurring Opps" to upsert:', transactionGreaterThan1.length);
 
   return {
     ...state,
     uniqueRDs,
-    transactions: [...transactionLessThan1, ...opportunities],
+    transactions: [...transactionLessThan1, ...opportunities, ...transactionGreaterThan1],
   };
 });
 
