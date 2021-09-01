@@ -6,6 +6,14 @@ fn(state => {
 });
 
 fn(state => {
+  const formatDate = date => {
+    if (!date) return null;
+    date = date.split(' ')[0];
+    const parts = date.match(/(\d+)/g);
+    const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
+    return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
+  };
+
   function reduceArray(array, groupBy) {
     return array.reduce((r, a) => {
       r[a[groupBy]] = r[a[groupBy]] || [];
@@ -14,6 +22,7 @@ fn(state => {
       return r;
     }, Object.create(null));
   }
+
   const flattenArray = obj => {
     const json = [];
     for (key of obj) {
@@ -22,62 +31,65 @@ fn(state => {
     return json;
   };
 
-  let arrayReduced = reduceArray(state.data.json, 'CardMasterID');
+  const selectAmount = item => {
+    if (item.Amount) {
+      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
+    }
+    return undefined;
+  };
+
+  const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
+
+  // We build arrays of transactions with amount multiple of 22 and not multiple.
+  const transactionsMultipleOf22 = state.data.json.filter(x => multipleOf22(x));
+  const transactionsNotMultipleOf22 = state.data.json.filter(x => !multipleOf22(x));
+
+  // We group transactions by 'CardMasterID'
+  let arrayReduced = reduceArray(transactionsNotMultipleOf22, 'CardMasterID');
   const groupedCardMaster = [];
   for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
 
   let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
 
-  cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1).filter(x => {
-    const Amount = x.Amount && isNaN(x.Amount[0]) ? x.Amount.substring(1) : x.Amount;
-    return Number(Amount) % 22 !== 0;
-  });
+  cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1);
 
   const cgIDLess1s = cardMasterIDLessThan1.map(cm => cm.CardMasterID);
 
-  const transactionsToMatch = state.data.json.filter(x => !cgIDLess1s.includes(x.CardMasterID));
-
-  const selectIDs = transactionsToMatch.map(x => `${x.PrimKey}${x.CardMasterID}`);
+  const cardMasterIDGreaterThan1 = transactionsNotMultipleOf22.filter(x => !cgIDLess1s.includes(x.CardMasterID));
 
   return {
     ...state,
-    transactionsToMatch,
-    selectIDs,
-    //formatDate,
+    transactionsMultipleOf22,
+    cardMasterIDLessThan1,
+    cardMasterIDGreaterThan1,
+    formatDate,
+    selectAmount,
+    multipleOf22,
   };
 });
 
-// query(
-//     state => `Select Id, CloseDate, Campaign.Source_Code__c FROM Opportunity
-//     WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c in
-//     ('${state.selectIDs.join("', '")}')`
-// );
-
 fn(state => {
-  const { transactionsToMatch } = state;
-  //const { records } = state.references[0];
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
 
-  // const selectAmount = item => {
-  //     if (item.Amount) {
-  //         return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
-  //     }
-  //     return undefined;
-  // };
-  // const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
+  const sponsorsToUpsert = transactionsMultipleOf22.map(x => ({
+    Committed_Giving_ID__c: selectGivingId(x),
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+  }));
 
-  // 2nd type of opportunity in this array ==> Opportunities linked to Recurring Donations
-  const transactionsToUpsert = transactionsToMatch.map(x => ({
+  const transactionsToUpsert = cardMasterIDGreaterThan1.map(x => ({
     Committed_Giving_ID__c: selectGivingId(x),
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
   }));
 
   console.log('Count of Opp to upsert with RD lookup:', transactionsToUpsert.length);
+  console.log('Count of Opp to upsert with RD lookup:', sponsorsToUpsert.length);
+
 
   return {
     ...state,
-    transactions: [...transactionsToUpsert],
+    transactions: [...transactionsToUpsert, ...sponsorsToUpsert],
   };
 });
 
