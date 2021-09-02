@@ -1,5 +1,5 @@
 query(
-  `SELECT Id, Committed_Giving_ID__c, closeDate from Opportunity WHERE Committed_Giving_ID__c != null AND StageName = 'Pledged'`
+  `SELECT Id, Committed_Giving_ID__c, CloseDate from Opportunity WHERE Committed_Giving_ID__c != null AND StageName = 'Pledged'`
 );
 fn(state => {
   const { records } = state.references[0];
@@ -18,10 +18,11 @@ fn(state => {
 });
 
 each('chunkToDelete[*]', state => {
+  console.log('Opps to delete', state.data); 
   return destroy('Opportunity', state => state.data)(state);
 });
 
 fn(state => ({
   ...state,
   references: [],
-}));// Your job goes here.
+}));
