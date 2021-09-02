@@ -46,7 +46,10 @@ each(
           'Opportunity',
           fields(
             field('Id', records[0].Id),
-            field('npsp__Tribute_Type__c', dataValue('FormName')),
+            field('npsp__Tribute_Type__c', state => {
+              var tribute = dataValue('FormName')(state);
+              return tribute ? tribute : 'Honor'
+            }),
             field('Tribute_Occasion_Text__c', dataValue('Occasion')),
             field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
             field('Paper_Card_Shipping_Name__c', dataValue('Notify Name')),
