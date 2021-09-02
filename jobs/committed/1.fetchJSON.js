@@ -1,9 +1,9 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      //'wfwi donors',
+      'wfwi donors',
       //'wfwi live sponsorships',
-      'wfwi card master',
+      //'wfwi card master',
       //'wfwi direct debits',
       // 'wfwi transactions - cards',
         //'wfwi transactions - dd',
@@ -84,6 +84,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
+          upload: 'ak-test'
         };
         fileChunks.push(fileContent);
       });
