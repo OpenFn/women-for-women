@@ -8,7 +8,6 @@ fn(state => {
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    console.log(parts); 
     const year = parts!==null ?  String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}` : parts;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
