@@ -55,6 +55,7 @@ fn(state => {
       ...{
         Type__c: 'Sponsorship',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
+        'Sponsor__r.Committed_Giving_Id__c': x.PrimKey
       },
     };
   });
