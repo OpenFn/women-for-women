@@ -15,10 +15,14 @@ beta.each(
 
     let upsertCondition = 0;
 
-    let address = `${dataValue('Address1')(state)} ${dataValue('Address2')(state)} ${dataValue('Address3')(
-      state
-    )} ${dataValue('Address4')(state)}`;
+    const checkAddress = address => (address === 'Blank' ? undefined : address);
+
+    let address = `${checkAddress(dataValue('Address1')(state))} ${checkAddress(
+      dataValue('Address2')(state)
+    )} ${checkAddress(dataValue('Address3')(state))} ${checkAddress(dataValue('Address4')(state))}`;
+
     address = address.replace(/'/g, "\\'");
+
     let email = dataValue('EmailAddress')(state);
     const originalEmail = dataValue('EmailAddress')(state);
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
