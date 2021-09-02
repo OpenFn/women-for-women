@@ -28,10 +28,15 @@ fn(state => {
   return { ...state, chunkDonations };
 });
 
-each('chunkDonations[*]', state => {
-  return destroy('npe03__Recurring_Donation__c', state => state.data)(state);
+each('chunkOpportunities[*]', state => {
+  return destroy('Opportunity', state => state.data, { failOnError: true })(state);
 });
 
-each('chunkOpportunities[*]', state => {
-  return destroy('Opportunity', state => state.data)(state);
+each('chunkDonations[*]', state => {
+  return destroy('npe03__Recurring_Donation__c', state => state.data, { failOnError: true })(state);
 });
+
+fn(state => ({
+  ...state,
+  references: [],
+}));
