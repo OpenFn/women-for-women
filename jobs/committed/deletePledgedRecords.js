@@ -18,7 +18,7 @@ fn(state => {
 });
 
 each('chunkToDelete[*]', state => {
-  console.log('Opps to delete', state.data); 
+  //console.log('Opps to delete', state.data); 
   return destroy('Opportunity', state => state.data)(state);
 });
 
