@@ -36,6 +36,7 @@ fn(state => {
       npe03__Amount__c: x.Amount,
       Closeout_Date__c: formatDate(x.RecurringCancelDate),
       Closeout_Reason__c: x.RecurringCancelReason,
+      Active__c: x.RecurringCancelDate ? false : true,
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
