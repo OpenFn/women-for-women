@@ -22,8 +22,8 @@ fn(state => {
         Active__c: x.Status === 'Live' ? true : false, //TO TEST
         Closeout_Reason__c: x.CancelReason,
         npe03__Installment_Period__c: x.PaymentFrequency,
-        npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime, //NOTE: Returning 'null' value?
-        //npe03__Next_Payment_Date__c: x.NextDate ? formatDate(x.NextDate) : x.NextDate, //NOTE: Not mapping so that Opps will be auto-inserted for this RD
+        npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
+        npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
         of_Sisters_Requested__c: x['Number of sponsorships'] === ' ' ? undefined : x['Number of sponsorships'],
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
