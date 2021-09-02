@@ -34,7 +34,7 @@ fn(state => {
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
       npe03__Amount__c: x.Amount,
-      Closeout_Date__c: formatDate(x.RecurringCancelDate),
+      Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
       Active__c: x.RecurringCancelDate ? false : true,
       npsp__Status__c: x.RecurringCancelDate ? 'Closed' : 'Active',
