@@ -1,5 +1,5 @@
 query(
-  `SELECT Id, Committed_Giving_ID__c, CloseDate from Opportunity WHERE Committed_Giving_ID__c != null AND StageName = 'Pledged'`
+  `SELECT Id, Committed_Giving_ID__c, CloseDate from Opportunity WHERE Committed_Giving_ID__c = null AND StageName = 'Pledged'`
 );
 fn(state => {
   const { records } = state.references[0];
