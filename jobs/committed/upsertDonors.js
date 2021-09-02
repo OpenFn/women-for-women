@@ -9,7 +9,7 @@ alterState(state => {
 beta.each(
   dataPath('json[*]'),
   alterState(async state => {
-    const trimValue = val => val.replace(/\s/g, '');
+    const trimValue = val => val && val.replace(/\s/g, '');
 
     const { PersonRef, LastChangedDateTime } = state.data;
 
