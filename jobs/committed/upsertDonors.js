@@ -51,7 +51,7 @@ beta.each(
     const OkToMail = dataValue('OK to mail')(state) === 'Yes' ? true : false;
     const TextOptIn = dataValue('OK to text')(state) === 'Yes' ? true : false;
     const Deceased = dataValue('Deceased')(state) === 'Yes' ? true : false;
-    const Gift = dataValue('Gift Aid Status')(state) === 'True' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
+    const Gift = dataValue('Gift Aid Status')(state) === 'True' || dataValue('Gift Aid Status')(state) === 'TRUE' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
 
     // ======================================================================
 
@@ -116,6 +116,8 @@ beta.each(
                           field('npe01__HomeEmail__c', email),
                           field('npe01__Preferred_Email__c', 'Personal'),
                           field('Call_Opt_In__c', OkToPhone),
+                          //TOMAP: Call_Opt_In_Date__c
+                          //TOMAP: Call_Opt_In_Method__c: 'Online Donation'
                           field('Email_Opt_in__c', OkToEmail),
                           field('Mail_Opt_in__c', OkToMail),
                           field('Text_Opt_In__c', TextOptIn),
@@ -170,6 +172,8 @@ beta.each(
                       field('npe01__HomeEmail__c', email),
                       field('npe01__Preferred_Email__c', 'Personal'),
                       field('Call_Opt_In__c', OkToPhone),
+                      //TOMAP: Call_Opt_In_Date__c
+                      //TOMAP: Call_Opt_In_Method__c: 'Online Donation'
                       field('Email_Opt_in__c', OkToEmail),
                       field('Mail_Opt_in__c', OkToMail),
                       field('Text_Opt_In__c', TextOptIn),
