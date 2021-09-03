@@ -8,7 +8,7 @@ fn(state => {
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    const year = parts!==null ?  String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}` : parts;
+    const year = parts !== null ? String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}` : parts;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
@@ -23,6 +23,13 @@ fn(state => {
     let dateEstablished = formatDate(date);
     const month = new Date(dateEstablished).getUTCMonth();
     dateEstablished = new Date(dateEstablished).setUTCMonth(month + 1);
+    return new Date(dateEstablished).toISOString();
+  };
+
+  const increaseYear = date => {
+    let dateEstablished = formatDate(date);
+    const year = new Date(dateEstablished).getUTCFullYear();
+    dateEstablished = new Date(dateEstablished).setUTCFullYear(year + 1);
     return new Date(dateEstablished).toISOString();
   };
 
@@ -41,7 +48,7 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
-      npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? increaseMonth(x.LastCredited) : undefined, //Note: This is required to trigger auto-insert of related Opps
+      npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? (Number(selectAmount(x)) % 264 === 0 ? increaseYear(x.LastCredited) : increaseMonth(x.LastCredited)) : undefined, //Note: This is required to trigger auto-insert of related Opps
       of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x.Amount / 264) : Math.abs(x.Amount / 22),
     };
   };
