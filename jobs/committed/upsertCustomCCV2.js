@@ -29,10 +29,10 @@ fn(state => {
 
 each(
   '$.data.json[*]',
-  fn(state => {
-    const { CCID } = state.data;
+fn(state => {
+  const queryAndUpdate = (CCID, contactId, state) => {
     return query(
-      `Select Id, CloseDate FROM Opportunity 
+      `Select Id, CloseDate FROM Opportunity
       WHERE CG_Credit_Card_Master_ID__c = '${CCID}'
       ORDER BY CloseDate ASC LIMIT 1`
     )(state).then(state => {
@@ -47,19 +47,20 @@ each(
           fields(
             field('Id', records[0].Id),
             field('npsp__Tribute_Type__c', state => {
-              var tribute = dataValue('FormName')(state);
-              return tribute ? tribute : 'Honor'
+              var tribute = state.data['FormName'];
+              return tribute ? tribute : 'Honor';
             }),
-            field('Tribute_Occasion_Text__c', dataValue('Occasion')),
-            field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
-            field('Paper_Card_Shipping_Name__c', dataValue('Notify Name')),
-            field('Paper_Card_Shipping_Address__c', dataValue('Notify Add1')),
-            field('Paper_Card_Shipping_Address_Line_2__c', dataValue('Notify Add2')),
-            field('Paper_Card_Shipping_City__c', dataValue('Notify Town')),
-            field('Paper_Card_Shipping_Zip_Postal__c', dataValue('Notify Postcode')),
-            field('Paper_Card_Shipping_State_Province__c', dataValue('Notify County')),
-            field('Paper_Card_Shipping_Country__c', dataValue('Notify Country')),
-            field('eCard_Recipient_Email__c', dataValue('Notify Email Address'))
+            field('Tribute_Occasion_Text__c', state.data['Occasion']),
+            field('npsp__Honoree_Name__c', state.data['Honouree / Tributee Name']),
+            field('Paper_Card_Shipping_Name__c', state.data['Notify Name']),
+            field('Paper_Card_Shipping_Address__c', state.data['Notify Add1']),
+            field('Paper_Card_Shipping_Address_Line_2__c', state.data['Notify Add2']),
+            field('Paper_Card_Shipping_City__c', state.data['Notify Town']),
+            field('Paper_Card_Shipping_Zip_Postal__c', state.data['Notify Postcode']),
+            field('Paper_Card_Shipping_State_Province__c', state.data['Notify County']),
+            field('Paper_Card_Shipping_Country__c', state.data['Notify Country']),
+            field('eCard_Recipient_Email__c', state.data['Notify Email Address']),
+            field('npsp__Honoree_Contact__c', contactId)
           )
         )(state);
       }
