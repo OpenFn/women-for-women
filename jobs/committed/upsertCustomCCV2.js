@@ -31,7 +31,7 @@ fn(state => {
   const queryAndUpdate = (CCID, contactId, state) => {
     return query(
       `Select Id, CloseDate FROM Opportunity
-      WHERE CG_Credit_Card_Master_ID__c = '${CCID}'
+      WHERE CG_Credit_Card_ID__c = '${CCID}'
       ORDER BY CloseDate ASC LIMIT 1`
     )(state).then(state => {
       const { records } = state.references[0];
