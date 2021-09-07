@@ -74,7 +74,7 @@ each(
     const { CCID } = state.data;
     if (!state.data['Notify Email Address'] && !state.data['Notify Name']) {
       console.log("'Notify Name' and 'Notify Email Address' are unavailable.");
-      return state.queryAndUpdate(CCID, '', state);
+      return state.queryAndUpdate(CCID, '', state); // @Aleksa: if no notify name and email should we update with empty contactId?
     } else {
       return query(
         state => `Select Id FROM Contact 
