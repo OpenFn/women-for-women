@@ -92,8 +92,8 @@ each(
         if (records.length === 0) {
           return upsert('Contact', 'Email', {
             FirstName: state.data['Notify Name'].split(' ')[0],
-            LastName: state.data['Notify Name'].split(' ')[1] || 'Test', // @Aleksa Advise what to put when no LastName. Cannot be empty.
-            Email: state.data['Notify Email Address'], // @Aleksa This will probably be null because I don't see Notify Email Address in state
+            LastName: state.data['Notify Name'].split(' ')[1] || state.data['Notify Name'].split(' ')[0],
+            Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
