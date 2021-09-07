@@ -29,6 +29,9 @@ fn(state => {
 
 fn(state => {
   const queryAndUpdate = (CCID, contactId, state) => {
+    // Check if contactID is empty or no
+    state.data.contactID = contactId === '' ? [] : field('npsp__Honoree_Contact__c', contactId);
+
     return query(
       `Select Id, CloseDate FROM Opportunity
       WHERE CG_Credit_Card_ID__c = '${CCID}'
@@ -40,9 +43,8 @@ fn(state => {
           'Matching Opportunity not found for this transaction. Please confirm that related Transaction data has been synced to Salesforce before re-running'
         );
       } else {
-        return update(
-          'Opportunity',
-          fields(
+        return update('Opportunity', state => ({
+          ...fields(
             field('Id', records[0].Id),
             field('npsp__Tribute_Type__c', state => {
               var tribute = state.data['FormName'];
@@ -58,9 +60,9 @@ fn(state => {
             field('Paper_Card_Shipping_State_Province__c', state.data['Notify County']),
             field('Paper_Card_Shipping_Country__c', state.data['Notify Country']),
             field('eCard_Recipient_Email__c', state.data['Notify Email Address']),
-            field('npsp__Honoree_Contact__c', contactId)
-          )
-        )(state);
+          ),
+          ...fields(...state.data.contactID),
+        }))(state);
       }
     });
   };
@@ -72,7 +74,7 @@ each(
   '$.data.json[*]',
   fn(state => {
     const { CCID } = state.data;
-    if (!state.data['Notify Email Address'] && !state.data['Notify Name']) {
+    if (!state.data['Notify Email Address']) {
       console.log("'Notify Name' and 'Notify Email Address' are unavailable.");
       return state.queryAndUpdate(CCID, '', state); // @Aleksa: if no notify name and email should we update with empty contactId?
     } else {

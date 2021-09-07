@@ -28,6 +28,9 @@ fn(state => {
 
 fn(state => {
   const queryAndUpdate = (DDID, contactId, state) => {
+    // Check if contactID is empty or no
+    state.data.contactID = contactId === '' ? [] : field('npsp__Honoree_Contact__c', contactId);
+
     return query(
       `Select Id, CloseDate FROM Opportunity 
       WHERE npe03__Recurring_Donation__r.Committed_Giving_Direct_Debit_ID__c = '${DDID}'
@@ -39,9 +42,8 @@ fn(state => {
           'Matching Opportunity not found for this transaction. Please confirm that related Transaction data has been synced to Salesforce before re-running'
         );
       } else {
-        return update(
-          'Opportunity',
-          fields(
+        return update('Opportunity', state => ({
+          ...fields(
             field('Id', records[0].Id),
             field('npsp__Tribute_Type__c', state => {
               var tribute = dataValue('FormName')(state);
@@ -56,8 +58,7 @@ fn(state => {
             field('Paper_Card_Shipping_Name__c', dataValue('Notify Name')),
             field('Paper_Card_Shipping_Address__c', dataValue('Notify Add1')),
             field('Paper_Card_Shipping_Address_Line_2__c', dataValue('Notify Add2')),
-            field('eCard_Recipient_Email__c', dataValue('Notify Email Address')),
-            field('npsp__Honoree_Contact__c', contactId)
+            field('eCard_Recipient_Email__c', dataValue('Notify Email Address'))
             //NOTE: These are the original mappings, but the above match CC and page layout... which ones to use?
             // field('wfw_Honoree_City__c', dataValue('Notify Town')),
             // field('wfw_Honoree_Zip__c', dataValue('Notify Postcode')),
@@ -67,8 +68,9 @@ fn(state => {
             // field('Tribute_Occasion_Text__c', dataValue('Occasion')),
             // field('wfw_Honoree_Address_1__c', dataValue('Notify Add1')),
             // field('Honoree_Address_2__c', dataValue('Notify Add2')),
-          )
-        )(state);
+          ),
+          ...fields(...state.data.contactID),
+        }))(state);
       }
     });
   };
@@ -80,7 +82,7 @@ each(
   '$.data.json[*]',
   fn(state => {
     const { DDID } = state.data;
-    if (!state.data['Notify Email Address'] && !state.data['Notify Name']) {
+    if (!state.data['Notify Email Address']) {
       console.log("'Notify Name' and 'Notify Email Address' are unavailable.");
       return state.queryAndUpdate(DDID, '', state); // @Aleksa: if no notify name and email should we update with empty contactId?
     } else {
