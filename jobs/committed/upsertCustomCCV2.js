@@ -27,8 +27,6 @@ fn(state => {
   return { ...state, data: { ...state.data, json: newJson }, CCIDs };
 });
 
-each(
-  '$.data.json[*]',
 fn(state => {
   const queryAndUpdate = (CCID, contactId, state) => {
     return query(
@@ -65,5 +63,40 @@ fn(state => {
         )(state);
       }
     });
+  };
+
+  return { ...state, queryAndUpdate };
+});
+
+each(
+  '$.data.json[*]',
+  fn(state => {
+    const { CCID } = state.data;
+    if (!state.data['Notify Email Address'] && !state.data['Notify Name']) {
+      console.log("'Notify Name' and 'Notify Email Address' are unavailable.");
+      return state.queryAndUpdate(CCID, '', state);
+    } else {
+      return query(
+        state => `Select Id FROM Contact 
+      WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify Name']}'`
+      )(state).then(state => {
+        const { records } = state.references[0];
+        if (records.length === 0) {
+          return upsert('Contact', 'Email', {
+            FirstName: state.data['Notify Name'].split(' ')[0],
+            LastName: state.data['Notify Name'].split(' ')[1] || 'Test', // @Aleksa Advise what to put when no LastName. Cannot be empty.
+            Email: state.data['Notify Email Address'],
+          })(state).then(state => {
+            const contactID = state.references[0].id;
+            console.log('Contact ID to add', contactID);
+            return state.queryAndUpdate(CCID, contactID, state);
+          });
+        } else {
+          const contactID = records.map(rec => rec.Id);
+          console.log('Contact ID to add', contactID);
+          return state.queryAndUpdate(CCID, contactID[0], state);
+        }
+      });
+    }
   })
 );
