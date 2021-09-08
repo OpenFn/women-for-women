@@ -7,6 +7,13 @@ fn(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
+  const selectAmount = item => {
+    if (item['Current amount']) {
+      return isNaN(item['Current amount']) ? item['Current amount'].replace(/[^-.0-9]/g, '') : parseInt(item['Current amount']);
+    }
+    return undefined;
+  };
+
   const donations = state.data.json
     .filter(x => x.PrimKey)
     .map(x => {
@@ -25,7 +32,7 @@ fn(state => {
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
-        of_Sisters_Requested__c: x['Number of sponsorships'] === ' ' ? undefined : x['Number of sponsorships'],
+        of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x['Current amount'] / 264) : Number(selectAmount(x)) % 22 === 0 ? Math.abs(x['Current amount'] / 22) : undefined,
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
         Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
