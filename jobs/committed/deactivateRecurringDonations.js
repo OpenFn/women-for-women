@@ -1,6 +1,8 @@
 fn(state => {
   const json = state.data.json.filter(x => x.RecurringCancelDate && x.PrimKey);
-  return { ...state, data: { ...state.data, json } };
+  const PrimKeys = json.map(js => js.PrimKey);
+
+  return { ...state, data: { ...state.data, json }, PrimKeys };
 });
 
 each('$.data.json[*]', state => {
@@ -53,3 +55,53 @@ bulk(
     return state.toUpdates;
   }
 );
+
+// ==================================== BULKIFIED VERSION ====================================
+// Can't execute yet if no data in npe03__Recurring_Donation__c to check if correct
+// query(
+//   state =>
+//     `SELECT Id, Committed_Giving_ID__c, npe03__Date_Established__c, Active__c FROM npe03__Recurring_Donation__c WHERE npe03__Contact__r.Committed_Giving_Id__c in ('${state.PrimKeys.join(
+//       "','"
+//     )}')`
+// );
+
+// fn(state => {
+//   const { records } = state.references[0];
+//   const { json } = state.data;
+//   const cgIDs = records.filter(rec => rec.Active__c == true).map(rec => rec.Committed_Giving_ID__c);
+
+//   const formatDate = date => {
+//     if (!date) return null;
+//     date = date.split(' ')[0];
+//     const parts = date.match(/(\d+)/g);
+//     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
+//     const month = String(parts[1]).length === 2 ? parts[1] : `0${parts[1]}`;
+//     const day = String(parts[0]).length === 2 ? parts[0] : `0${parts[0]}`;
+//     return parts ? `${year}-${month}-${day}` : null;
+//   };
+//   const toUpdates = [];
+
+//   json.forEach(row => {
+//     if (cgIDs.includes(row.PrimKey)) {
+//       const record = records.filter(rec => rec.Committed_Giving_ID__c === row.PrimKey);
+//       if (record.length > 0) {
+//         record.forEach(rec => {
+//           if (new Date(rec.npe03__Date_Established__c) < new Date(formatDate(row.RecurringCancelDate))) {
+//             toUpdates.push({
+//               Id: rec.Id,
+//               Active__c: false,
+//               Closeout_Date__c: RecurringCancelDate,
+//               Closeout_Reason__c: RecurringCancelReason,
+//               npe03__Next_Payment_Date__c: null,
+//             });
+//           }
+//         });
+//       } else {
+//         console.log(
+//           `No earlier Recurring Donations found to deactivate for ${row.PrimKey}. Skipping cancellation/closeout step.`
+//         );
+//       }
+//     }
+//   });
+// });
+// ==================================== BULKIFIED VERSION ====================================
