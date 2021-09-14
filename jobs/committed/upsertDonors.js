@@ -53,6 +53,15 @@ beta.each(
     const Deceased = dataValue('Deceased')(state) === 'Yes' ? true : false;
     const Gift = dataValue('Gift Aid Status')(state) === 'True' || dataValue('Gift Aid Status')(state) === 'TRUE' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
 
+    const CallDate = OkToPhone === true ? dataValue('LastChangedDateTime')(state) : undefined;
+    const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
+    const TextDate = TextOptIn === true ? dataValue('LastChangedDateTime')(state) : undefined;
+    const TextMethod = TextOptIn === true ? 'Online Donation' : undefined;
+    const EmailDate = OkToEmail === true ? dataValue('LastChangedDateTime')(state) : undefined;
+    const EmailMethod = OkToEmail === true ? 'Online Donation' : undefined;
+    const MailDate = OkToMail === true ? dataValue('LastChangedDateTime')(state) : undefined;
+    const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
+
     // ======================================================================
 
     await query(
@@ -116,11 +125,17 @@ beta.each(
                           field('npe01__HomeEmail__c', email),
                           field('npe01__Preferred_Email__c', 'Personal'),
                           field('Call_Opt_In__c', OkToPhone),
-                          //TOMAP: Call_Opt_In_Date__c
-                          //TOMAP: Call_Opt_In_Method__c: 'Online Donation'
+                          field('Call_Opt_In_Date__c', CallDate),
+                          field('Call_Opt_In_Method__c', CallMethod),
                           field('Email_Opt_in__c', OkToEmail),
+                          field('Email_Opt_In_Date__c', EmailDate),
+                          field('Email_Opt_In_Method__c', EmailMethod),
                           field('Mail_Opt_in__c', OkToMail),
+                          field('Mail_Opt_In_Date__c', MailDate),
+                          field('Mail_Opt_In_Method__c', MailMethod),
                           field('Text_Opt_In__c', TextOptIn),
+                          field('Mail_Opt_In_Date__c', TextDate),
+                          field('Mail_Opt_In_Method__c', TextMethod),
                           field('npsp__Deceased__c', Deceased),
                           field('wfw_Gift_Aid__c', Gift),
                           field('wfw_Date_of_Declaration_Confirmation__c', state => {
@@ -172,11 +187,17 @@ beta.each(
                       field('npe01__HomeEmail__c', email),
                       field('npe01__Preferred_Email__c', 'Personal'),
                       field('Call_Opt_In__c', OkToPhone),
-                      //TOMAP: Call_Opt_In_Date__c
-                      //TOMAP: Call_Opt_In_Method__c: 'Online Donation'
+                      field('Call_Opt_In_Date__c', CallDate),
+                      field('Call_Opt_In_Method__c', CallMethod),
                       field('Email_Opt_in__c', OkToEmail),
+                      field('Email_Opt_In_Date__c', EmailDate),
+                      field('Email_Opt_In_Method__c', EmailMethod),
                       field('Mail_Opt_in__c', OkToMail),
+                      field('Mail_Opt_In_Date__c', MailDate),
+                      field('Mail_Opt_In_Method__c', MailMethod),
                       field('Text_Opt_In__c', TextOptIn),
+                      field('Mail_Opt_In_Date__c', TextDate),
+                      field('Mail_Opt_In_Method__c', TextMethod),
                       field('npsp__Deceased__c', Deceased),
                       field('wfw_Gift_Aid__c', Gift),
                       field('wfw_Date_of_Declaration_Confirmation__c', state => {
@@ -241,9 +262,17 @@ beta.each(
                     return email;
                   }),*/
                   field('Call_Opt_In__c', OkToPhone),
+                  field('Call_Opt_In_Date__c', CallDate),
+                  field('Call_Opt_In_Method__c', CallMethod),
                   field('Email_Opt_in__c', OkToEmail),
+                  field('Email_Opt_In_Date__c', EmailDate),
+                  field('Email_Opt_In_Method__c', EmailMethod),
                   field('Mail_Opt_in__c', OkToMail),
+                  field('Mail_Opt_In_Date__c', MailDate),
+                  field('Mail_Opt_In_Method__c', MailMethod),
                   field('Text_Opt_In__c', TextOptIn),
+                  field('Mail_Opt_In_Date__c', TextDate),
+                  field('Mail_Opt_In_Method__c', TextMethod),
                   field('npsp__Deceased__c', Deceased),
                   field('wfw_Gift_Aid__c', Gift),
                   field('wfw_Date_of_Declaration_Confirmation__c', state => {
@@ -308,9 +337,17 @@ beta.each(
                 return email;
               }),*/,
               field('Call_Opt_In__c', OkToPhone),
+              field('Call_Opt_In_Date__c', CallDate),
+              field('Call_Opt_In_Method__c', CallMethod),
               field('Email_Opt_in__c', OkToEmail),
+              field('Email_Opt_In_Date__c', EmailDate),
+              field('Email_Opt_In_Method__c', EmailMethod),
               field('Mail_Opt_in__c', OkToMail),
+              field('Mail_Opt_In_Date__c', MailDate),
+              field('Mail_Opt_In_Method__c', MailMethod),
               field('Text_Opt_In__c', TextOptIn),
+              field('Mail_Opt_In_Date__c', TextDate),
+              field('Mail_Opt_In_Method__c', TextMethod),
               field('npsp__Deceased__c', Deceased),
               field('wfw_Gift_Aid__c', Gift),
               field('wfw_Date_of_Declaration_Confirmation__c', state => {
