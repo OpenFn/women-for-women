@@ -3,12 +3,6 @@ alterState(state => {
     const fileNames = [
       'wfwi donors',
       //'wfwi live sponsorships',
-      //'wfwi card master',
-      //'wfwi direct debits',
-      // 'wfwi transactions - cards',
-        //'wfwi transactions - dd',
-       // 'wfwi custom cc fields',
-       //'wfwi custom dd fields',
     ];
 
     const files = state.data.filter(
