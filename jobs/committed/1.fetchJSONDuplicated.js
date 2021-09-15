@@ -2,9 +2,12 @@ alterState(state => {
   return list('/')(state).then(state => {
     // prettier-ignore
     const fileNames = [
-      // 'wfwi card master', 
+      'wfwi card master', 
       // 'wfwi transactions - cards',
-      'wfwi transactions - dd'
+      // 'wfwi direct debits',
+      // 'wfwi transactions - dd'
+      // 'wfwi custom cc fields',
+      // 'wfwi custom dd fields',
     ];
 
     const files = state.data.filter(
@@ -113,6 +116,7 @@ each(
           fileType: data.name.split('-')[0],
           json: flattenArray(group.splice(0, chunkSize)),
           uploadDate: new Date(data.modifyTime).toISOString(),
+          upload: '9-sept-test'
         });
       }
       return { configuration, references: [], data: {} };

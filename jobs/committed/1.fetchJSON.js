@@ -1,15 +1,15 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      'wfwi donors',
-      //'wfwi live sponsorships',
+      //'wfwi donors',
       //'wfwi card master',
+      //'wfwi transactions - cards',
+      //'wfwi custom cc fields',
       //'wfwi direct debits',
-      // 'wfwi transactions - cards',
-        //'wfwi transactions - dd',
-       // 'wfwi custom cc fields',
-       //'wfwi custom dd fields',
+      //'wfwi transactions - dd'
+      'wfwi custom dd fields',
     ];
+    console.log('Files to sync: ', fileNames);
 
     const files = state.data.filter(
       file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
@@ -84,7 +84,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '9-sept-test'
+          upload: '15-sept-test'
         };
         fileChunks.push(fileContent);
       });
