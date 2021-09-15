@@ -4,8 +4,8 @@ alterState(state => {
       //'wfwi donors',
       //'wfwi card master',
       //'wfwi transactions - cards',
-      'wfwi custom cc fields',
-      // 'wfwi direct debits',
+      //'wfwi custom cc fields',
+      'wfwi direct debits',
       // 'wfwi transactions - dd'
       // 'wfwi custom dd fields',
     ];
