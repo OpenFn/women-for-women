@@ -212,7 +212,7 @@ alterState(state => {
             // If CG is more recent than SF
             return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
               ...state.baseMapping(state.data, address, EmailSF),
-            }));
+            }))(state);
           } else {
             // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
             console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
