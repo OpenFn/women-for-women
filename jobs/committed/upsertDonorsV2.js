@@ -15,6 +15,7 @@ alterState(state => {
     };
   
     const baseMapping = (x, address, EmailSF) => {
+        
       // DATA CLEANING ========================================================
       let zipCode = x.Postcode || '';
       if (zipCode && zipCode.length > 20) {
