@@ -2,7 +2,11 @@ alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
       'wfwi donors',
-      //'wfwi live sponsorships',
+      // 'wfwi transactions - cards',
+      // 'wfwi direct debits',
+      // 'wfwi transactions - dd'
+      // 'wfwi custom cc fields',
+      // 'wfwi custom dd fields',
     ];
 
     const files = state.data.filter(
@@ -78,7 +82,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '9-sept-test'
+          upload: '15-sept-test'
         };
         fileChunks.push(fileContent);
       });
