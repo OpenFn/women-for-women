@@ -2,10 +2,10 @@ alterState(state => {
   return list('/')(state).then(state => {
     // prettier-ignore
     const fileNames = [
-      // 'wfwi card master', 
+      'wfwi card master', 
       // 'wfwi transactions - cards',
       // 'wfwi direct debits',
-      'wfwi transactions - dd'
+      // 'wfwi transactions - dd'
       // 'wfwi custom cc fields',
       // 'wfwi custom dd fields',
     ];
