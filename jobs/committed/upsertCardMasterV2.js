@@ -14,7 +14,7 @@ fn(state => {
 
   const selectAmount = item => {
     if (item.Amount) {
-      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '') : parseInt(item.Amount);
+      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '').replace(/�5/g, '') : parseInt(item.Amount);
     }
     return undefined;
   };
