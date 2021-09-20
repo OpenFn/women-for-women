@@ -40,7 +40,7 @@ fn(state => {
       Name: x.CardMasterID,
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
-      npe03__Amount__c: x.Amount.replace(/�5/g, ''),
+      npe03__Amount__c: x.Amount.replace(/�/, ''),
       Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
       Active__c: x.RecurringCancelDate ? false : true,
