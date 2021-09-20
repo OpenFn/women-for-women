@@ -50,7 +50,7 @@ fn(state => {
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
       npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? (Number(selectAmount(x)) % 264 === 0 ? increaseYear(x.LastCredited) : increaseMonth(x.LastCredited)) : undefined, //Note: This is required to trigger auto-insert of related Opps
-      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x.Amount / 264) : Math.abs(x.Amount / 22),
+      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(Number(selectAmount(x)) / 264) : Math.abs(Number(selectAmount(x)) / 22),
     };
   };
 
