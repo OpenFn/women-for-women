@@ -1,9 +1,9 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      'wfwi donors',
+      //'wfwi donors',
       //'wfwi card master',
-      //'wfwi transactions - cards',
+      'wfwi transactions - cards',
       //'wfwi custom cc fields',
       //'wfwi direct debits',
       //'wfwi transactions - dd'
@@ -66,7 +66,7 @@ each(
         }
       }
 
-      const jsonSets = chunk(json, 200); // chunking into arrays of 1000 objects
+      const jsonSets = chunk(json, 50); // chunking into arrays of 1000 objects
 
       console.log(jsonSets.length, 'sets.');
 
@@ -84,7 +84,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '15-sept-test'
+          upload: '20-sept-test'
         };
         fileChunks.push(fileContent);
       });
