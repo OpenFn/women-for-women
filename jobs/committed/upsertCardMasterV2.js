@@ -40,8 +40,7 @@ fn(state => {
       Name: x.CardMasterID,
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
       npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
-      npe03__Amount__c: x.RecurringCancelDate ? (Number(selectAmount(x)) % 264 === 0 ? increaseYear(x.LastCredited) : increaseMonth(x.LastCredited)) : undefined, //Note: This is required to trigger auto-insert of related Opps
-      of_Sisters_Requested__c: Number(selectAmount(x)), //x.Amount,
+      npe03__Amount__c: x.Amount.replace(/�5/g, ''),
       Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
       Active__c: x.RecurringCancelDate ? false : true,
