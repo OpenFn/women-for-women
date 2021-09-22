@@ -54,7 +54,7 @@ alterState(state => {
       HomePhone: x.TelNumber1,
       npe01__PreferredPhone__c: 'Home',
       MobilePhone: x.Tel2Number,
-      npe01__HomeEmail__c: EmailSF !== null ? undefined : x.EmailAddress ? x.EmailAddress : `${x.PersonRef}@incomplete.com`,
+      npe01__HomeEmail__c: EmailSF !== null ? undefined : x.EmailAddress ? x.EmailAddress : `${x.PrimKey}@incomplete.com`,
       npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
       Call_Opt_In__c: OkToPhone,
       Call_Opt_In_Date__c: formatDate(CallDate),
@@ -104,12 +104,11 @@ beta.each(
 
     address = trimValue(address.replace(/'/g, "\\'").replace(/undefined/g, '').replace(/Blank/g, ''));
 
-    const PrimKey = dataValue('PrimKey')(state);
 
     let email = dataValue('EmailAddress')(state);
     const originalEmail = dataValue('EmailAddress')(state);
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
-      email = `${PrimKey}@incomplete.com`;
+      email = `${dataValue('PrimKey')(state)}@incomplete.com`;
 
     if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
       // This means it is a duplicated email
