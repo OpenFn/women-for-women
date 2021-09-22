@@ -19,7 +19,7 @@ fn(state => {
 
 each('chunkToDelete[*]', state => {
   //console.log('Opps to delete', state.data);
-  return destroy('Opportunity', state => state.data, { failOnError: true })(state);
+  return destroy('Opportunity', state => state.data, { failOnError: false })(state);
 });
 
 fn(state => ({
