@@ -118,7 +118,7 @@ beta.each(
       return state;
       // throw new Error(`Duplicated email found for ${email}`);
     }
-    console.log('here1', state.data);
+    //console.log('here1', state.data);
     //NOTE: Removed because if PersonRef was NOT defined, then no action taken on Contact
     //if (!state.data.PersonRef) return state;
 
@@ -127,7 +127,7 @@ beta.each(
         FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef) || 'UNDEFINED'}'`
     )(state).then(async state => {
       const { FirstName, EmailAddress } = state.data;
-      console.log('here2', state.data);
+      //console.log('here2', state.data);
       const sizeLegacyMatch = state.references[0].totalSize;
       const { records } = state.references[0];
 
