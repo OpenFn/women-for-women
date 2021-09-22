@@ -104,10 +104,12 @@ beta.each(
 
     address = trimValue(address.replace(/'/g, "\\'").replace(/undefined/g, '').replace(/Blank/g, ''));
 
+    const PrimKey = dataValue('PrimKey')(state);
+
     let email = dataValue('EmailAddress')(state);
     const originalEmail = dataValue('EmailAddress')(state);
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email))
-      email = `${dataValue('PrimKey')(state)}@incomplete.com`;
+      email = `${PrimKey}@incomplete.com`;
 
     if (email && email.substring(email.length - 3, email.length - 1) === 'up') {
       // This means it is a duplicated email
