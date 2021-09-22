@@ -1,4 +1,4 @@
-query(`SELECT Id FROM Opportunity`);
+query(`SELECT Id FROM Opportunity WHERE CreatedById = '0053i000002POGWAA4'`);
 
 fn(state => {
   const { records } = state.references[0];
@@ -16,7 +16,7 @@ fn(state => {
   return { ...state, chunkOpportunities, chunk };
 });
 
-query(`SELECT Id FROM npe03__Recurring_Donation__c`);
+query(`SELECT Id FROM npe03__Recurring_Donation__c WHERE CreatedById = '0053i000002POGWAA4'`);
 
 fn(state => {
   const { records } = state.references[0];
