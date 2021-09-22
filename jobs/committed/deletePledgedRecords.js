@@ -11,7 +11,7 @@ fn(state => {
 
   const toDeletes = records.filter(rec => new Date(rec.CloseDate) < new Date());
   const IDtoDeletes = toDeletes.map(rec => rec.Id);
-  const chunkToDelete = chunk(IDtoDeletes, 200);
+  const chunkToDelete = chunk(IDtoDeletes, 100);
 
   state.chunkToDelete = chunkToDelete;
   return state;
