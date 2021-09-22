@@ -54,9 +54,8 @@ alterState(state => {
       HomePhone: x.TelNumber1,
       npe01__PreferredPhone__c: 'Home',
       MobilePhone: x.Tel2Number,
-      npe01__HomeEmail__c: EmailSF !== null ? undefined : x.EmailAddress,
+      npe01__HomeEmail__c: EmailSF !== null ? undefined : x.EmailAddress ? x.EmailAddress : `${x.PersonRef}@incomplete.com`,
       npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
-
       Call_Opt_In__c: OkToPhone,
       Call_Opt_In_Date__c: formatDate(CallDate),
       Call_Opt_In_Method__c: CallMethod,
