@@ -40,7 +40,7 @@ alterState(state => {
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
 
     const emailAddress = EmailSF !== null ? undefined :
-      (x.EmailAddress ? (x.EmailAddress.includes('@') || x.EmailAddress.includes('.com') || x.EmailAddress.includes(' ') ? x.EmailAddress : `${x.PrimKey}@incomplete.com`) : `${x.PrimKey}@incomplete.com`);
+      (x.EmailAddress ? (x.EmailAddress.includes('@') && x.EmailAddress.includes('.com') && !x.EmailAddress.includes(' ') && !x.EmailAddress.includes('+') ? x.EmailAddress : `${x.PrimKey}@incomplete.com`) : `${x.PrimKey}@incomplete.com`);
 
     // ======================================================================
     return {
