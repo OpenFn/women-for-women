@@ -191,8 +191,8 @@ beta.each(
                       }))(state);
                     } else {
                       // A112. If a matching Contact has been found...
-                      console.log('Logging duplicate email with different names.');
-                      state.dupErrorsDifferentNames.push(email);
+                      console.log(`Logging duplicate email: ${email} with different names.`);
+                      state.dupErrorsDifferentNames.push(`Logging duplicate email: ${email} with different names.`);
                       return state;
                     }
                   });
