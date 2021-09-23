@@ -71,7 +71,7 @@ each(
           : splitName[0];
 
       const fileChunks = [];
-      /*  jsonSets.forEach(sets => {
+      jsonSets.forEach(sets => {
         const fileContent = {
           fileName: data.name,
           fileType: type,
@@ -98,7 +98,7 @@ each(
 
       for (const file of fileChunks) {
         await postToInbox(file);
-      } */
+      }
 
       if (duplicates.length > 0) {
         throw new Error(
