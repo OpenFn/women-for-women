@@ -144,8 +144,8 @@ beta.each(
           const { records } = state.references[0];
           const sizeEmailMatch = state.references[0].totalSize;
 
-          if (sizeEmailMatch === 0) {
-            // A1. If no matching Contact has been found...
+          if (sizeEmailMatch === 0 || originalEmail === '') {
+            // A1. If no matching Contact has been found OR if email blank...
             await query(
               `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
                 FROM CONTACT WHERE FirstName = '${trimValue(FirstName.replace(/'/g, "\\'"))}' 
