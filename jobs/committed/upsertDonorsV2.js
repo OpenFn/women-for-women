@@ -39,6 +39,9 @@ alterState(state => {
     const MailDate = OkToMail === true ? x['LastChangedDateTime'] : undefined;
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
 
+    const emailAddress = EmailSF !== null ? undefined :
+      (x.EmailAddress ? (x.EmailAddress.includes('@') ? x.EmailAddress : `${x.PrimKey}@incomplete.com`) : `${x.PrimKey}@incomplete.com`);
+
     // ======================================================================
     return {
       Committed_Giving_ID__c: x.PrimKey,
@@ -54,7 +57,7 @@ alterState(state => {
       HomePhone: x.TelNumber1,
       npe01__PreferredPhone__c: 'Home',
       MobilePhone: x.Tel2Number,
-      npe01__HomeEmail__c: EmailSF !== null ? undefined : x.EmailAddress ? x.EmailAddress : `${x.PrimKey}@incomplete.com`,
+      npe01__HomeEmail__c: emailAddress,
       npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
       Call_Opt_In__c: OkToPhone,
       Call_Opt_In_Date__c: formatDate(CallDate),
