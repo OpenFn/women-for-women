@@ -190,9 +190,12 @@ beta.each(
                         ...state.baseMapping(state.data, address, EmailSF),
                       }))(state);
                     } else {
+                      const FirstNameDup = state.records[0].FirstName;
                       // A112. If a matching Contact has been found...
                       console.log(`Logging duplicate email: ${email} with different names.`);
-                      state.dupErrorsDifferentNames.push(`Logging duplicate email: ${email} with different names.`);
+                      state.dupErrorsDifferentNames.push(
+                        `Logging duplicate email: ${email} with these different names: [${FirstName} - ${FirstNameDup} ]`
+                      );
                       return state;
                     }
                   });
