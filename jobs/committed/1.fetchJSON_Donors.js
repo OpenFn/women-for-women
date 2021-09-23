@@ -60,7 +60,7 @@ each(
                 }
             }
 
-            const jsonSets = chunk(json, 50); // chunking into arrays of 1000 objects
+            const jsonSets = chunk(json, 50); // chunking into arrays of 50 objects; need smaller Contact batch sizes
 
             console.log(jsonSets.length, 'sets.');
 
