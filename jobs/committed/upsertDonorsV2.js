@@ -39,8 +39,17 @@ alterState(state => {
     const MailDate = OkToMail === true ? x['LastChangedDateTime'] : undefined;
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
 
-    const emailAddress = EmailSF !== null ? undefined :
-      (x.EmailAddress ? (x.EmailAddress.includes('@') && x.EmailAddress.includes('.com') && !x.EmailAddress.includes(' ') && !x.EmailAddress.includes('+') ? x.EmailAddress : `${x.PrimKey}@incomplete.com`) : `${x.PrimKey}@incomplete.com`);
+    const emailAddress =
+      EmailSF !== null
+        ? undefined
+        : x.EmailAddress
+        ? x.EmailAddress.includes('@') &&
+          x.EmailAddress.includes('.com') &&
+          !x.EmailAddress.includes(' ') &&
+          !x.EmailAddress.includes('+')
+          ? x.EmailAddress
+          : `${x.PrimKey}@incomplete.com`
+        : `${x.PrimKey}@incomplete.com`;
 
     // ======================================================================
     return {
@@ -49,7 +58,12 @@ alterState(state => {
       Salutation: x.Title,
       FirstName: x.FirstName,
       LastName: x.Surname,
-      MailingStreet: address === 'Blank' || address === 'No Address' ? undefined : address ? address.replace(/undefined/g, '') : address,
+      MailingStreet:
+        address === 'Blank' || address === 'No Address'
+          ? undefined
+          : address
+          ? address.replace(/undefined/g, '')
+          : address,
       MailingCity: x.Address5,
       MailingState: x.Address6,
       MailingPostalCode: zipCode,
@@ -95,7 +109,7 @@ beta.each(
   alterState(async state => {
     const trimValue = val => val && val.replace(/\s/g, '');
 
-    const { PersonRef, LastChangedDateTime } = state.data;
+    const { PersonRef, LastChangedDateTime, Surname, PrimKey } = state.data;
 
     let upsertCondition = 0;
 
@@ -105,8 +119,14 @@ beta.each(
       dataValue('Address2')(state)
     )} ${checkAddress(dataValue('Address3')(state))} ${checkAddress(dataValue('Address4')(state))}`;
 
-    address = address ? trimValue(address.replace(/'/g, "\\'").replace(/undefined/g, '').replace(/Blank/g, '')) : address;
-
+    address = address
+      ? trimValue(
+          address
+            .replace(/'/g, "\\'")
+            .replace(/undefined/g, '')
+            .replace(/Blank/g, '')
+        )
+      : address;
 
     let email = dataValue('EmailAddress')(state);
     const originalEmail = dataValue('EmailAddress')(state);
@@ -184,7 +204,10 @@ beta.each(
                 }
               } else {
                 // A12. If a matching Contact has been found...
-                state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
+                // state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
+                state.dupErrorsFirstNameAddress.push(
+                  `${FirstName} ${Surname} with PrimKey: ${PrimKey}, Address: ${address}`
+                );
                 return state;
               }
             });
