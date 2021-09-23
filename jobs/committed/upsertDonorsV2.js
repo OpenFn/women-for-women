@@ -105,7 +105,7 @@ beta.each(
       dataValue('Address2')(state)
     )} ${checkAddress(dataValue('Address3')(state))} ${checkAddress(dataValue('Address4')(state))}`;
 
-    address = trimValue(address.replace(/'/g, "\\'").replace(/undefined/g, '').replace(/Blank/g, ''));
+    address = address ? trimValue(address.replace(/'/g, "\\'").replace(/undefined/g, '').replace(/Blank/g, '')) : address;
 
 
     let email = dataValue('EmailAddress')(state);
