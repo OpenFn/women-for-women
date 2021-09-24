@@ -8,6 +8,7 @@ alterState(state => {
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
+    if (!parts) return null;
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     const month = String(parts[1]).length === 2 ? parts[1] : `0${parts[1]}`;
     const day = String(parts[0]).length === 2 ? parts[0] : `0${parts[0]}`;
