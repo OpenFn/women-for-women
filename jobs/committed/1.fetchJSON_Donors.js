@@ -78,7 +78,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '23-sept-test',
+          upload: '24-sept-testing',
         };
         fileChunks.push(fileContent);
       });
