@@ -182,6 +182,8 @@ beta.each(
                     `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
                     FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
                   )(state).then(async state => {
+                    const { records } = state.references[0];
+
                     const sizeEmailMatch2 = state.references[0].totalSize;
 
                     if (sizeEmailMatch2 === 0) {
@@ -191,7 +193,7 @@ beta.each(
                         ...state.baseMapping(state.data, address, EmailSF),
                       }))(state);
                     } else {
-                      const FirstNameDup = state.records[0].FirstName;
+                      const FirstNameDup = records[0].FirstName;
                       // A112. If a matching Contact has been found...
                       console.log(`Logging duplicate email: ${email} with different names.`);
                       state.dupErrorsDifferentNames.push(
