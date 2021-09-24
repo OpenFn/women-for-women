@@ -30,7 +30,7 @@ fn(state => {
 fn(state => {
   const queryAndUpdate = (CCID, contactId, state) => {
     // Check if contactID is empty or no
-    state.data.contactID = contactId === '' ? [] : field('npsp__Honoree_Contact__c', contactId);
+    state.data.contactID = contactId === '' ? [] : [field('npsp__Honoree_Contact__c', contactId)];
 
     return query(
       `Select Id, CloseDate FROM Opportunity
@@ -59,7 +59,7 @@ fn(state => {
             field('Paper_Card_Shipping_Zip_Postal__c', state.data['Notify Postcode']),
             field('Paper_Card_Shipping_State_Province__c', state.data['Notify County']),
             field('Paper_Card_Shipping_Country__c', state.data['Notify Country']),
-            field('eCard_Recipient_Email__c', state.data['Notify Email Address']),
+            field('eCard_Recipient_Email__c', state.data['Notify Email Address'])
           ),
           ...fields(...state.data.contactID),
         }))(state);

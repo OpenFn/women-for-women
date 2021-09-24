@@ -29,7 +29,7 @@ fn(state => {
 fn(state => {
   const queryAndUpdate = (DDID, contactId, state) => {
     // Check if contactID is empty or no
-    state.data.contactID = contactId === '' ? [] : field('npsp__Honoree_Contact__c', contactId);
+    state.data.contactID = contactId === '' ? [] : [field('npsp__Honoree_Contact__c', contactId)];
 
     return query(
       `Select Id, CloseDate FROM Opportunity 
