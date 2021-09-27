@@ -108,6 +108,7 @@ alterState(state => {
 beta.each(
   dataPath('json[*]'),
   alterState(async state => {
+    const removeSlash = val => val && val.replace(/'/g, "\\'");
     const trimValue = val => val && val.replace(/\s/g, '');
 
     const { PersonRef, LastChangedDateTime, Surname, PrimKey } = state.data;
@@ -159,7 +160,7 @@ beta.each(
         // A. If no matching Contact has been found...
         await query(
           `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-            FROM CONTACT WHERE FirstName = '${trimValue(FirstName.replace(/'/g, "\\'"))}' 
+            FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
             AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
         )(state).then(async state => {
           const { records } = state.references[0];
@@ -169,7 +170,7 @@ beta.each(
             // A1. If no matching Contact has been found OR if email blank...
             await query(
               `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-                FROM CONTACT WHERE FirstName = '${trimValue(FirstName.replace(/'/g, "\\'"))}' 
+                FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
                 AND MailingStreet = '${trimValue(address)}'`
             )(state).then(async state => {
               const sizeMailingMatch = state.references[0].totalSize;
