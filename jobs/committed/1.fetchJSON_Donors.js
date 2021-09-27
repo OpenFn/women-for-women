@@ -32,7 +32,8 @@ each(
       headers = headers.map(h => (h = h.replace(/"/g, '')));
 
       state.data.slice(1).forEach(data => {
-        let row = data.split(',');
+        // let row = data.split(',');
+        let row = data.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
 
         let obj = {};
         for (let j = 0; j < row.length; j++) {
