@@ -265,7 +265,7 @@ beta.each(
           }
         });
       } else {
-        const { LastModifiedDate, Id, Email } = records[0];
+        const { FirstName, LastModifiedDate, Id, Email } = records[0];
         // CG Date is more recent than SF ?
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
           // YES
@@ -281,8 +281,8 @@ beta.each(
           )(state);
         } else {
           // NO
-          const { FirstName, LastName } = state.data;
-          console.log(`Skipping update. Salesforce Contact is more recent for ${PrimKey} - ${FirstName} ${LastName}`);
+          const { Surname } = state.data;
+          console.log(`Skipping update. Salesforce Contact is more recent for ${PrimKey} - ${FirstName} ${Surname}`);
           return state;
         }
       }
