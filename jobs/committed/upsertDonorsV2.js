@@ -1,4 +1,4 @@
-alterState(state => {
+fn(state => {
   const zipErrors = [];
   const dupErrors = [];
   const dupErrorsDifferentNames = [];
@@ -107,7 +107,7 @@ alterState(state => {
 
 beta.each(
   dataPath('json[*]'),
-  alterState(async state => {
+  fn(async state => {
     const removeSlash = val => val && val.replace(/'/g, "\\'");
     const trimValue = val => val && val.replace(/\s/g, '');
 
@@ -143,94 +143,119 @@ beta.each(
       return state;
       // throw new Error(`Duplicated email found for ${email}`);
     }
-    //console.log('here1', state.data);
-    //NOTE: Removed because if PersonRef was NOT defined, then no action taken on Contact
-    //if (!state.data.PersonRef) return state;
 
     await query(
-      `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
-        FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef) || 'UNDEFINED'}'`
+      `Select Id, FirstName, Email, LastModifiedDate from Contact where Committed_Giving_ID__c = '${PrimKey}'`
     )(state).then(async state => {
-      const { FirstName, EmailAddress } = state.data;
-      //console.log('here2', state.data);
-      const sizeLegacyMatch = state.references[0].totalSize;
       const { records } = state.references[0];
 
-      if (sizeLegacyMatch === 0) {
-        // A. If no matching Contact has been found...
+      // if no records then proceed with the dupe-checking flow
+      if (records.length === 0) {
+        //NOTE: Removed because if PersonRef was NOT defined, then no action taken on Contact
+        //if (!state.data.PersonRef) return state;
         await query(
-          `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-            FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
-            AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
+          `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
+          FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef) || 'UNDEFINED'}'`
         )(state).then(async state => {
+          const { FirstName, EmailAddress } = state.data;
+          //console.log('here2', state.data);
+          const sizeLegacyMatch = state.references[0].totalSize;
           const { records } = state.references[0];
-          const sizeEmailMatch = state.references[0].totalSize;
 
-          if (sizeEmailMatch === 0 || originalEmail === '') {
-            // A1. If no matching Contact has been found OR if email blank...
+          if (sizeLegacyMatch === 0) {
+            // A. If no matching Contact has been found...
             await query(
               `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-                FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
-                AND MailingStreet = '${trimValue(address)}'`
+              FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
+              AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
             )(state).then(async state => {
-              const sizeMailingMatch = state.references[0].totalSize;
+              const { records } = state.references[0];
+              const sizeEmailMatch = state.references[0].totalSize;
 
-              const EmailSF = null;
-              if (sizeMailingMatch === 0) {
-                // A11. If no matching Contact has been found...
-                if (originalEmail !== '') {
-                  await query(
-                    `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-                    FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
-                  )(state).then(async state => {
-                    const { records } = state.references[0];
+              if (sizeEmailMatch === 0 || originalEmail === '') {
+                // A1. If no matching Contact has been found OR if email blank...
+                await query(
+                  `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+                  FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
+                  AND MailingStreet = '${trimValue(address)}'`
+                )(state).then(async state => {
+                  const sizeMailingMatch = state.references[0].totalSize;
 
-                    const sizeEmailMatch2 = state.references[0].totalSize;
+                  const EmailSF = null;
+                  if (sizeMailingMatch === 0) {
+                    // A11. If no matching Contact has been found...
+                    if (originalEmail !== '') {
+                      await query(
+                        `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+                      FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
+                      )(state).then(async state => {
+                        const { records } = state.references[0];
 
-                    if (sizeEmailMatch2 === 0) {
-                      // A111. If no matching Contact has been found...
-                      upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
+                        const sizeEmailMatch2 = state.references[0].totalSize;
+
+                        if (sizeEmailMatch2 === 0) {
+                          // A111. If no matching Contact has been found...
+                          upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
+                          return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
+                            ...state.baseMapping(state.data, address, EmailSF),
+                          }))(state);
+                        } else {
+                          const FirstNameDup = records[0].FirstName;
+                          // A112. If a matching Contact has been found...
+                          console.log(`Logging duplicate email: ${email} with different names.`);
+                          state.dupErrorsDifferentNames.push(
+                            `Logging duplicate email: ${email} with these different names: [${FirstName} - ${FirstNameDup} ]`
+                          );
+                          return state;
+                        }
+                      });
+                    } else {
+                      console.log('Upserting new Contact.');
                       return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
                         ...state.baseMapping(state.data, address, EmailSF),
                       }))(state);
-                    } else {
-                      const FirstNameDup = records[0].FirstName;
-                      // A112. If a matching Contact has been found...
-                      console.log(`Logging duplicate email: ${email} with different names.`);
-                      state.dupErrorsDifferentNames.push(
-                        `Logging duplicate email: ${email} with these different names: [${FirstName} - ${FirstNameDup} ]`
-                      );
-                      return state;
                     }
-                  });
-                } else {
-                  console.log('Upserting new Contact.');
-                  return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
+                  } else {
+                    // A12. If a matching Contact has been found...
+                    // state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
+                    state.dupErrorsFirstNameAddress.push(
+                      `${FirstName} ${Surname} with PrimKey: ${PrimKey}, Address: ${address}`
+                    );
+                    return state;
+                  }
+                });
+              } else {
+                console.log('modified', records[0].LastModifiedDate);
+                const { LastModifiedDate, Id } = records[0];
+                const EmailSF = records[0].npe01__HomeEmail__c;
+                // A2. If a matching Contact has been found...
+                if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+                  // If CG is more recent than SF
+                  upsertCondition = 2; // We update Contact
+                  return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
                     ...state.baseMapping(state.data, address, EmailSF),
                   }))(state);
+                } else {
+                  upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+                  console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
+                  return update(
+                    'Contact',
+                    fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
+                  )(state);
                 }
-              } else {
-                // A12. If a matching Contact has been found...
-                // state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
-                state.dupErrorsFirstNameAddress.push(
-                  `${FirstName} ${Surname} with PrimKey: ${PrimKey}, Address: ${address}`
-                );
-                return state;
               }
             });
           } else {
-            console.log('modified', records[0].LastModifiedDate);
             const { LastModifiedDate, Id } = records[0];
             const EmailSF = records[0].npe01__HomeEmail__c;
-            // A2. If a matching Contact has been found...
+            // B. If a matching Contact has been found...
             if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
               // If CG is more recent than SF
-              upsertCondition = 2; // We update Contact
               return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
                 ...state.baseMapping(state.data, address, EmailSF),
               }))(state);
             } else {
-              upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+              // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
               console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
               return update(
                 'Contact',
@@ -240,21 +265,25 @@ beta.each(
           }
         });
       } else {
-        const { LastModifiedDate, Id } = records[0];
-        const EmailSF = records[0].npe01__HomeEmail__c;
-        // B. If a matching Contact has been found...
+        const { LastModifiedDate, Id, Email } = records[0];
+        // CG Date is more recent than SF ?
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-          // If CG is more recent than SF
-          return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
-            ...state.baseMapping(state.data, address, EmailSF),
-          }))(state);
-        } else {
-          // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-          console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
+          // YES
+          email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
+          // prettier-ignore
           return update(
             'Contact',
-            fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
+            fields(
+              field('Id', Id),
+              field('Committed_Giving_ID__c', PrimKey),
+              field('npe01__HomeEmail__c', email)
+            )
           )(state);
+        } else {
+          // NO
+          const { FirstName, LastName } = state.data;
+          console.log(`Skipping update. Salesforce Contact is more recent for ${PrimKey} - ${FirstName} ${LastName}`);
+          return state;
         }
       }
     });
@@ -262,7 +291,7 @@ beta.each(
   })
 );
 
-alterState(state => {
+fn(state => {
   const error = [];
   if (state.zipErrors.length > 0) {
     console.log(JSON.stringify(state.zipErrors, null, 2));
