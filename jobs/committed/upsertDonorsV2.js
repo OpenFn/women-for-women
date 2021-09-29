@@ -44,13 +44,13 @@ fn(state => {
       EmailSF !== null
         ? undefined
         : x.EmailAddress
-        ? x.EmailAddress.includes('@') &&
-          x.EmailAddress.includes('.com') &&
-          !x.EmailAddress.includes(' ') &&
-          !x.EmailAddress.includes('+')
-          ? x.EmailAddress
-          : `${x.PrimKey}@incomplete.com`
-        : `${x.PrimKey}@incomplete.com`;
+          ? x.EmailAddress.includes('@') &&
+            x.EmailAddress.includes('.') &&
+            !x.EmailAddress.includes(' ') &&
+            !x.EmailAddress.includes('+')
+            ? x.EmailAddress
+            : `${x.PrimKey}@incomplete.com`
+          : `${x.PrimKey}@incomplete.com`;
 
     // ======================================================================
     return {
@@ -63,8 +63,8 @@ fn(state => {
         address === 'Blank' || address === 'No Address'
           ? undefined
           : address
-          ? address.replace(/undefined/g, '')
-          : address,
+            ? address.replace(/undefined/g, '')
+            : address,
       MailingCity: x.Address5,
       MailingState: x.Address6,
       MailingPostalCode: zipCode,
@@ -123,11 +123,11 @@ beta.each(
 
     address = address
       ? trimValue(
-          address
-            .replace(/'/g, "\\'")
-            .replace(/undefined/g, '')
-            .replace(/Blank/g, '')
-        )
+        address
+          .replace(/'/g, "\\'")
+          .replace(/undefined/g, '')
+          .replace(/Blank/g, '')
+      )
       : address;
 
     let email = dataValue('EmailAddress')(state);
