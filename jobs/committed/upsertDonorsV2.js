@@ -177,7 +177,7 @@ beta.each(
                 await query(
                   `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
                   FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
-                  AND MailingStreet = '${trimValue(address)}'`
+                  AND MailingStreet = '${trimValue(address) || 'UNDEFINED'}'`
                 )(state).then(async state => {
                   const sizeMailingMatch = state.references[0].totalSize;
 
