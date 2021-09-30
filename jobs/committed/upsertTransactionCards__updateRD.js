@@ -57,19 +57,14 @@ fn(state => {
 
   const cardMasterIDGreaterThan1 = transactionsNotMultipleOf22.filter(x => !cgIDLess1s.includes(x.CardMasterID));
 
-  const cardMasterMonthly = transactionsNotMultipleOf22.filter(x => x.Occurrence === 'Monthly');
-  const cardMasterYearly = transactionsNotMultipleOf22.filter(x => x.Occurrence === 'Yearly');
-
-  //const cardMasterRecurring = cgIDLess1s.filter(x => x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly');
-
+  const cardMasterRecurring = transactionsNotMultipleOf22.filter(x => x.CampaignCode !== 'Sponsorship');
 
   return {
     ...state,
     transactionsMultipleOf22,
     cardMasterIDLessThan1,
     cardMasterIDGreaterThan1,
-    cardMasterMonthly,
-    cardMasterYearly,
+    cardMasterRecurring,
     formatDate,
     selectAmount,
     multipleOf22,
@@ -77,7 +72,7 @@ fn(state => {
 });
 
 fn(state => {
-  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22, cardMasterMonthly, cardMasterYearly } = state;
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22, cardMasterRecurring } = state;
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
 
@@ -91,23 +86,20 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
   }));
 
-  const transactionsYearly = cardMasterYearly.map(x => ({
-    Committed_Giving_ID__c: selectGivingId(x),
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-  }));
-
-  const transactionsMonthly = cardMasterMonthly.map(x => ({
+  const transactionsRecurring = cardMasterRecurring.map(x => ({
     Committed_Giving_ID__c: selectGivingId(x),
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
   }));
 
   console.log('Count of RD Opps to upsert with RD lookup:', transactionsToUpsert.length);
   console.log('Count of Sponsor Opps to upsert with RD lookup:', sponsorsToUpsert.length);
+  console.log('Count of Recurring Donations to upsert with RD lookup:', transactionsRecurring.length);
+
 
 
   return {
     ...state,
-    transactions: [...transactionsToUpsert, ...sponsorsToUpsert, ...transactionsMonthly, ...transactionsYearly],
+    transactions: [...transactionsToUpsert, ...sponsorsToUpsert, ...transactionsRecurring],
   };
 });
 
