@@ -57,11 +57,15 @@ fn(state => {
 
   const cardMasterIDGreaterThan1 = transactionsNotMultipleOf22.filter(x => !cgIDLess1s.includes(x.CardMasterID));
 
+  const cardMasterRecurring = cgIDLess1s.filter(x => x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly');
+
+
   return {
     ...state,
     transactionsMultipleOf22,
     cardMasterIDLessThan1,
     cardMasterIDGreaterThan1,
+    cardMasterRecurring,
     formatDate,
     selectAmount,
     multipleOf22,
@@ -69,7 +73,7 @@ fn(state => {
 });
 
 fn(state => {
-  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22, cardMasterRecurring } = state;
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
 
@@ -83,13 +87,19 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
   }));
 
+  const transactionsRecurringToUpsert = cardMasterRecurring.map(x => ({
+    Committed_Giving_ID__c: selectGivingId(x),
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+  }));
+
   console.log('Count of RD Opps to upsert with RD lookup:', transactionsToUpsert.length);
+  console.log('Count of RD Opps to upsert with RD lookup:', transactionsRecurringToUpsert.length);
   console.log('Count of Sponsor Opps to upsert with RD lookup:', sponsorsToUpsert.length);
 
 
   return {
     ...state,
-    transactions: [...transactionsToUpsert, ...sponsorsToUpsert],
+    transactions: [...transactionsToUpsert, ...sponsorsToUpsert, ...transactionsRecurringToUpsert],
   };
 });
 
