@@ -12,6 +12,8 @@ fn(state => {
     return parts ? `${year}-${month}-${day}` : null;
   };
 
+  if (json.length === 0) throw new Error('No recurring donations to deactivate');
+
   return { ...state, data: { ...state.data, json }, PrimKeys, formatDate };
 });
 
