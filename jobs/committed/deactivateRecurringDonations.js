@@ -94,7 +94,7 @@ fn(state => {
             toUpdates.push({
               Id: rec.Id,
               Active__c: false,
-              Closeout_Date__c: state.formatDate(RecurringCancelDate),
+              Closeout_Date__c: `${state.formatDate(RecurringCancelDate)}T${RecurringCancelDate.split(' ')[1]}Z`,
               Closeout_Reason__c: RecurringCancelReason,
               npe03__Next_Payment_Date__c: null,
             });
