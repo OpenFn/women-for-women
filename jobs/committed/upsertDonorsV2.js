@@ -29,7 +29,8 @@ fn(state => {
     const TextOptIn = x['OK to text'] === 'Yes' ? true : false;
     const Deceased = x['Deceased'] === 'Yes' ? true : false;
     const Gift =
-      x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' ? 'Eligible' : 'Not Eligible - Non Tax Payer';
+      x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' ? 'Eligible' :
+        (x['Gift Aid Status'] === 'False' || x['Gift Aid Status'] === 'FALSE') ? 'Not Eligible - Non Tax Payer' : x['Gift Aid Status'];
 
     const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
