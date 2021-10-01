@@ -54,10 +54,9 @@ each(
         }
       }
 
-      const filteredJson = json.filter(js => {
-        if (js['EmailAddress'] && duplicates.includes(js['EmailAddress'].toLowerCase())) return js;
-        return js;
-      });
+      const filteredJson = json.filter(
+        js => js['EmailAddress'] && !duplicates.includes(js['EmailAddress'].toLowerCase())
+      );
 
       json = [];
 
