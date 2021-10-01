@@ -12,7 +12,7 @@ fn(state => {
     return parts ? `${year}-${month}-${day}` : null;
   };
 
-  if (json.length === 0) throw new Error('No recurring donations to deactivate');
+  if (json.length === 0) console.log('No recurring donations to deactivate');
 
   return { ...state, data: { ...state.data, json }, PrimKeys, formatDate };
 });
@@ -69,45 +69,50 @@ fn(state => {
 //   );
 
 // ==================================== BULKIFIED VERSION ====================================
-query(
-  state =>
-    `SELECT Id, Committed_Giving_ID__c, npe03__Contact__r.Committed_Giving_Id__c, npe03__Date_Established__c, Active__c FROM npe03__Recurring_Donation__c WHERE npe03__Contact__r.Committed_Giving_Id__c in ('${state.PrimKeys.join(
-      "','"
-    )}')`
-);
+fn(state => {
+  if (state.data.json.length > 0)
+    return query(
+      state =>
+        `SELECT Id, Committed_Giving_ID__c, npe03__Contact__r.Committed_Giving_Id__c, npe03__Date_Established__c, Active__c FROM npe03__Recurring_Donation__c WHERE npe03__Contact__r.Committed_Giving_Id__c in ('${state.PrimKeys.join(
+          "','"
+        )}')`
+    )(state);
+
+  return state;
+});
 
 fn(state => {
-  const { records } = state.references[0];
-  const { json } = state.data;
-  const cgIDs = records.filter(rec => rec.Active__c == true).map(rec => rec.npe03__Contact__r.Committed_Giving_ID__c);
-
   const toUpdates = [];
+  if (state.data.json.length > 0) {
+    const { records } = state.references[0];
+    const { json } = state.data;
+    const cgIDs = records.filter(rec => rec.Active__c == true).map(rec => rec.npe03__Contact__r.Committed_Giving_ID__c);
 
-  json.forEach(row => {
-    const { PrimKey, RecurringCancelDate, RecurringCancelReason } = row;
-    if (cgIDs.includes(PrimKey)) {
-      const record = records.filter(rec => rec.npe03__Contact__r.Committed_Giving_ID__c === PrimKey);
+    json.forEach(row => {
+      const { PrimKey, RecurringCancelDate, RecurringCancelReason } = row;
+      if (cgIDs.includes(PrimKey)) {
+        const record = records.filter(rec => rec.npe03__Contact__r.Committed_Giving_ID__c === PrimKey);
 
-      if (record.length > 0) {
-        record.forEach(rec => {
-          if (new Date(rec.npe03__Date_Established__c) < new Date(state.formatDate(RecurringCancelDate))) {
-            toUpdates.push({
-              Id: rec.Id,
-              Active__c: false,
-              Closeout_Date__c: `${state.formatDate(RecurringCancelDate)}T${RecurringCancelDate.split(' ')[1]}Z`,
-              Closeout_Reason__c: RecurringCancelReason,
-              npe03__Next_Payment_Date__c: null,
-            });
-          }
-        });
+        if (record.length > 0) {
+          record.forEach(rec => {
+            if (new Date(rec.npe03__Date_Established__c) < new Date(state.formatDate(RecurringCancelDate))) {
+              toUpdates.push({
+                Id: rec.Id,
+                Active__c: false,
+                Closeout_Date__c: `${state.formatDate(RecurringCancelDate)}T${RecurringCancelDate.split(' ')[1]}Z`,
+                Closeout_Reason__c: RecurringCancelReason,
+                npe03__Next_Payment_Date__c: null,
+              });
+            }
+          });
+        }
+      } else {
+        console.log(
+          `No earlier Recurring Donations found to deactivate for ${PrimKey}. Skipping cancellation/closeout step.`
+        );
       }
-    } else {
-      console.log(
-        `No earlier Recurring Donations found to deactivate for ${PrimKey}. Skipping cancellation/closeout step.`
-      );
-    }
-  });
-
+    });
+  }
   return { ...state, toUpdates };
 });
 
