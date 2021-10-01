@@ -109,7 +109,7 @@ fn(state => {
   // Throw error
   if (state.errors.length > 0) {
     console.log('Some errors occured');
-    console.log(JSON.stringify(state.errors, null, 2));
+    throw new Error(JSON.stringify(state.errors, null, 2));
   }
   return state;
 });
