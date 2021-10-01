@@ -1,5 +1,6 @@
 fn(state => {
   const { json } = state.data;
+  state.errors = [];
   const newJson = [];
 
   function reduceArray(array, groupBy) {
@@ -39,9 +40,10 @@ fn(state => {
     )(state).then(state => {
       const { records } = state.references[0];
       if (records.length === 0) {
-        throw new Error(
-          'Matching Opportunity not found for this transaction. Please confirm that related Transaction data has been synced to Salesforce before re-running'
+        state.errors.push(
+          `Matching Opportunity not found for this transaction (${CCID}). Please confirm that related Transaction data has been synced to Salesforce before re-running`
         );
+        return state;
       } else {
         return update('Opportunity', state => ({
           ...fields(
@@ -102,3 +104,12 @@ each(
     }
   })
 );
+
+fn(state => {
+  // Throw error
+  if (state.errors.length > 0) {
+    console.log('Some errors occured');
+    console.log(JSON.stringify(state.errors, null, 2));
+  }
+  return state;
+});
