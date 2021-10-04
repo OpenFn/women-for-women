@@ -51,8 +51,8 @@ each('$.setsCardMaster[*]', state => {
 bulk(
   'Opportunity',
   'upsert',
-  'CG_Credit_Card_ID__c',
   {
+    extIdField: 'CG_Credit_Card_ID__c',
     failOnError: true,
     allowNoOp: true,
   },
