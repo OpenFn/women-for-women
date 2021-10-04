@@ -36,7 +36,7 @@ each('$.setsCardMaster[*]', state => {
 
     for (let rdId of matchingRDs) {
       if (state.data.includes(rdId)) {
-        const id = Ids.find(id => id.CG_Credit_Card_ID__c === rdId).Id;
+        const id = Ids.find(id => id.CG_Credit_Card_Master_ID__c === rdId).Id;
         state.toUpdate.push({
           Id: id,
           'Opportunity.npe03__Recurring_Donation__c': rdId,
