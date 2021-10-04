@@ -39,7 +39,7 @@ each('$.setsCardMaster[*]', state => {
         const id = Ids.find(id => id.CG_Credit_Card_Master_ID__c === rdId).Id;
         state.toUpdate.push({
           Id: id,
-          'Opportunity.npe03__Recurring_Donation__c': rdId,
+          npe03__Recurring_Donation__c: rdId,
         });
       }
     }
