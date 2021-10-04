@@ -38,7 +38,8 @@ each('$.setsCardMaster[*]', state => {
       if (state.data.includes(rdId)) {
         const id = Ids.find(id => id.CG_Credit_Card_Master_ID__c === rdId).Id;
         state.toUpdate.push({
-          Id: id,
+          //Id: id,
+          CG_Credit_Card_ID__c: id, 
           npe03__Recurring_Donation__c: rdId,
         });
       }
@@ -49,7 +50,8 @@ each('$.setsCardMaster[*]', state => {
 
 bulk(
   'Opportunity',
-  'update',
+  'upsert',
+  'CG_Credit_Card_ID__c',
   {
     failOnError: true,
     allowNoOp: true,
