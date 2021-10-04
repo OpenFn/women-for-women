@@ -33,6 +33,18 @@ fn(state => {
     return new Date(dateEstablished).toISOString();
   };
 
+  const checkMonth = date => {
+    if (!date || date === '0000') return undefined;
+    const month = date.substring(0, 2);
+    return month;
+  };
+
+  const checkYear = date => {
+    if (!date || date === '0000') return undefined;
+    const year = date.substring(3);
+    return year;
+  };
+
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
@@ -50,6 +62,8 @@ fn(state => {
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
       npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? (Number(selectAmount(x)) % 264 === 0 ? increaseYear(x.LastCredited) : increaseMonth(x.LastCredited)) : undefined, //Note: This is required to trigger auto-insert of related Opps
       of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(Number(selectAmount(x)) / 264) : Math.abs(Number(selectAmount(x)) / 22),
+      Expiration_Month__c: checkMonth(x.CCExpiry),  //Parse month; SF expects text, but output should still be a number like '2' for February
+      Expiration_Year__c: checkYear(x.CCExpiry), //Parse year; SF expects integer like '2021'
     };
   };
 
