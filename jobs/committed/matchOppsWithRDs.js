@@ -48,7 +48,7 @@ each('$.setsCardMaster[*]', state => {
 });
 
 bulk(
-  'Opportunities',
+  'Opportunity',
   'update',
   {
     failOnError: true,
