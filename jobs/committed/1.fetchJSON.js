@@ -1,10 +1,10 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      'wfwi card master',
+      //'wfwi card master',
+      //'wfwi direct debits',
       //'wfwi transactions - cards',
       //'wfwi custom cc fields',
-      //'wfwi direct debits',
       //'wfwi transactions - dd'
       //'wfwi custom dd fields',
     ];
