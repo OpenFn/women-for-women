@@ -1,9 +1,8 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      //'wfwi donors',
-      //'wfwi card master',
-      'wfwi transactions - cards',
+      'wfwi card master',
+      //'wfwi transactions - cards',
       //'wfwi custom cc fields',
       //'wfwi direct debits',
       //'wfwi transactions - dd'
@@ -84,7 +83,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '20-sept-test'
+          upload: '5-oct-test'
         };
         fileChunks.push(fileContent);
       });
