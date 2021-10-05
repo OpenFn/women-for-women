@@ -36,11 +36,14 @@ each('$.setsCardMaster[*]', state => {
 
     for (let rdId of matchingRDs) {
       if (state.data.includes(rdId)) {
-        const id = Ids.find(id => id.CG_Credit_Card_Master_ID__c === rdId).Id;
-        state.toUpdate.push({
-          //Id: id,
-          Id: id, 
-          'npe03__Recurring_Donation__r.CG_Credit_Card_ID__c': rdId,
+        // find all matches
+        const matches = Ids.filter(Id => Id.CG_Credit_Card_Master_ID__c === rdId);
+
+        matches.forEach(element => {
+          state.toUpdate.push({
+            Id: element.Id,
+            'npe03__Recurring_Donation__r.CG_Credit_Card_ID__c': rdId,
+          });
         });
       }
     }
