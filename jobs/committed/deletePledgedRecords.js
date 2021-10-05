@@ -24,11 +24,11 @@ fn(state => {
 });
 
 each('chunkToDelete[*]', state => {
-  //console.log('Opps to delete', state.data);
+  console.log('Past pledged opps to delete', state.data);
   return destroy('Opportunity', state => state.data, { failOnError: false })(state);
 });
 each('chunkToDelete2[*]', state => {
-  //console.log('Opps to delete', state.data);
+  console.log('Inactive pledged opps to delete', state.data);
   return destroy('Opportunity', state => state.data, { failOnError: false })(state);
 });
 
