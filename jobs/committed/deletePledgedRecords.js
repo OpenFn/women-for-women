@@ -1,5 +1,5 @@
 query(
-  `SELECT Id, npe03__Recurring_Donation__r.Committed_Giving_ID__c, Active__c, closeDate from Opportunity WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c != NULL AND StageName = 'Pledged' `
+  `SELECT Id, npe03__Recurring_Donation__r.Committed_Giving_ID__c, npe03__Recurring_Donation__r.Active__c, closeDate from Opportunity WHERE npe03__Recurring_Donation__r.Committed_Giving_ID__c != NULL AND StageName = 'Pledged' `
 );
 fn(state => {
   const { records } = state.references[0];
@@ -13,7 +13,7 @@ fn(state => {
   const IDtoDeletes = toDeletes.map(rec => rec.Id);
   const chunkToDelete = chunk(IDtoDeletes, 100);
   
-  const inactiveOpps = records.filter(rec => rec.Active__c === false);
+  const inactiveOpps = records.filter(rec => rec['npe03__Recurring_Donation__r.Active__c'] === false);
   const OppsToDel = inactiveOpps.map(rec => rec.Id);
   const otherChunkToDel = chunk(OppsToDel, 100);
 
