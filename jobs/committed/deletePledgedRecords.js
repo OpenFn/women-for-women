@@ -13,7 +13,7 @@ fn(state => {
   const IDtoDeletes = toDeletes.map(rec => rec.Id);
   const chunkToDelete = chunk(IDtoDeletes, 100);
   
-  const inactiveOpps = records.filter(rec => rec['npe03__Recurring_Donation__r.Active__c'] === false);
+  const inactiveOpps = records.filter(rec => rec['npe03__Recurring_Donation__r.Active__c'] !== true);
   const OppsToDel = inactiveOpps.map(rec => rec.Id);
   const otherChunkToDel = chunk(OppsToDel, 100);
 
