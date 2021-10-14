@@ -29,8 +29,11 @@ fn(state => {
     const TextOptIn = x['OK to text'] === 'Yes' ? true : false;
     const Deceased = x['Deceased'] === 'Yes' ? true : false;
     const Gift =
-      x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' ? 'Eligible' :
-        (x['Gift Aid Status'] === 'False' || x['Gift Aid Status'] === 'FALSE') ? 'Not Eligible - Non Tax Payer' : x['Gift Aid Status'];
+      x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE'
+        ? 'Eligible'
+        : x['Gift Aid Status'] === 'False' || x['Gift Aid Status'] === 'FALSE'
+        ? 'Not Eligible - Non Tax Payer'
+        : x['Gift Aid Status'];
 
     const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
@@ -45,27 +48,27 @@ fn(state => {
       EmailSF !== null
         ? undefined
         : x.EmailAddress
-          ? x.EmailAddress.includes('@') &&
-            x.EmailAddress.includes('.') &&
-            !x.EmailAddress.includes(' ') &&
-            !x.EmailAddress.includes('+')
-            ? x.EmailAddress
-            : `${x.PrimKey}@incomplete.com`
-          : `${x.PrimKey}@incomplete.com`;
+        ? x.EmailAddress.includes('@') &&
+          x.EmailAddress.includes('.') &&
+          !x.EmailAddress.includes(' ') &&
+          !x.EmailAddress.includes('+')
+          ? x.EmailAddress
+          : `${x.PrimKey}@incomplete.com`
+        : `${x.PrimKey}@incomplete.com`;
 
     // ======================================================================
     return {
       Committed_Giving_ID__c: x.PrimKey,
       wfw_Legacy_Supporter_ID__c: x.PersonRef,
       Salutation: x.Title,
-      FirstName: x.FirstName,
-      LastName: x.Surname,
+      FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
+      LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
       MailingStreet:
         address === 'Blank' || address === 'No Address'
           ? undefined
           : address
-            ? address.replace(/undefined/g, '')
-            : address,
+          ? address.replace(/undefined/g, '')
+          : address,
       MailingCity: x.Address5,
       MailingState: x.Address6,
       MailingPostalCode: zipCode,
@@ -111,6 +114,10 @@ beta.each(
   fn(async state => {
     const removeSlash = val => val && val.replace(/'/g, "\\'");
     const trimValue = val => val && val.replace(/\s/g, '');
+    const firstLetterUppercased = val => {
+      if (!val) return val;
+      return val[0].toUpperCase() + val.substring(1);
+    };
 
     const { PersonRef, LastChangedDateTime, Surname, PrimKey } = state.data;
 
@@ -124,11 +131,11 @@ beta.each(
 
     address = address
       ? trimValue(
-        address
-          .replace(/'/g, "\\'")
-          .replace(/undefined/g, '')
-          .replace(/Blank/g, '')
-      )
+          address
+            .replace(/'/g, "\\'")
+            .replace(/undefined/g, '')
+            .replace(/Blank/g, '')
+        )
       : address;
 
     let email = dataValue('EmailAddress')(state);
@@ -167,7 +174,7 @@ beta.each(
             // A. If no matching Contact has been found...
             await query(
               `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-              FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
+              FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(firstLetterUppercased(FirstName)))}'
               AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
             )(state).then(async state => {
               const { records } = state.references[0];
@@ -177,7 +184,7 @@ beta.each(
                 // A1. If no matching Contact has been found OR if email blank...
                 await query(
                   `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
-                  FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(FirstName))}'
+                  FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(firstLetterUppercased(FirstName)))}'
                   AND MailingStreet = '${trimValue(address) || 'UNDEFINED'}'`
                 )(state).then(async state => {
                   const sizeMailingMatch = state.references[0].totalSize;
@@ -205,7 +212,9 @@ beta.each(
                           // A112. If a matching Contact has been found...
                           console.log(`Logging duplicate email: ${email} with different names.`);
                           state.dupErrorsDifferentNames.push(
-                            `Logging duplicate email: ${email} with these different names: [${FirstName} - ${FirstNameDup} ]`
+                            `Logging duplicate email: ${email} with these different names: [${firstLetterUppercased(
+                              FirstName
+                            )} - ${FirstNameDup} ]`
                           );
                           return state;
                         }
@@ -220,7 +229,7 @@ beta.each(
                     // A12. If a matching Contact has been found...
                     // state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
                     state.dupErrorsFirstNameAddress.push(
-                      `${FirstName} ${Surname} with PrimKey: ${PrimKey}, Address: ${address}`
+                      `${firstLetterUppercased(FirstName)} ${firstLetterUppercased(Surname)} with PrimKey: ${PrimKey}, Address: ${address}`
                     );
                     return state;
                   }
