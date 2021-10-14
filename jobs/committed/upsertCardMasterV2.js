@@ -8,7 +8,7 @@ fn(state => {
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    const year = parts !== null ? String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}` : parts;
+    const year = parts !== null ? (String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`) : parts;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
@@ -45,6 +45,28 @@ fn(state => {
     return year;
   };
 
+  const checkActiveInactiveStatus = x => {
+    // 1. If csv.RecurringCancelDate defined, then sf.Active__c: false
+    if (x.RecurringCancelDate) return false;
+    // 2. If csv.RecurringCancelDate not defined, then check csv.LastCredited as follows:
+    if (!x.RecurringCancelDate) {
+      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
+      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
+      if (
+        !x.LastCredited &&
+        (!x.Occurrence || x.Occurrence === 'None' || x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
+      )
+        return false;
+
+      // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
+      if (x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
+        return false;
+      // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
+      if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
+        return true;
+    }
+  };
+
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
@@ -55,14 +77,21 @@ fn(state => {
       npe03__Amount__c: x.Amount.replace(/�/, ''),
       Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
-      Active__c: x.RecurringCancelDate ? false : true,
+      Active__c: checkActiveInactiveStatus(x),
       npsp__Status__c: x.RecurringCancelDate ? 'Closed' : 'Active',
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
-      npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? (Number(selectAmount(x)) % 264 === 0 ? increaseYear(x.LastCredited) : increaseMonth(x.LastCredited)) : undefined, //Note: This is required to trigger auto-insert of related Opps
-      of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(Number(selectAmount(x)) / 264) : Math.abs(Number(selectAmount(x)) / 22),
-      Expiration_Month__c: checkMonth(x.CCExpiry),  //Parse month; SF expects text, but output should still be a number like '2' for February
+      npe03__Next_Payment_Date__c: !x.RecurringCancelDate
+        ? Number(selectAmount(x)) % 264 === 0
+          ? increaseYear(x.LastCredited)
+          : increaseMonth(x.LastCredited)
+        : undefined, //Note: This is required to trigger auto-insert of related Opps
+      of_Sisters_Requested__c:
+        Number(selectAmount(x)) % 264 === 0
+          ? Math.abs(Number(selectAmount(x)) / 264)
+          : Math.abs(Number(selectAmount(x)) / 22),
+      Expiration_Month__c: checkMonth(x.CCExpiry), //Parse month; SF expects text, but output should still be a number like '2' for February
       Expiration_Year__c: checkYear(x.CCExpiry), //Parse year; SF expects integer like '2021'
     };
   };
@@ -76,7 +105,7 @@ fn(state => {
       ...{
         Type__c: 'Sponsorship',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
-        'Sponsor__r.Committed_Giving_Id__c': x.PrimKey
+        'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
       },
     };
   });
@@ -85,13 +114,19 @@ fn(state => {
 
   const donations = state.data.json
     .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
-    .filter(x => x.Occurrence === 'Monthly' && x.LastCredited !== 'MISSING' || x.Occurrence === 'Yearly' && x.LastCredited !== 'MISSING' || x.Occurrence === 'None' && x.LastCredited !== 'MISSING' && x.RecurringCancelDate !== null)
+    .filter(
+      x =>
+        (x.Occurrence === 'Monthly' && x.LastCredited !== 'MISSING') ||
+        (x.Occurrence === 'Yearly' && x.LastCredited !== 'MISSING') ||
+        (x.Occurrence === 'None' && x.LastCredited !== 'MISSING' && x.RecurringCancelDate !== null)
+    )
     .map(x => {
       return {
         ...baseMapping(x),
         ...{
           Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
-          'npe03__Recurring_Donation_Campaign__r.Source_Code__c': Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
+          'npe03__Recurring_Donation_Campaign__r.Source_Code__c':
+            Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
         },
       };
     });
