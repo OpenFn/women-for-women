@@ -32,7 +32,7 @@ fn(state => {
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
-        of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 ? Math.abs(x['Current amount'] / 264) : Number(selectAmount(x)) % 22 === 0 ? Math.abs(x['Current amount'] / 22) : undefined,
+        of_Sisters_Requested__c: Number(selectAmount(x)) % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) : Number(selectAmount(x)) % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : undefined,
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
         Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
