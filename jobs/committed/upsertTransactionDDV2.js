@@ -31,11 +31,17 @@ fn(state => {
 
 
 fn(state => {
-  const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${x.Date}`;
+  const cleanDate = date => {
+    if (!date) return undefined;
+    date = date.replace(/[:\/]/g, '');
+    return date.replace(/\s+/g, '');
+  }
+
+  const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${cleanDate(x.Date)}`;
 
   const baseMapping = x => {
     return {
-      Committed_Giving_ID__c: selectGivingId(x).replace(/-\//g, ''),
+      Committed_Giving_ID__c: selectGivingId(x),
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
