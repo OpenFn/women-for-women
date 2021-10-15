@@ -67,6 +67,28 @@ fn(state => {
     }
   };
 
+  const checkNpspActiveInactiveStatus = x => {
+    // 1. If csv.RecurringCancelDate defined, then sf.Active__c: false
+    if (x.RecurringCancelDate) return 'Closed';
+    // 2. If csv.RecurringCancelDate not defined, then check csv.LastCredited as follows:
+    if (!x.RecurringCancelDate) {
+      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
+      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
+      if (
+        !x.LastCredited &&
+        (!x.Occurrence || x.Occurrence === 'None' || x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
+      )
+        return 'Lapsed';
+
+      // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
+      if (x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
+        return 'Lapsed';
+      // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
+      if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
+        return 'Active';
+    }
+  };
+
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
@@ -78,7 +100,7 @@ fn(state => {
       Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
       Active__c: checkActiveInactiveStatus(x),
-      npsp__Status__c: x.RecurringCancelDate ? 'Closed' : 'Active',
+      npsp__Status__c: checkNpspActiveInactiveStatus(x),
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
