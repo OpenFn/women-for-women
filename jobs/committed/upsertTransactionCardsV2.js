@@ -186,7 +186,7 @@ bulk(
   'upsert',
   {
     extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
+    failOnError: false, //Q: Should this be true or false??
     allowNoOp: true,
   },
   state => {
