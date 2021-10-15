@@ -35,7 +35,7 @@ fn(state => {
 
   const baseMapping = x => {
     return {
-      Committed_Giving_ID__c: selectGivingId(x),
+      Committed_Giving_ID__c: selectGivingId(x).replace(/-\//g, ''),
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
