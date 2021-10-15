@@ -109,10 +109,10 @@ fn(state => {
           ? increaseYear(x.LastCredited)
           : increaseMonth(x.LastCredited)
         : undefined, //Note: This is required to trigger auto-insert of related Opps
-      // of_Sisters_Requested__c:
-      //   Number(selectAmount(x)) % 264 === 0
-      //     ? Math.abs(Number(selectAmount(x)) / 264)
-      //     : Math.abs(Number(selectAmount(x)) / 22),
+      of_Sisters_Requested__c:
+        Number(selectAmount(x)) % 264 === 0
+          ? Math.abs(Number(selectAmount(x)) / 264)
+          : Math.abs(Number(selectAmount(x)) / 22),
       Expiration_Month__c: checkMonth(x.CCExpiry), //Parse month; SF expects text, but output should still be a number like '2' for February
       Expiration_Year__c: checkYear(x.CCExpiry), //Parse year; SF expects integer like '2021'
     };
