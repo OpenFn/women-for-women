@@ -2,11 +2,11 @@ alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
       //'wfwi card master',
-      //'wfwi direct debits',
+      'wfwi direct debits',
       //'wfwi transactions - cards',
       //'wfwi transactions - dd',
       //'wfwi custom cc fields',
-      'wfwi custom dd fields',
+      //'wfwi custom dd fields',
     ];
     console.log('Files to sync: ', fileNames);
 
@@ -83,7 +83,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '5-oct-test'
+          upload: '16-oct-2021'
         };
         fileChunks.push(fileContent);
       });
