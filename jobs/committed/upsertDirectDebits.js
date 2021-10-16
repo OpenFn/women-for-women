@@ -28,7 +28,7 @@ fn(state => {
         npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : false, //TO TEST
         Closeout_Reason__c: x.CancelReason,
-        npe03__Installment_Period__c: x.PaymentFrequency,
+        npe03__Installment_Period__c: x.PaymentFrequency === 'Annually' ? 'Yearly' : x.PaymentFrequency,
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
