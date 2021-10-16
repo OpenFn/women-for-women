@@ -3,8 +3,8 @@ alterState(state => {
     const fileNames = [
       //'wfwi card master',
       //'wfwi direct debits',
-      'wfwi transactions - cards',
-      //'wfwi transactions - dd',
+      //'wfwi transactions - cards',
+      'wfwi transactions - dd',
       //'wfwi custom cc fields',
       //'wfwi custom dd fields',
     ];
