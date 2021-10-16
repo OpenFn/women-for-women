@@ -91,12 +91,12 @@ fn(state => {
       // Text_Opt_In__c: TextOptIn,
       // Text_Opt_In_Date__c: formatDate(TextDate),
       // Text_Opt_In_Method__c: TextMethod,
+      //wfw_Method_of_Confirmation__c: 'Online',
       npsp__Deceased__c: Deceased,
       wfw_Gift_Aid__c: Gift,
       wfw_Date_of_Declaration_Confirmation__c: formatDate(x['Gift Aid date']),
       CG_Opt_In_Date__c: formatDate(x['Gift Aid date']),
       wfw_Donor_Source__c: x.DonorSource,
-      wfw_Method_of_Confirmation__c: 'Online',
     };
   };
   return {
