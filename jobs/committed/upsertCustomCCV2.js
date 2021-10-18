@@ -54,7 +54,7 @@ fn(state => {
             }),
             field('Tribute_Occasion_Text__c', state.data['Occasion']),
             field('npsp__Honoree_Name__c', state.data['Honouree / Tributee Name']),
-            field('Paper_Card_Shipping_Name__c', state.data['Notify Name']),
+            field('Paper_Card_Shipping_Name__c', state.data['Notify First  Name']),
             field('Paper_Card_Shipping_Address__c', state.data['Notify Add1']),
             field('Paper_Card_Shipping_Address_Line_2__c', state.data['Notify Add2']),
             field('Paper_Card_Shipping_City__c', state.data['Notify Town']),
@@ -77,19 +77,19 @@ each(
   fn(state => {
     const { CCID } = state.data;
     if (!state.data['Notify Email Address']) {
-      console.log("'Notify Name' and 'Notify Email Address' are unavailable.");
+      console.log("'Notify FirstName' and 'Notify Email Address' are unavailable.");
       return state.queryAndUpdate(CCID, '', state); // @Aleksa: if no notify name and email should we update with empty contactId?
     } else {
       return query(
         state => `Select Id FROM Contact 
-      WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify Name']}'`
+      WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify First  Name']}'`
       )(state).then(state => {
         const { records } = state.references[0];
-        if (records.length === 0) {
+        if (records.length === 0 && state.data['Notify First  Name']) {
           return upsert('Contact', 'Email', {
-            FirstName: state.data['Notify Name'].split(' ')[0],
-            LastName: state.data['Notify Name'].split(' ')[1] || state.data['Notify Name'].split(' ')[0],
-            Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
+            FirstName: state.data['Notify First  Name'].split(' ')[0],
+            LastName: state.data['Notify First  Name'].split(' ')[1] || state.data['Notify First  Name'].split(' ')[0],
+            Email: state.data['Notify Email Address'] || `${state.data['Notify First  Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
