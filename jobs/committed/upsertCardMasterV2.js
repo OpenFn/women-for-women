@@ -102,7 +102,7 @@ fn(state => {
       Active__c: checkActiveInactiveStatus(x),
       npsp__Status__c: checkNpspActiveInactiveStatus(x),
       npsp__PaymentMethod__c: 'Credit Card',
-      npe03__Date_Established__c: increaseMonth(x.AddedDateTime),
+      npe03__Date_Established__c: formatDate(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
       npe03__Next_Payment_Date__c: !x.RecurringCancelDate
         ? Number(selectAmount(x)) % 264 === 0
