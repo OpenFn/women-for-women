@@ -103,7 +103,7 @@ fn(state => {
                 //QUESTION: To map closeout reason to other Opps? 
                 //Closeout_Date__c: `${state.formatDate(RecurringCancelDate)}T${RecurringCancelDate.split(' ')[1]}Z`,
                 //Closeout_Reason__c: RecurringCancelReason,
-                Closeout_Date__c: '2021-10-21',
+                Closeout_Date__c: '2021-10-21T00:00:00.000Z',
                 Closeout_Reason__c: 'OpenFn duplicate transfer: canceled'
                 //npe03__Next_Payment_Date__c: null,
               });
