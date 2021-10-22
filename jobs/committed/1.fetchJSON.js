@@ -10,9 +10,9 @@ alterState(state => {
       //'wfwi transactions - cards',
       'wfwi transactions - dd  15102021',
       //'wfwi transactions - dd',
-      //'wfwi Custom CC fields  15102021',
+      'wfwi custom cc fields  15102021',
       //'wfwi custom cc fields',
-      //'wfwi Custom DD fields  15102021'
+      'wfwi custom dd fields  15102021'
       //'wfwi custom dd fields',
     ];
     console.log('Files to sync: ', fileNames);
