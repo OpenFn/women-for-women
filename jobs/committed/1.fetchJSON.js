@@ -6,7 +6,7 @@ alterState(state => {
       //'wfwi Direct Debits 15102021',
       //'wfwi Direct Debits  22102021',
       //'wfwi direct debits',
-      'wfwi Transactions - cards  15102021',
+      //'wfwi Transactions - cards  15102021',
       //'wfwi transactions - cards',
       //'wfwi transactions - DD  15102021',
       //'wfwi transactions - dd',
