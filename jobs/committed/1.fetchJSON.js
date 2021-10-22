@@ -1,7 +1,7 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const fileNames = [
-      'wfwi card master 15102021.csv',
+      'wfwi card master 15102021',
       //'wfwi card master',
       //'wfwi Direct Debits 15102021.csv',
       //'wfwi Direct Debits  22102021.csv ',
