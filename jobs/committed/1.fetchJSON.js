@@ -8,11 +8,11 @@ alterState(state => {
       //'wfwi direct debits',
       //'wfwi transactions - cards  15102021',
       //'wfwi transactions - cards',
-      'wfwi transactions - dd  15102021',
+      //'wfwi transactions - dd  15102021',
       //'wfwi transactions - dd',
-      //'wfwi custom cc fields  15102021',
+      'wfwi custom cc fields  15102021',
       //'wfwi custom cc fields',
-      //'wfwi custom dd fields  15102021'
+      'wfwi custom dd fields  15102021'
       //'wfwi custom dd fields',
     ];
     console.log('Files to sync: ', fileNames);
