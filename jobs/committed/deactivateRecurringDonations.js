@@ -99,10 +99,13 @@ fn(state => {
               toUpdates.push({
                 Id: rec.Id,
                 Active__c: false,
+                CG_Merge__c: '0',
                 //QUESTION: To map closeout reason to other Opps? 
                 //Closeout_Date__c: `${state.formatDate(RecurringCancelDate)}T${RecurringCancelDate.split(' ')[1]}Z`,
                 //Closeout_Reason__c: RecurringCancelReason,
-                npe03__Next_Payment_Date__c: null,
+                Closeout_Date__c: '2021-10-21',
+                Closeout_Reason__c: 'OpenFn duplicate transfer: canceled'
+                //npe03__Next_Payment_Date__c: null,
               });
             }
           });
