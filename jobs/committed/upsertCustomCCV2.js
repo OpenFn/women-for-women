@@ -76,20 +76,20 @@ each(
   '$.data.json[*]',
   fn(state => {
     const { CCID } = state.data;
-    if (!state.data['Notify Email Address']) {
-      console.log("'Notify FirstName' and 'Notify Email Address' are unavailable.");
+    if (!state.data['Recipient First Name'] || !state.data['Recipient Email']) {
+      console.log("'Recipient First Name' or 'Recipient Email' are unavailable.");
       return state.queryAndUpdate(CCID, '', state); // @Aleksa: if no notify name and email should we update with empty contactId?
     } else {
       return query(
         state => `Select Id FROM Contact 
-      WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify First  Name']}'`
+      WHERE email = '${state.data['Recipient Email']}' OR Name = '${state.data['Recipient First Name']}'`
       )(state).then(state => {
         const { records } = state.references[0];
-        if (records.length === 0 && state.data['Notify First  Name']) {
+        if (records.length === 0 && state.data['Recipient First Name']) {
           return upsert('Contact', 'Email', {
-            FirstName: state.data['Notify First  Name'].split(' ')[0],
-            LastName: state.data['Notify First  Name'].split(' ')[1] || state.data['Notify First  Name'].split(' ')[0],
-            Email: state.data['Notify Email Address'] || `${state.data['Notify First  Name'].split(' ')[0]}@incomplete.com`,
+            FirstName: state.data['Recipient First Name'].split(' ')[0],
+            LastName: state.data['Recipient First Name'].split(' ')[1],
+            Email: state.data['Recipient Email'] || `${state.data['Recipient First Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
