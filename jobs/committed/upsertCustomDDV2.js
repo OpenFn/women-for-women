@@ -55,7 +55,7 @@ fn(state => {
             field('Paper_Card_Shipping_Zip_Postal__c', dataValue('Notify Postcode')),
             field('Paper_Card_Shipping_State_Province__c', dataValue('Notify County')),
             field('Paper_Card_Shipping_Country__c', dataValue('Notify Country')),
-            field('Paper_Card_Shipping_Name__c', dataValue('Notify Name')),
+            field('Paper_Card_Shipping_Name__c', dataValue('Notify First Name')),
             field('Paper_Card_Shipping_Address__c', dataValue('Notify Add1')),
             field('Paper_Card_Shipping_Address_Line_2__c', dataValue('Notify Add2')),
             field('eCard_Recipient_Email__c', dataValue('Notify Email Address'))
@@ -93,8 +93,8 @@ each(
         const { records } = state.references[0];
         if (records.length === 0) {
           return upsert('Contact', 'Email', {
-            FirstName: state.data['Notify Name'].split(' ')[0],
-            LastName: state.data['Notify Name'].split(' ')[1] || state.data['Notify Name'].split(' ')[0],
+            FirstName: state.data['Notify First Name'].split(' ')[0],
+            LastName: state.data['Notify First Name'].split(' ')[1] || state.data['Notify First Name'].split(' ')[0],
             Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
