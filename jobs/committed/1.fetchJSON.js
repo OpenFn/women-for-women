@@ -90,7 +90,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '29-10-2021'
+          upload: '29-Oct-2021'
         };
         fileChunks.push(fileContent);
       });
