@@ -8,7 +8,7 @@ alterState(state => {
       //'wfwi direct debits',
       //'wfwi transactions - cards 29102021',
       //'wfwi transactions - cards',
-      'wfwi transactions - dd  29102021',
+      'wfwi transactions - dd 29102021',
       //'wfwi transactions - dd',
       //'wfwi custom cc fields  29102021',
       //'wfwi custom cc fields',
