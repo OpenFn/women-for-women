@@ -73,7 +73,7 @@ fn(state => {
   if (state.data.json.length > 0)
     return query(
       state =>
-        `SELECT Id, Committed_Giving_ID__c, npe03__Contact__r.Committed_Giving_Id__c, npe03__Date_Established__c, Active__c FROM npe03__Recurring_Donation__c WHERE npe03__Contact__r.Committed_Giving_Id__c in ('${state.PrimKeys.join(
+        `SELECT Id, Committed_Giving_ID__c, npe03__Contact__r.Committed_Giving_Id__c, npe03__Date_Established__c, Active__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_ID__c = null AND npe03__Contact__r.Committed_Giving_Id__c in ('${state.PrimKeys.join(
           "','"
         )}')`
     )(state);
