@@ -1,5 +1,5 @@
 fn(state => {
-  const json = state.data.json.filter(x => x.DDId);
+  const json = state.data.json.filter(x => x.DDId || x.DDid);
   return { ...state, data: { ...state.data, json } };
 });
 
