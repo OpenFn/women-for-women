@@ -19,7 +19,7 @@ fn(state => {
     return undefined;
   };
 
-  const selectIDs = state.data.json.map(x => `${x.PrimKey}${x.DDId}`);
+  const selectIDs = state.data.json.map(x => `${x.PrimKey}${x.DDId || x.DDid}`);
 
   return {
     ...state,
@@ -37,7 +37,7 @@ fn(state => {
     return date.replace(/\s+/g, '');
   }
 
-  const selectGivingId = x => `${x.PrimKey}${x.DDId}${x.DDRefforBank}${cleanDate(x.Date)}`;
+  const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.Date)}`;
 
   const baseMapping = x => {
     return {
@@ -54,7 +54,7 @@ fn(state => {
       Name: x.DDRefforBank,
       Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
       Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund',
-      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId || x.DDid}`,
       Method_of_Payment__c: 'Direct Debit',
     };
   };
