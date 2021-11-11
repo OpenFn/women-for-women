@@ -3,9 +3,9 @@ alterState(state => {
     const fileNames = [
       //'wfwi card master 05112021',
       //'wfwi card master',
-      'wfwi Direct Debits 05112021',
+      //'wfwi Direct Debits 05112021',
       //'wfwi direct debits',
-      //'wfwi Transactions - cards 05112021',
+      'wfwi Transactions - cards 05112021',
       //'wfwi transactions - cards',
       //'wfwi Transactions - dd 05112021',
       //'wfwi transactions - dd',
