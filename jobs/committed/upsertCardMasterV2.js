@@ -52,11 +52,7 @@ fn(state => {
     if (!x.RecurringCancelDate) {
       // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
       // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
-      if (
-        !x.LastCredited &&
-        (!x.Occurrence || x.Occurrence === 'None' || x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
-      )
-        return false;
+      if (!x.LastCredited && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return false;
 
       // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
       if (x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
@@ -64,6 +60,9 @@ fn(state => {
       // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return true;
+
+      //e. if no LastCredited date, but occurrnece is defined...then active = true
+      if (!x.LastCredited && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
     }
   };
 
@@ -74,11 +73,7 @@ fn(state => {
     if (!x.RecurringCancelDate) {
       // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
       // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
-      if (
-        !x.LastCredited &&
-        (!x.Occurrence || x.Occurrence === 'None' || x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')
-      )
-        return 'Lapsed';
+      if (!x.LastCredited && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
 
       // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
       if (x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
@@ -86,6 +81,8 @@ fn(state => {
       // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return 'Active';
+      //e. if no LastCredited date, but occurrnece is defined...then active = true
+      if (!x.LastCredited && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return 'Active';
     }
   };
 
@@ -109,9 +106,10 @@ fn(state => {
           ? increaseYear(x.LastCredited)
           : increaseMonth(x.LastCredited)
         : undefined, //Note: This is required to trigger auto-insert of related Opps
-      of_Sisters_Requested__c: (Number(selectAmount(x)) % 264 === 0
-        ? Math.abs(Number(selectAmount(x)) / 264)
-        : Math.abs(Number(selectAmount(x)) / 22)),
+      of_Sisters_Requested__c:
+        Number(selectAmount(x)) % 264 === 0
+          ? Math.abs(Number(selectAmount(x)) / 264)
+          : Math.abs(Number(selectAmount(x)) / 22),
       // of_Sisters_Requested__c: checkActiveInactiveStatus(x) === true ? //TODO: Always map # of Sisters going forward
       //   (Number(selectAmount(x)) % 264 === 0
       //     ? Math.abs(Number(selectAmount(x)) / 264)
