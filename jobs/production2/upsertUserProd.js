@@ -278,6 +278,7 @@ alterState(state => {
 
   const EmploymentStatus = [
     'Consultant',
+    'Contractor',
     'Fellow',
     'Furloughed',
     'Intern',
