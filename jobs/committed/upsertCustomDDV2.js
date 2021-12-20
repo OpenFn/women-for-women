@@ -96,8 +96,9 @@ each(
         if (records.length === 0) {
           return upsert('Contact', 'Email', {
             FirstName: state.data['Notify First Name'].split(' ')[0],
-            LastName: state.data['Notify First Name'].split(' ')[1] || state.data['Notify First Name'].split(' ')[0],
-            Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
+            LastName: state.data['Notify Last Name'] || state.data['Notify First Name'].split(' ')[0],
+            Email: `${state.data['Notify Last Name']}@incomplete.com`,
+            //Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
