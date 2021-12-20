@@ -100,12 +100,12 @@ each(
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
-            return state.queryAndUpdate(CCID, contactID, state);
+            return state.queryAndUpdate(DDID, contactID, state);
           });
         } else {
           const contactID = records.map(rec => rec.Id);
           console.log('Contact ID to add', contactID);
-          return state.queryAndUpdate(CCID, contactID[0], state);
+          return state.queryAndUpdate(DDID, contactID[0], state);
         }
       });
     }
