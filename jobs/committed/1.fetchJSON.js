@@ -1,6 +1,6 @@
 alterState(state => {
   return list('/')(state).then(state => {
-    const fileNames = [
+    const partialFilenames = [
       // 'wfwi card master 17122021',
       // 'wfwi direct debits 17122021',
       // 'wfwi transactions - cards 17122021',
@@ -8,10 +8,10 @@ alterState(state => {
       'wfwi custom cc fields 10122021',
       //'wfwi custom dd fields 17122021'
     ];
-    console.log('Files to sync: ', fileNames);
+    console.log('Files to sync: ', partialFilenames);
 
     const files = state.data.filter(
-      file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
+      file => partialFilenames.some(s => file.includes(s)) && file.name.split('.')[1] === 'csv'
     );
 
     if (files.length === 0) console.log('No new CSV files found.');
@@ -83,7 +83,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '10-12-2021'
+          upload: '10-12-2021',
         };
         fileChunks.push(fileContent);
       });
