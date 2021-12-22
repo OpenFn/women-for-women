@@ -6,12 +6,12 @@ alterState(state => {
       // 'wfwi transactions - cards 17122021',
       // 'wfwi transactions - dd 17122021',
       'wfwi custom cc fields 10122021',
-      //'wfwi custom dd fields 17122021'
+      //'wfwi custom dd fields 17122021',
     ];
     console.log('Files to sync: ', partialFilenames);
 
     const files = state.data.filter(
-      file => partialFilenames.some(s => file.includes(s)) && file.name.split('.')[1] === 'csv'
+      file => partialFilenames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv'
     );
 
     if (files.length === 0) console.log('No new CSV files found.');
@@ -45,7 +45,12 @@ each(
         for (let j = 0; j < row.length; j++) {
           obj[headers[j]] = row[j].replace(/"/g, '');
         }
-        json.push(obj);
+
+        if (!Object.values(obj).every(v => !v)) {
+          // Note, we don't push objects into the array if all their values are
+          // empty strings or otherwise falsy.
+          json.push(obj);
+        }
       });
 
       for (i = 0; i < json.length - 1; i++) {
