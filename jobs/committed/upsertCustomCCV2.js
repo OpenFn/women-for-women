@@ -88,7 +88,7 @@ each(
         if (records.length === 0 && state.data['Recipient First Name']) {
           return upsert('Contact', 'Email', {
             FirstName: state.data['Recipient First Name'].split(' ')[0],
-            LastName: state.data['Recipient First Name'].split(' ')[1],
+            LastName: state.data['Recipient First Name'].split(' ')[1] || state.data['Recipient Last Name'],
             Email: state.data['Recipient Email'] || `${state.data['Recipient First Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
