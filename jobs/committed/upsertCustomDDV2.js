@@ -89,8 +89,8 @@ each(
       return query(
         state => `Select Id FROM Contact 
         WHERE email = '${state.data['Notify Email Address']}'`
-     // WHERE Name = '${state.data['Notify First Name']}'`
-     // WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify First Name']}'`
+        // WHERE Name = '${state.data['Notify First Name']}'`
+        // WHERE email = '${state.data['Notify Email Address']}' OR Name = '${state.data['Notify First Name']}'`
       )(state).then(state => {
         const { records } = state.references[0];
         if (records.length === 0) {

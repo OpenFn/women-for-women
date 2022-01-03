@@ -54,11 +54,17 @@ fn(state => {
             }),
             field('Tribute_Occasion_Text__c', state.data['Occasion']),
             field('npsp__Honoree_Name__c', state.data['Honouree / Tributee Name']),
-            field('Paper_Card_Shipping_Name__c', state.data['Notify First  Name'] || state.data['Recipient First Name']),
+            field(
+              'Paper_Card_Shipping_Name__c',
+              state.data['Notify First  Name'] || state.data['Recipient First Name']
+            ),
             field('Paper_Card_Shipping_Address__c', state.data['Notify Add1'] || state.data['Recipient Add1']),
             field('Paper_Card_Shipping_Address_Line_2__c', state.data['Notify Add2'] || state.data['Recipient Add2']),
             field('Paper_Card_Shipping_City__c', state.data['Notify Town'] || state.data['Recipient Town']),
-            field('Paper_Card_Shipping_Zip_Postal__c', state.data['Notify Postcode'] || state.data['Recipient Postcode']),
+            field(
+              'Paper_Card_Shipping_Zip_Postal__c',
+              state.data['Notify Postcode'] || state.data['Recipient Postcode']
+            ),
             field('Paper_Card_Shipping_State_Province__c', state.data['Notify County'] || state.data['Recipient Add3']),
             field('Paper_Card_Shipping_Country__c', state.data['Notify Country'] || state.data['Recipient Country']),
             field('eCard_Recipient_Email__c', state.data['Notify Email Address'] || state.data['Recipient Email'])
@@ -89,7 +95,8 @@ each(
           return upsert('Contact', 'Email', {
             FirstName: state.data['Recipient First Name'].split(' ')[0],
             LastName: state.data['Recipient First Name'].split(' ')[1] || state.data['Recipient Last Name'],
-            Email: state.data['Recipient Email'] || `${state.data['Recipient First Name'].split(' ')[0]}@incomplete.com`,
+            Email:
+              state.data['Recipient Email'] || `${state.data['Recipient First Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Contact ID to add', contactID);
