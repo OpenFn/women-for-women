@@ -101,18 +101,31 @@ each(
             Email: state.data['Notify Email Address'] || `${state.data['Notify Name'].split(' ')[0]}@incomplete.com`,
           })(state).then(state => {
             const contactID = state.references[0].id;
-            console.log('Contact ID to add', contactID);
-            return state.queryAndUpdate(DDID, contactID, state);
+            console.log('Updating recurring donation for contact', contactID);
+            return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
+              Committed_Giving_ID__c: DDID,
+              Sponsor__c: contactID,
+            })(state).then(state => {
+              console.log('Contact ID to add', contactID);
+              return state.queryAndUpdate(DDID, contactID, state);
+            });
           });
         } else {
           const contactID = records.map(rec => rec.Id);
-          console.log('Contact ID to add', contactID);
-          return state.queryAndUpdate(DDID, contactID[0], state);
+          console.log('Updating recurring donation for contact', contactID);
+          return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
+            Committed_Giving_ID__c: DDID,
+            Sponsor__c: contactID,
+          })(state).then(state => {
+            console.log('Contact ID to add', contactID);
+            return state.queryAndUpdate(DDID, contactID[0], state);
+          });
         }
       });
     }
   })
 );
+
 fn(state => {
   // Throw error
   if (state.errors.length > 0) {
