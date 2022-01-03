@@ -1,6 +1,6 @@
 alterState(state => {
   return list('/')(state).then(state => {
-    const fileNames = ['wfwi donors 24122021'];
+    const fileNames = ['wfwi donors 31122021'];
     console.log('Files to sync: ', fileNames);
 
     const files = state.data.filter(
@@ -78,7 +78,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '24-12-2021', 
+          upload: '31-12-2021', 
         };
         fileChunks.push(fileContent);
       });
