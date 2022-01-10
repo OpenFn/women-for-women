@@ -100,23 +100,36 @@ each(
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Updating recurring donation for contact', contactID);
-            return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
-              Committed_Giving_ID__c: CCID,
-              Sponsor__c: contactID,
-            })(state).then(state => {
-              console.log('Contact ID to add', contactID);
-              return state.queryAndUpdate(CCID, contactID, state);
+            return query(
+              state =>
+                `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE CG_Credit_Card_ID__c = '${CCID}'`
+            )(state).then(state => {
+              const { records } = state.references[0];
+              return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
+                Committed_Giving_ID__c: CCID,
+                Sponsor__c: contactID,
+                npe03__Contact__c: records[0].npe03__Contact__c,
+              })(state).then(state => {
+                console.log('Contact ID to add', contactID);
+                return state.queryAndUpdate(CCID, contactID, state);
+              });
             });
           });
         } else {
           const contactID = records.map(rec => rec.Id);
           console.log('Updating recurring donation for contact', contactID);
-          return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
-            Committed_Giving_ID__c: CCID,
-            Sponsor__c: contactID,
-          })(state).then(state => {
-            console.log('Contact ID to add', contactID);
-            return state.queryAndUpdate(CCID, contactID[0], state);
+          return query(
+            state => `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE CG_Credit_Card_ID__c = '${CCID}'`
+          )(state).then(state => {
+            const { records } = state.references[0];
+            return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
+              Committed_Giving_ID__c: CCID,
+              Sponsor__c: contactID,
+              npe03__Contact__c: records[0].npe03__Contact__c,
+            })(state).then(state => {
+              console.log('Contact ID to add', contactID);
+              return state.queryAndUpdate(CCID, contactID[0], state);
+            });
           });
         }
       });
