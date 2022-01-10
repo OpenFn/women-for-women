@@ -102,25 +102,35 @@ each(
           })(state).then(state => {
             const contactID = state.references[0].id;
             console.log('Updating recurring donation for contact', contactID);
+            return query(
+              state =>
+                `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = ${DDID}`
+            )(state).then(state => {
+              return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
+                Committed_Giving_ID__c: DDID,
+                Sponsor__c: contactID[0],
+                //npe03__Contact__c: donorID //TODO: Find donorID via DDID
+              })(state).then(state => {
+                console.log('Contact ID to add', contactID);
+                return state.queryAndUpdate(DDID, contactID, state);
+              });
+            });
+          });
+        } else {
+          const contactID = records.map(rec => rec.Id);
+          console.log('Updating recurring donation for contact', contactID);
+          return query(
+            state =>
+              `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = ${DDID}`
+          )(state).then(state => {
             return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
               Committed_Giving_ID__c: DDID,
               Sponsor__c: contactID[0],
               //npe03__Contact__c: donorID //TODO: Find donorID via DDID
             })(state).then(state => {
               console.log('Contact ID to add', contactID);
-              return state.queryAndUpdate(DDID, contactID, state);
+              return state.queryAndUpdate(DDID, contactID[0], state);
             });
-          });
-        } else {
-          const contactID = records.map(rec => rec.Id);
-          console.log('Updating recurring donation for contact', contactID);
-          return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
-            Committed_Giving_ID__c: DDID,
-            Sponsor__c: contactID[0],
-            //npe03__Contact__c: donorID //TODO: Find donorID via DDID
-          })(state).then(state => {
-            console.log('Contact ID to add', contactID);
-            return state.queryAndUpdate(DDID, contactID[0], state);
           });
         }
       });
