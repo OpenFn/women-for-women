@@ -1,5 +1,6 @@
 fn(state => {
   const { json } = state.data;
+  state.errors = [];
   const newJson = [];
 
   function reduceArray(array, groupBy) {
