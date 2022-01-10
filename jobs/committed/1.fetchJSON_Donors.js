@@ -24,6 +24,10 @@ each(
       return R;
     };
 
+    const toLowerCase = string => {
+      return string ? string.toLowerCase() : '';
+    };
+
     return getCSV(`/${data.name}`)(state).then(async state => {
       const splitName = data.name.split('.');
       console.log(state.data.length);
@@ -54,9 +58,7 @@ each(
         }
       }
 
-      const filteredJson = json.filter(
-        js => js['EmailAddress'] && !duplicates.includes(js['EmailAddress'].toLowerCase())
-      );
+      const filteredJson = json.filter(js => !duplicates.includes(toLowerCase(js['EmailAddress'])));
 
       json = [];
 
@@ -78,7 +80,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '07-01-2022', 
+          upload: '07-01-2022',
         };
         fileChunks.push(fileContent);
       });
