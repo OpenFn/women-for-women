@@ -106,10 +106,11 @@ each(
               state =>
                 `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}'`
             )(state).then(state => {
+              const { records } = state.references[0];
               return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
                 Committed_Giving_ID__c: DDID,
                 Sponsor__c: contactID[0],
-                //npe03__Contact__c: donorID //TODO: Find donorID via DDID
+                npe03__Contact__c: records[0].npe03__Contact__c,
               })(state).then(state => {
                 console.log('Contact ID to add', contactID);
                 return state.queryAndUpdate(DDID, contactID, state);
@@ -123,10 +124,11 @@ each(
             state =>
               `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}'`
           )(state).then(state => {
+            const { records } = state.references[0];
             return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
               Committed_Giving_ID__c: DDID,
               Sponsor__c: contactID[0],
-              //npe03__Contact__c: donorID //TODO: Find donorID via DDID
+              npe03__Contact__c: records[0].npe03__Contact__c,
             })(state).then(state => {
               console.log('Contact ID to add', contactID);
               return state.queryAndUpdate(DDID, contactID[0], state);
