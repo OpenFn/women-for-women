@@ -105,6 +105,7 @@ each(
             return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
               Committed_Giving_ID__c: DDID,
               Sponsor__c: contactID[0],
+              //npe03__Contact__c: donorID //TODO: Find donorID via DDID
             })(state).then(state => {
               console.log('Contact ID to add', contactID);
               return state.queryAndUpdate(DDID, contactID, state);
@@ -116,6 +117,7 @@ each(
           return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
             Committed_Giving_ID__c: DDID,
             Sponsor__c: contactID[0],
+            //npe03__Contact__c: donorID //TODO: Find donorID via DDID
           })(state).then(state => {
             console.log('Contact ID to add', contactID);
             return state.queryAndUpdate(DDID, contactID[0], state);
