@@ -104,7 +104,7 @@ each(
             console.log('Updating recurring donation for contact', contactID);
             return query(
               state =>
-                `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = ${DDID}`
+                `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}'`
             )(state).then(state => {
               return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
                 Committed_Giving_ID__c: DDID,
@@ -121,7 +121,7 @@ each(
           console.log('Updating recurring donation for contact', contactID);
           return query(
             state =>
-              `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = ${DDID}`
+              `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}'`
           )(state).then(state => {
             return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
               Committed_Giving_ID__c: DDID,
