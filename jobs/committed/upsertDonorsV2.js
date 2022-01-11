@@ -17,6 +17,9 @@ fn(state => {
 
   const baseMapping = (x, address, EmailSF) => {
     // DATA CLEANING ========================================================
+    console.log('this is x', x);
+    console.log('this is address', address);
+    console.log('this is emailSF', EmailSF);
     let zipCode = x.Postcode || '';
     if (zipCode && zipCode.length > 20) {
       zipErrors.push(x.Postcode);
@@ -199,10 +202,8 @@ beta.each(
                       FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
                       )(state).then(async state => {
                         const { records } = state.references[0];
-                        console.log('rec', records.length);
 
                         const sizeEmailMatch2 = state.references[0].totalSize;
-                        console.log('size', sizeEmailMatch2);
 
                         if (sizeEmailMatch2 === 0) {
                           // A111. If no matching Contact has been found...
