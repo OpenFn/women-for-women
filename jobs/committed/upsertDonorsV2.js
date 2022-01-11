@@ -17,9 +17,6 @@ fn(state => {
 
   const baseMapping = (x, address, EmailSF) => {
     // DATA CLEANING ========================================================
-    console.log('this is x', x);
-    console.log('this is address', address);
-    console.log('this is emailSF', EmailSF);
     let zipCode = x.Postcode || '';
     if (zipCode && zipCode.length > 20) {
       zipErrors.push(x.Postcode);
