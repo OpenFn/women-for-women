@@ -32,8 +32,8 @@ fn(state => {
       x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' || x['Gift Aid Status'] === 'true'
         ? 'Eligible'
         : x['Gift Aid Status'] === 'False' || x['Gift Aid Status'] === 'FALSE' || x['Gift Aid Status'] === 'false'
-          ? 'Not Eligible - Non Tax Payer'
-          : x['Gift Aid Status'];
+        ? 'Not Eligible - Non Tax Payer'
+        : x['Gift Aid Status'];
 
     const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
@@ -48,13 +48,13 @@ fn(state => {
       EmailSF !== null
         ? undefined
         : x.EmailAddress
-          ? x.EmailAddress.includes('@') &&
-            x.EmailAddress.includes('.') &&
-            !x.EmailAddress.includes(' ') &&
-            !x.EmailAddress.includes('+')
-            ? x.EmailAddress
-            : `${x.PrimKey}@incomplete.com`
-          : `${x.PrimKey}@incomplete.com`;
+        ? x.EmailAddress.includes('@') &&
+          x.EmailAddress.includes('.') &&
+          !x.EmailAddress.includes(' ') &&
+          !x.EmailAddress.includes('+')
+          ? x.EmailAddress
+          : `${x.PrimKey}@incomplete.com`
+        : `${x.PrimKey}@incomplete.com`;
 
     // ======================================================================
     return {
@@ -67,8 +67,8 @@ fn(state => {
         address === 'Blank' || address === 'No Address'
           ? undefined
           : address
-            ? address.replace(/undefined/g, '')
-            : address,
+          ? address.replace(/undefined/g, '')
+          : address,
       MailingCity: x.Address5,
       MailingState: x.Address6,
       MailingPostalCode: zipCode,
@@ -132,11 +132,11 @@ beta.each(
 
     address = address
       ? trimValue(
-        address
-          .replace(/'/g, "\\'")
-          .replace(/undefined/g, '')
-          .replace(/Blank/g, '')
-      )
+          address
+            .replace(/'/g, "\\'")
+            .replace(/undefined/g, '')
+            .replace(/Blank/g, '')
+        )
       : address;
 
     let email = dataValue('EmailAddress')(state);
@@ -199,8 +199,10 @@ beta.each(
                       FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
                       )(state).then(async state => {
                         const { records } = state.references[0];
+                        console.log('rec', records.length);
 
                         const sizeEmailMatch2 = state.references[0].totalSize;
+                        console.log('size', sizeEmailMatch2);
 
                         if (sizeEmailMatch2 === 0) {
                           // A111. If no matching Contact has been found...
@@ -230,7 +232,9 @@ beta.each(
                     // A12. If a matching Contact has been found...
                     // state.dupErrorsFirstNameAddress.push(`${FirstName}-${address}`);
                     state.dupErrorsFirstNameAddress.push(
-                      `${firstLetterUppercased(FirstName)} ${firstLetterUppercased(Surname)} with PrimKey: ${PrimKey}, Address: ${address}`
+                      `${firstLetterUppercased(FirstName)} ${firstLetterUppercased(
+                        Surname
+                      )} with PrimKey: ${PrimKey}, Address: ${address}`
                     );
                     return state;
                   }
