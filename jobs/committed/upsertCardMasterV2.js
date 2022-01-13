@@ -101,11 +101,16 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: formatDate(x.AddedDateTime),
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
-      npe03__Next_Payment_Date__c: !x.RecurringCancelDate
-        ? Number(selectAmount(x)) % 264 === 0
-          ? increaseYear(x.LastCredited)
-          : increaseMonth(x.LastCredited)
-        : undefined, //Note: This is required to trigger auto-insert of related Opps
+      npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? 
+        (Number(selectAmount(x)) % 264 === 0 ? 
+          x.NextDate : 
+          (x.LastCredited && x.LastCredited!='' ?
+            increaseMonth(x.LastCredited)
+            : undefined)) 
+        : undefined, 
+        //?  increaseYear(x.LastCredited) //looks like LastCredited not provided in recent exports
+        //   : increaseMonth(x.LastCredited)
+        // : undefined, //Note: This is required to trigger auto-insert of related Opps
       of_Sisters_Requested__c:
         Number(selectAmount(x)) % 264 === 0
           ? Math.abs(Number(selectAmount(x)) / 264)
