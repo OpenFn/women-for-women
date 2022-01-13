@@ -103,7 +103,7 @@ fn(state => {
       npsp__StartDate__c: increaseMonth(x.AddedDateTime),
       npe03__Next_Payment_Date__c: !x.RecurringCancelDate ? 
         (Number(selectAmount(x)) % 264 === 0 ? 
-          x.NextDate : 
+          formatDate(x.NextDate) : 
           (x.LastCredited && x.LastCredited!='' ?
             increaseMonth(x.LastCredited)
             : undefined)) 
