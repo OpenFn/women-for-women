@@ -1,6 +1,6 @@
 alterState(state => {
   return list('/')(state).then(state => {
-    const fileNames = ['wfwi donors 14012022'];
+    const fileNames = ['wfwi donors'];
     console.log('Files to sync: ', fileNames);
 
     const files = state.data.filter(
