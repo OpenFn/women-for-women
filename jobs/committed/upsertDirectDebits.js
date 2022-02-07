@@ -8,8 +8,8 @@ fn(state => {
   };
 
   const selectAmount = item => {
-    if (item['CurrentAmount']) { //CHANGED FROM: 'Current amount'
-      return isNaN(item['CurrentAmount']) ? item['CurrentAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['CurrentAmount']);
+    if (item['Current amount']) { //CHANGED FROM: 'Current amount'
+      return isNaN(item['Current amount']) ? item['Current amount'].replace(/[^-.0-9]/g, '') : parseInt(item['CurrentAmount']);
     }
     return undefined;
   };
@@ -24,7 +24,7 @@ fn(state => {
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey, //TODO: Overwrite in custom DD mappings?
         Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
-        npe03__Amount__c: x['CurrentAmount'],
+        npe03__Amount__c: x['Current amount'],
         npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : false, //TO TEST
         Closeout_Reason__c: x.CancelReason,
@@ -32,10 +32,10 @@ fn(state => {
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
-        of_Sisters_Requested__c: (x.CurrentAmount == '22.00' ? 1 : 
-        x.CurrentAmount % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x.CurrentAmount / 264)) :
-            (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x.CurrentAmount / 66)) :
-              x.CurrentAmount % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x.CurrentAmount / 22)) : 
+        of_Sisters_Requested__c: (x['Current amount'] == '22.00' ? 1 : 
+        x.CurrentAmount % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
+            (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
+              x.CurrentAmount % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : 
               undefined),
         // Number(selectAmount(x)) % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
         //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
