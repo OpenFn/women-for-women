@@ -1,12 +1,12 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
-      // 'wfwi Card Master 11022022',
-      // 'wfwi Direct Debits 11022022',
-      // 'wfwi Transactions - Cards 11022022',
-      // 'wfwi Transactions - DD 11022022',
-      'wfwi Custom CC Fields 11022022',
-      'wfwi Custom DD Fields 11022022',
+      'wfwi Card Master 18022022',
+      'wfwi Direct Debits 18022022',
+      'wfwi Transactions - Cards 18022022',
+      'wfwi Transactions - DD 18022022',
+      // 'wfwi Custom CC Fields 18022022',
+      // 'wfwi Custom DD Fields 18022022',
     ];
     console.log('Files to sync: ', partialFilenames);
 
@@ -88,7 +88,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '04022022',
+          upload: '18022022',
         };
         fileChunks.push(fileContent);
       });
