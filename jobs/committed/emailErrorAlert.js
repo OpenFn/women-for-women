@@ -12,8 +12,8 @@ fn(state => {
 fields(
   field('from', 'WfWI Notifications <notifications@womenforwomen.org>'),
   field('sender', 'WfWI Notifications'),
-  field('h:Reply-To', 'aleksa@openfn.org'),
-  field('to', 'aleksa@openfn.org'), //TODO: update recipients
+  field('h:Reply-To', 'mamadou@openfn.org'),
+  field('to', 'mamadou@openfn.org'), //TODO: update recipients
   //field('cc', 'aleksa@openfn.org'),
   field('subject', 'Committed Giving Sync: Duplicate Donors Detected'),
   field(
