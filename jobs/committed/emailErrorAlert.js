@@ -14,7 +14,7 @@ send(state =>
     field('from', 'WfWI Notifications <notifications@womenforwomen.org>'),
     field('sender', 'WfWI Notifications'),
     field('h:Reply-To', 'aleksa@openfn.org'),
-    field('to', 'LGreening@womenforwomen.org', 'rmustakova@womenforwomen.org', 'jvieyres@womenforwomen.org'), 
+    field('to', `LGreening@womenforwomen.org, rmustakova@womenforwomen.org, jvieyres@womenforwomen.org`), 
     field('cc', 'aleksa@openfn.org'),
     field('subject', 'Committed Giving Data Sync: Duplicate donors detected'),
     field(
