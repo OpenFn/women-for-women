@@ -1,21 +1,21 @@
-alterState(state => {
-  return list('/')(state).then(state => {
-    const fileNames = ['wfwi donors 18022022'];
-    console.log('Files to sync: ', fileNames);
+list('/');
 
-    const files = state.data.filter(
-      file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
-    );
+fn(state => {
+  const fileNames = ['wfwi donors 18022022'];
+  console.log('Files to sync: ', fileNames);
 
-    if (files.length === 0) console.log('No new CSV files found.');
+  const files = state.data.filter(
+    file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
+  );
 
-    return { ...state, files };
-  });
+  if (files.length === 0) console.log('No new CSV files found.');
+
+  return { ...state, files };
 });
 
 each(
   '$.files[*]',
-  alterState(state => {
+  fn(state => {
     const { configuration, data } = state;
 
     const chunk = (arr, chunkSize) => {
