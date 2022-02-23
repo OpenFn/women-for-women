@@ -19,9 +19,9 @@ send(state =>
     field('subject', 'Committed Giving Sync: Duplicate Donors Detected'),
     field(
       'html',
-      `Dear admins, <br><br>
-			Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records:
-            <br>
+      `Dear WfWI Donation team, <br><br>
+			Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records.
+            <br><br>
 		    ${state.errorLine}
             <br><br>
             Contact OpenFn at support@openfn.org with any questions.`
