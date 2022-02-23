@@ -1,5 +1,10 @@
-send(
-  fields(
+fn(state => {
+  
+  console.log(state.error);
+  return state;
+})
+
+/*  fields(
     field("from", "WfWI Notifications <notifications@womenforwomen.org>"),
     field("sender", "WfWI Notifications"),
     field("h:Reply-To", "aleksa@openfn.org"),
@@ -16,4 +21,4 @@ send(
             Contact OpenFn at support@openfn.org with any questions.`
     )
   )
-);
+);*/
