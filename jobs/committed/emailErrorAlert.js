@@ -9,7 +9,7 @@ fn(state => {
   return { ...state, errorLine };
 });
 
-send(
+send(state =>
   fields(
     field('from', 'WfWI Notifications <notifications@womenforwomen.org>'),
     field('sender', 'WfWI Notifications'),
@@ -19,11 +19,11 @@ send(
     field('subject', 'Committed Giving Sync: Duplicate Donors Detected'),
     field(
       'html',
-      `Dear admins, <br><br> 
+      `Dear admins, <br><br>
 			Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records:
             <br>
 		    ${state.errorLine}
-            <br><br> 
+            <br><br>
             Contact OpenFn at support@openfn.org with any questions.`
     )
   )
