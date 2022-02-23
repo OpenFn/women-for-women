@@ -103,7 +103,7 @@ each(
         await postToInbox(file);
       }
 
-      if (duplicates.length === 0) {
+      if (duplicates.length > 0) {
         throw new Error(
           `Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(duplicates, null, 2)}`
         );
