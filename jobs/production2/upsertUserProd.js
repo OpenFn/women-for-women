@@ -14,6 +14,7 @@ alterState(state => {
     'South Sudan - PM Access': 'e55de9ae-6223-4010-90eb-eaf8c6b59a56',
     'The Democratic Republic of the Congo': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
     'The Democratic Republic of the Congo - PM Access': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
+    'United Kingdom': '6270ac7d-ac20-4cda-a579-e475bed9297f',
     WOC: '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
     'WOC - PM Access': '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
     'No Division': 'ce989d2c-43a9-42f6-976c-0db5ac8acbed',
@@ -306,6 +307,7 @@ alterState(state => {
     'South Sudan - PM Access',
     'The Democratic Republic of the Congo',
     'The Democratic Republic of the Congo - PM Access',
+    'United Kingdom',
     //'WOC',
     //'No Division'
   ]; // Add divisions to turn "on"
