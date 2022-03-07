@@ -702,7 +702,7 @@ each(
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-                co: fields['Country'],
+                country: fields['Country'],
               };
               if (data.otherMails === null) delete data.otherMails;
               console.log(data);
@@ -810,7 +810,7 @@ each(
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
-                co: fields['Country'],
+                country: fields['Country'],
               };
 
               if (data.otherMails === null) delete data.otherMails;
