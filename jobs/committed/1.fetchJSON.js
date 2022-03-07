@@ -1,10 +1,10 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
-      'wfwi Card Master 04032022',
-      'wfwi Direct Debits 04032022',
-      // 'wfwi Transactions - Cards 04032022',
-      // 'wfwi Transactions - DD 04032022',
+      // 'wfwi Card Master 04032022',
+      // 'wfwi Direct Debits 04032022',
+      'wfwi Transactions - Cards 04032022',
+      'wfwi Transactions - DD 04032022',
       // 'wfwi Custom CC Fields 04032022',
       // 'wfwi Custom DD Fields 04032022',
     ];
