@@ -685,8 +685,8 @@ each(
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
-                department: fields.['Department'],
-                officeLocation: fields.['Division'],
+                department: fields.Department,
+                officeLocation: fields.Division,
                 employeeId: fields['Employee #'],
                 displayName,
                 //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
@@ -793,8 +793,8 @@ each(
                 // givenName: fields['First name Last name'] + fields['Middle initial'] + fields['Last Name'],
                 mail: fields['Work Email'],
                 birthday: fields.Birthday,
-                department: fields.['Department'],
-                officeLocation: fields.['Division'],
+                department: fields.Department,
+                officeLocation: fields.Division,
                 employeeId: fields['Employee #'],
                 displayName,
                 //hireDate: new Date(fields['Hire Date']).toISOString(), // ---Request not supported? needs to be in datetime ISO format "2014-01-01T00:00:00Z", then will it work?
