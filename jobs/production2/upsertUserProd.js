@@ -260,6 +260,7 @@ alterState(state => {
     Uganda: 'UG',
     Ukraine: 'UA',
     'United Arab Emirates': 'AE',
+    'United Kingdom': 'UK',
     'United Kingdom': 'GB',
     'United States': 'US',
     'United States Minor Outlying Islands': 'UM',
@@ -700,6 +701,7 @@ each(
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
+                country: fields.Country,
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
               if (data.otherMails === null) delete data.otherMails;
@@ -807,6 +809,7 @@ each(
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
+                country: fields.Country,
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
 
