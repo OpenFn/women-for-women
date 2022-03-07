@@ -654,7 +654,7 @@ each(
           ) {
             const termination_date = fields['Termination Date'];
             if (
-              employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
+              //employee.changedFields.includes('Status') && //We want to upsert even if Status not changed
               fields.Status === 'Active' &&
               state.EmploymentStatus.includes(fields['Employment Status']) &&
               (new Date(termination_date) > new Date() || !termination_date)
