@@ -260,6 +260,7 @@ alterState(state => {
     Uganda: 'UG',
     Ukraine: 'UA',
     'United Arab Emirates': 'AE',
+    'United Kingdom': 'UK',
     'United Kingdom': 'GB',
     'United States': 'US',
     'United States Minor Outlying Islands': 'UM',
