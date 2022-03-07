@@ -701,7 +701,7 @@ each(
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
-                country: fields.Country,
+                co: fields.Country,
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
               if (data.otherMails === null) delete data.otherMails;
@@ -809,7 +809,7 @@ each(
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
-                country: fields.Country,
+                co: fields.Country,
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
 
