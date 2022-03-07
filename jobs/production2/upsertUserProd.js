@@ -809,7 +809,7 @@ each(
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
                 companyName: 'Women for Women International',
-                co: fields.Country,
+                country: fields.Country,
                 //profilePhoto  //PHASE 2--> Unable to transfer photos in this v1
               };
 
