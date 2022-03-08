@@ -674,7 +674,7 @@ each(
                 employeeType: fields['Employment Status'],
                 userType: 'Member',
                 mailNickname:
-                  fields['First Name'].substring(0, 1) +
+                  fields['First Name'].substring(0, 1).replace(' ', '') +
                   (fields['Middle initial'] ? fields['Middle initial'] : '') +
                   fields['Last Name'].replace(' ', '').replace(' ', '') /*+
                 '@womenforwomen.org', //Confirm transforms to AGKrolls@womenforwomen.org */,
@@ -783,7 +783,7 @@ each(
                   password: "You'll Never Walk Alone!",
                 },
                 mailNickname:
-                  fields['First Name'].substring(0, 1) +
+                  fields['First Name'].substring(0, 1).replace(' ', '') +
                   (fields['Middle initial'] ? fields['Middle initial'] : '') +
                   fields['Last Name'].replace(' ', '').replace(' ', ''), //Confirm transforms to AGKrolls@womenforwomen.org
                 userPrincipalName: work_email, //.replace('@', '_') + '#EXT#@w4wtest.onmicrosoft.com',
