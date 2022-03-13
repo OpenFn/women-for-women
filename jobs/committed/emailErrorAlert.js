@@ -20,11 +20,24 @@ send(state =>
     field(
       'html',
       `Dear WfWI Donation team, <br><br>
-			Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records.
+			Duplicate donors were detected in the latest Committed Giving export. Please search for these emails in Committed Giving to review the potential duplicates and to merge the records.
             <br><br>
-		    ${state.errorLine}
+		    Error: Potential duplicate rows detected in Committed Giving. See rows: [
+  "rozi.jones@gmail.com"
+]
             <br><br>
             Contact OpenFn at support@openfn.org with any questions.`
     )
   )
 );
+
+
+// field(
+//       'html',
+//       `Dear WfWI Donation team, <br><br>
+// 			Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records.
+//             <br><br>
+// 		    ${state.errorLine}
+//             <br><br>
+//             Contact OpenFn at support@openfn.org with any questions.`
+//     )
