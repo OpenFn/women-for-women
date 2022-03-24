@@ -120,10 +120,8 @@ each(
 fn(state => {
   const { error } = state;
   if (error) {
-    const { duplicates } = error;
-    throw new Error(
-      `Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(duplicates, null, 2)}`
-    );
+    const { text, duplicates } = error;
+    throw new Error(`${text} ${JSON.stringify(duplicates, null, 2)}`);
   }
   return state;
 });
