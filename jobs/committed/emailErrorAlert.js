@@ -13,7 +13,7 @@ send(state => {
       `Dear admins, <br/><br/>
       Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records. 
             <br/><br/>
-		    Error: ${text} ${JSON.stringify(duplicates, null, 2)}
+		    Error: ${text || ''} ${JSON.stringify(duplicates || [], null, 2)}
             <br/><br/>
             Contact OpenFn at <a href='mailto:support@openfn.org'>support@openfn.org</a> with any questions.`
     )
