@@ -245,8 +245,8 @@ beta.each(
                 const { LastModifiedDate, Id } = records[0];
                 const EmailSF = records[0].npe01__HomeEmail__c;
                 // A2. If a matching Contact has been found...
-                if (new Date() > new Date(LastModifiedDate)) {
-                //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+                //if (new Date() > new Date(LastModifiedDate)) {
+                if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
                   // If CG is more recent than SF
                   upsertCondition = 2; // We update Contact
                   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
@@ -284,24 +284,25 @@ beta.each(
       } else {
         const { FirstName, LastModifiedDate, Id, Email } = records[0];
         // CG Date is more recent than SF ?
-        //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-        if (new Date() > new Date(LastModifiedDate)) {
+        if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+        //if (new Date() > new Date(LastModifiedDate)) {
           // YES
           email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
           // prettier-ignore
           return update(
             'Contact',
-            state => ({
-                ...state.baseMapping(state.data), 
-                'Id': dataValue('Id')(state),
-                'Committed_Giving_ID__c': PrimKey,
-                'npe01__HomeEmail__c': email
-            })
-            // fields(
-            //   field('Id', Id),
-            //   field('Committed_Giving_ID__c', PrimKey),
-            //   field('npe01__HomeEmail__c', email)
-            // )
+            //AK's test mapping
+            // state => ({
+            //     ...state.baseMapping(state.data), 
+            //     'Id': dataValue('Id')(state),
+            //     'Committed_Giving_ID__c': PrimKey,
+            //     'npe01__HomeEmail__c': email
+            // })
+            fields(
+              field('Id', Id),
+              field('Committed_Giving_ID__c', PrimKey),
+              field('npe01__HomeEmail__c', email)
+            )
           )(state);
         } else {
           // NO
