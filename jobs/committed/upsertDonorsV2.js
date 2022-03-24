@@ -67,21 +67,21 @@ fn(state => {
       Salutation: x.Title,
       FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
       LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
-      // MailingStreet:
-      //   address === 'Blank' || address === 'No Address'
-      //     ? undefined
-      //     : address
-      //     ? address.replace(/undefined/g, '')
-      //     : address,
-      // MailingCity: x.Address5,
-      // MailingState: x.Address6,
-      // MailingPostalCode: zipCode,
-      // MailingCountry: x.Country,
-      // HomePhone: x.TelNumber1,
-      // npe01__PreferredPhone__c: 'Home',
-      // MobilePhone: x.Tel2Number,
-      // npe01__HomeEmail__c: emailAddress,
-      // npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
+      MailingStreet:
+        address === 'Blank' || address === 'No Address'
+          ? undefined
+          : address
+          ? address.replace(/undefined/g, '')
+          : address,
+      MailingCity: x.Address5,
+      MailingState: x.Address6,
+      MailingPostalCode: zipCode,
+      MailingCountry: x.Country,
+      HomePhone: x.TelNumber1,
+      npe01__PreferredPhone__c: 'Home',
+      MobilePhone: x.Tel2Number,
+      npe01__HomeEmail__c: emailAddress,
+      npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
       Call_Opt_In__c: OkToPhone,
       Call_Opt_In_Date__c: formatDate(CallDate),
       Call_Opt_In_Method__c: CallMethod,
@@ -95,11 +95,11 @@ fn(state => {
       Text_Opt_In_Date__c: formatDate(TextDate),
       Text_Opt_In_Method__c: TextMethod,
       wfw_Method_of_Confirmation__c: 'Online',
-      // npsp__Deceased__c: Deceased,
-      // wfw_Gift_Aid__c: Gift,
-      // wfw_Date_of_Declaration_Confirmation__c: formatDate(x['Gift Aid date']),
-      // CG_Opt_In_Date__c: formatDate(x['Gift Aid date']),
-      // wfw_Donor_Source__c: x.DonorSource,
+      npsp__Deceased__c: Deceased,
+      wfw_Gift_Aid__c: Gift,
+      wfw_Date_of_Declaration_Confirmation__c: formatDate(x['Gift Aid date']),
+      CG_Opt_In_Date__c: formatDate(x['Gift Aid date']),
+      wfw_Donor_Source__c: x.DonorSource,
     };
   };
   return {
