@@ -104,7 +104,6 @@ each(
       }
 
       let error = null;
-
       if (duplicates.length > 0) {
         error = {
           text: 'Potential duplicate rows detected in Committed Giving. See rows: ',
