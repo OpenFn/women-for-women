@@ -291,11 +291,13 @@ beta.each(
           // prettier-ignore
           return update(
             'Contact',
-            fields(
-              field('Id', Id),
-              field('Committed_Giving_ID__c', PrimKey),
-              field('npe01__HomeEmail__c', email)
-            )
+            state => ({
+                ...state.baseMapping(state.data, address, EmailSF),})
+            // fields(
+            //   field('Id', Id),
+            //   field('Committed_Giving_ID__c', PrimKey),
+            //   field('npe01__HomeEmail__c', email)
+            // )
           )(state);
         } else {
           // NO
