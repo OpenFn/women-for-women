@@ -104,9 +104,10 @@ each(
       }
 
       if (duplicates.length > 0) {
-        throw new Error(
-          `Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(duplicates, null, 2)}`
-        );
+        console.log('Duplicate rows detected in Committed Giving:');
+        duplicates.map(d => console.log(d));
+        console.log('End of duplicates rows.');
+        throw new Error(`Aborting run; duplicates detected.`);
       }
       return { configuration, references: [], data: {} };
     });
