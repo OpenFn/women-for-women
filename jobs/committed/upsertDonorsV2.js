@@ -284,7 +284,8 @@ beta.each(
       } else {
         const { FirstName, LastModifiedDate, Id, Email } = records[0];
         // CG Date is more recent than SF ?
-        if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+        //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+        if (new Date() > new Date(LastModifiedDate)) {
           // YES
           email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
           // prettier-ignore
