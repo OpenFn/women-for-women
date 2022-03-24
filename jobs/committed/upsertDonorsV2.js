@@ -35,13 +35,17 @@ fn(state => {
         ? 'Not Eligible - Non Tax Payer'
         : x['Gift Aid Status'];
 
-    const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
+    //const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
+    const CallDate = OkToPhone === true ? x['OK to phone changedate'] : undefined;
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
-    const TextDate = TextOptIn === true ? x['LastChangedDateTime'] : undefined;
+    //const TextDate = TextOptIn === true ? x['LastChangedDateTime'] : undefined;
+    const TextDate = TextOptIn === true ? x['OK to text changedate'] : undefined;
     const TextMethod = TextOptIn === true ? 'Online Donation' : undefined;
-    const EmailDate = OkToEmail === true ? x['LastChangedDateTime'] : undefined;
+    //const EmailDate = OkToEmail === true ? x['LastChangedDateTime'] : undefined;
+    const EmailDate = OkToEmail === true ? x['OK to email changedate'] : undefined;
     const EmailMethod = OkToEmail === true ? 'Online Donation' : undefined;
-    const MailDate = OkToMail === true ? x['LastChangedDateTime'] : undefined;
+    //const MailDate = OkToMail === true ? x['LastChangedDateTime'] : undefined;
+    const MailDate = OkToMail === true ? x['OK to mail changedate'] : undefined;
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
 
     const emailAddress =
@@ -78,20 +82,19 @@ fn(state => {
       MobilePhone: x.Tel2Number,
       npe01__HomeEmail__c: emailAddress,
       npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
-      // Not syncing preferences for hist sync
-      // Call_Opt_In__c: OkToPhone,
-      // Call_Opt_In_Date__c: formatDate(CallDate),
-      // Call_Opt_In_Method__c: CallMethod,
-      // Email_Opt_in__c: OkToEmail,
-      // Email_Opt_In_Date__c: formatDate(EmailDate),
-      // Email_Opt_In_Method__c: EmailMethod,
-      // Mail_Opt_in__c: OkToMail,
-      // Mail_Opt_In_Date__c: formatDate(MailDate),
-      // Mail_Opt_In_Method__c: MailMethod,
-      // Text_Opt_In__c: TextOptIn,
-      // Text_Opt_In_Date__c: formatDate(TextDate),
-      // Text_Opt_In_Method__c: TextMethod,
-      //wfw_Method_of_Confirmation__c: 'Online',
+      Call_Opt_In__c: OkToPhone,
+      Call_Opt_In_Date__c: formatDate(CallDate),
+      Call_Opt_In_Method__c: CallMethod,
+      Email_Opt_in__c: OkToEmail,
+      Email_Opt_In_Date__c: formatDate(EmailDate),
+      Email_Opt_In_Method__c: EmailMethod,
+      Mail_Opt_in__c: OkToMail,
+      Mail_Opt_In_Date__c: formatDate(MailDate),
+      Mail_Opt_In_Method__c: MailMethod,
+      Text_Opt_In__c: TextOptIn,
+      Text_Opt_In_Date__c: formatDate(TextDate),
+      Text_Opt_In_Method__c: TextMethod,
+      wfw_Method_of_Confirmation__c: 'Online',
       npsp__Deceased__c: Deceased,
       wfw_Gift_Aid__c: Gift,
       wfw_Date_of_Declaration_Confirmation__c: formatDate(x['Gift Aid date']),
