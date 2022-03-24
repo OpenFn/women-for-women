@@ -103,12 +103,27 @@ each(
         await postToInbox(file);
       }
 
+      let error = null;
+
       if (duplicates.length > 0) {
-        throw new Error(
-          `Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(duplicates, null, 2)}`
-        );
+        error = {
+          text: 'Potential duplicate rows detected in Committed Giving. See rows: ',
+          duplicates,
+        };
       }
-      return { configuration, references: [], data: {} };
+      return { configuration, references: [], data: {}, error };
     });
   })
 );
+
+// check to throw error
+fn(state => {
+  const { error } = state;
+  if (error) {
+    const { duplicates } = error;
+    throw new Error(
+      `Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(duplicates, null, 2)}`
+    );
+  }
+  return state;
+});
