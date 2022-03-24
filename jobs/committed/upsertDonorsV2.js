@@ -292,7 +292,11 @@ beta.each(
           return update(
             'Contact',
             state => ({
-                ...state.baseMapping(state.data)})
+                ...state.baseMapping(state.data), 
+                'Id': dataValue('Id')(state),
+                'Committed_Giving_ID__c': PrimKey,
+                'npe01__HomeEmail__c': email
+            })
             // fields(
             //   field('Id', Id),
             //   field('Committed_Giving_ID__c', PrimKey),
