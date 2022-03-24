@@ -177,9 +177,10 @@ beta.each(
           if (sizeLegacyMatch === 0) {
             // A. If no matching Contact has been found...
             await query(
-              `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+              `SELECT Id, FirstName, Email, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
               FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(firstLetterUppercased(FirstName)))}'
-              AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
+              AND Email = '${trimValue(EmailAddress)}'` //AK Change to match on email, not just personal email?
+              //AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
             )(state).then(async state => {
               const { records } = state.references[0];
               const sizeEmailMatch = state.references[0].totalSize;
