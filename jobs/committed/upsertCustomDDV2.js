@@ -123,12 +123,12 @@ each(
           console.log('Updating recurring donation for contact', contactID);
           return query(
             state =>
-              `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}'`
+              `SELECT npe03__Contact__c FROM npe03__Recurring_Donation__c WHERE Committed_Giving_Direct_Debit_ID__c = '${DDID}' LIMIT1`
           )(state).then(state => {
             const { records } = state.references[0];
             return upsert('npe03__Recurring_Donation__c', 'Committed_Giving_ID__c', {
               Committed_Giving_ID__c: DDID,
-              Sponsor__c: contactID[0],
+              Sponsor__c: contactID,
               npe03__Contact__c: records[0].npe03__Contact__c,
             })(state).then(state => {
               console.log('Contact ID to add', contactID);
