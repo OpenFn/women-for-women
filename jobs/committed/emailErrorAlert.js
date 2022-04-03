@@ -19,11 +19,9 @@ send(state => ({
   html: `Dear admins, <br/><br/>
     Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records.
           <br/><br/>
-    Error: Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(
-      state.duplicateEmails || [],
-      null,
-      2
-    )}
+    Error: Potential duplicate rows detected in Committed Giving. See donors with emails:
+    <br/>
+helencress@hotmail.com
           <br/><br/>
           Contact OpenFn at <a href='mailto:support@openfn.org'>support@openfn.org</a> with any questions.`,
 }));
