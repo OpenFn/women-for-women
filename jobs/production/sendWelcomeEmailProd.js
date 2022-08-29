@@ -1,6 +1,5 @@
 //-- Using Mailgun adaptor --
 //-- SEND WELCOME EMAIl --
-
 each(
   '$.data.employees[*]',
   alterState(state => {
