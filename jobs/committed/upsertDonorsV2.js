@@ -217,9 +217,9 @@ beta.each(
                           // A112. If a matching Contact has been found...
                           console.log(`Logging duplicate email: ${email} with different names.`);
                           state.dupErrorsDifferentNames.push(
-                            `Logging duplicate email: ${email} with these different names: [${firstLetterUppercased(
+                            `Logging duplicate email: ${email} with these different names: ['${firstLetterUppercased(
                               FirstName
-                            )} - ${FirstNameDup} ]`
+                            )}' - '${FirstNameDup}' ]`
                           );
                           return state;
                         }
