@@ -4,6 +4,7 @@ alterState(state => {
     'Afghanistan - PM Access': '69d68699-bb6e-48a9-860b-0a56d313ebaf',
     Headquarters: '418e20a0-79cf-4682-a3b3-b3fbeff00493',
     'Headquarters - PM Access': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
+    'GSC - United Kingdom': '418e20a0-79cf-4682-a3b3-b3fbeff00493', //test adding to GH
     Iraq: '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
     'Iraq - PM Access': '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
     Nigeria: 'cd4bb036-19c3-471f-9f7a-eeb311fe08fa',
@@ -15,6 +16,7 @@ alterState(state => {
     'The Democratic Republic of the Congo': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
     'The Democratic Republic of the Congo - PM Access': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
     'United Kingdom': '6270ac7d-ac20-4cda-a579-e475bed9297f',
+    'United States': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
     WOC: '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
     'WOC - PM Access': '5af2b7b2-342d-42d9-bf5a-cd8a67fce802',
     'No Division': 'ce989d2c-43a9-42f6-976c-0db5ac8acbed',
@@ -293,10 +295,11 @@ alterState(state => {
   ];
 
   const activeDivisions = [
-    'Headquarters',
-    'Headquarters - PM Access',
     'Afghanistan',
     'Afghanistan - PM Access',
+    'GSC - United Kingdom',
+    'Headquarters',
+    'Headquarters - PM Access',
     'Iraq',
     'Iraq - PM Access',
     //'Kosovo',
@@ -308,6 +311,7 @@ alterState(state => {
     'The Democratic Republic of the Congo',
     'The Democratic Republic of the Congo - PM Access',
     'United Kingdom',
+    'United States',
     //'WOC',
     //'No Division'
   ]; // Add divisions to turn "on"
