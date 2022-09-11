@@ -1,7 +1,7 @@
 list('/');
 
 fn(state => {
-  const fileNames = ['wfwi donors 02092022'];
+  const fileNames = ['wfwi donors 09092022'];
   console.log('Files to sync: ', fileNames);
 
   const files = state.data.filter(
