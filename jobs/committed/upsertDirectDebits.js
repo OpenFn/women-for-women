@@ -59,7 +59,7 @@ bulk(
   'upsert', //  the operation
   {
     extIdField: 'Committed_Giving_ID__c',
-    failOnError: false,
+    failOnError: true,
     allowNoOp: true,
   },
   state => state.donations
