@@ -487,7 +487,7 @@ each(
                               <br />If you have any questions, do not hesitate
                               to contact our Helpdesk Team via
                               <a
-                                href="https://teams.microsoft.com/l/chat/0/0?users=maverbuj@womenforwomen.org,mmoisethomas@womenforwomen.org,cani@womenforwomen.org&amp;topicName=NEW+USER+%7C+Requesting+Support&amp;message=Welcome+to+Women+for+Women+International!+How+can+we+help+you?"
+                                href="https://teams.microsoft.com/l/chat/0/0?users=maverbuj@womenforwomen.org,cani@womenforwomen.org&amp;topicName=NEW+USER+%7C+Requesting+Support&amp;message=Welcome+to+Women+for+Women+International!+How+can+we+help+you?"
                                 target="_blank"
                               >
                                 <span
