@@ -68,7 +68,7 @@ each(
           //field('cc', 'aleksa@openfn.org, jed@openfn.org'), //FOR TESTING
           field('to', `${state.superEmail}`), //TODO: use when ready to send TO supervisor contact
           field('cc', `${divisionEmailMap[employee.fields.Division]}, helpdesk@womenforwomen.org`), //TODO: use when ready to copy division HR
-          field('bcc', `maverbuj@womenforwomen.org, mmoisethomas@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
+          field('bcc', `maverbuj@womenforwomen.org, cani@womenforwomen.org`), //TODO: use for testing
           field('subject', state => {
             var sub = `Account Termination: ${state.name} (${state.division})`;
             console.log(sub);
