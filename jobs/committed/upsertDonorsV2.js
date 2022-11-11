@@ -246,8 +246,8 @@ beta.each(
                 const { LastModifiedDate, Id } = records[0];
                 const EmailSF = records[0].npe01__HomeEmail__c;
                 // A2. If a matching Contact has been found...
-                if (new Date() > new Date(LastModifiedDate)) {
-                //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+                //if (new Date() > new Date(LastModifiedDate)) { //<-use to override SF details
+                if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
                   // If CG is more recent than SF
                   upsertCondition = 2; // We update Contact
                   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
