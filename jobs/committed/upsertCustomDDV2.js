@@ -51,8 +51,8 @@ fn(state => {
               return tribute ? tribute : 'Honor';
             }),
             // New mappings :: November 2022
-            field('npsp__Honoree_Name__c', dataValue('Honouree / Tributee Name')),
-            field('Tribute_Occasion_Text__c', dataValue('Occasion')),
+            field('npsp__Honoree_Name__c', dataValue('In Memory Name')),
+            field('Tribute_Occasion_Text__c', dataValue('In Memory More Info')),
             field('Paper_Card_Shipping_City__c', dataValue('Notify Town')),
             field('Paper_Card_Shipping_Zip_Postal__c', dataValue('Notify Postcode')),
             field('Paper_Card_Shipping_State_Province__c', dataValue('Notify County')),
