@@ -7,18 +7,19 @@ fn(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
-  // const selectAmount = item => {
-  //   if (item['Current amount']) { //CHANGED FROM: 'Current amount'
-  //     return isNaN(item['Current amount']) ? item['Current amount'].replace(/[^-.0-9]/g, '') : parseInt(item['Current amount']);
-  //   }
-  //   return undefined;
-  // };
   const selectAmount = item => {
-    if (item['FirstAmount']) { //CHANGED FROM: 'Current amount'
-      return isNaN(item['FirstAmount']) ? item['FirstAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['FirstAmount']);
+    if (item['Current amount']) { 
+      return isNaN(item['Current amount']) ? item['Current amount'].replace(/[^-.0-9]/g, '') : parseInt(item['Current amount']);
     }
     return undefined;
   };
+  // Use for TransType re-processing if CG provides the incorrect value
+  // const selectAmount = item => {
+  //   if (item['FirstAmount']) { //CHANGED FROM: 'Current amount'
+  //     return isNaN(item['FirstAmount']) ? item['FirstAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['FirstAmount']);
+  //   }
+  //   return undefined;
+  // };
 
 
   const donations = state.data.json
@@ -39,25 +40,17 @@ fn(state => {
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
-        // of_Sisters_Requested__c: (x['Current amount'] == '22.00' ? 1 : 
-        // x['Current amount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
-        //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
-        //       x['Current amount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : 
-        //       undefined),
-        of_Sisters_Requested__c: (x['FirstAmount'] == '22' ? 1 : 
-        x['FirstAmount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 264)) :
-            (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 66)) :
-              x['FirstAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 22)) : 
+        of_Sisters_Requested__c: (x['Current amount'] == '22.00' ? 1 : 
+        x['Current amount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
+            (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
+              x['Current amount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : 
               undefined),
-        // 
-        // Number(selectAmount(x)) % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
-        //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
-        //       Number(selectAmount(x)) % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : 
-        //       undefined), 
-        // of_Sisters_Requested__c: x.Status === 'Live' ?
-        //   (Number(selectAmount(x)) % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 264)) :
-        //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 66)) :
-        //       Number(selectAmount(x)) % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['Current amount'] / 22)) : undefined) : undefined,
+        // Use for TransType re-processing if CG provides the incorrect value
+        // of_Sisters_Requested__c: (x['FirstAmount'] == '22' ? 1 : 
+        // x['FirstAmount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 264)) :
+        //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 66)) :
+        //       x['FirstAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 22)) : 
+        //       undefined),
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
         Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
