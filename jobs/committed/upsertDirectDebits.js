@@ -1,6 +1,6 @@
 fn(state => {
   const formatDate = date => {
-    if (!date) return null;
+    if (!date || date ==='NULL') return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
