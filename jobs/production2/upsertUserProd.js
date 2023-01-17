@@ -300,6 +300,7 @@ alterState(state => {
   const activeDivisions = [
     'Afghanistan',
     'Afghanistan - PM Access',
+    'DR Congo',
     'GSC - United Kingdom',
     'Germany',
     'Global Support Center',
