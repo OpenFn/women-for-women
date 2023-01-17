@@ -6,6 +6,8 @@ each(
     const divisionEmailMap = {
       Afghanistan: 'AF_HR_Notifications@womenforwomen.org',
       'Afghanistan - PM Access': 'AF_HR_Notifications@womenforwomen.org',
+      'DR Congo': 'CD_HR_Notifications@womenforwomen.org',
+      'Global Support Center': 'GSC_HRNotifications@womenforwomen.org',
       Headquarters: 'US_HR_Notifications@womenforwomen.org',
       'Headquarters - PM Access': 'US_HR_Notifications@womenforwomen.org',
       'GSC - United Kingdom': 'US_HR_Notifications@womenforwomen.org',
