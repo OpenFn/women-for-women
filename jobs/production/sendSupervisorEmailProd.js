@@ -4,6 +4,9 @@ each(
     const divisionEmailMap = {
       Afghanistan: 'AF_HR_Notifications@womenforwomen.org',
       'Afghanistan - PM Access': 'AF_HR_Notifications@womenforwomen.org',
+      'DR Congo': 'CD_HR_Notifications@womenforwomen.org',
+      'Germany': 'DE_HR_Notifications@womenforwomen.org',
+      'Global Support Center': 'GSC_HR_Notifications@womenforwomen.org',
       Headquarters: 'US_HR_Notifications@womenforwomen.org',
       'Headquarters - PM Access': 'US_HR_Notifications@womenforwomen.org',
       'GSC - United Kingdom': 'US_HR_Notifications@womenforwomen.org',
@@ -28,26 +31,29 @@ each(
     };
 
     const activeDivisions = [
-      'Headquarters',
-      'Headquarters - PM Access',
-      'GSC - United Kingdom',
-      'Afghanistan',
-      'Afghanistan - PM Access',
-      'Iraq',
-      'Iraq - PM Access',
-      //'Kosovo',
-      'Nigeria',
-      'Nigeria - PM Access',
-      //'Rwanda',
-      'South Sudan',
-      'South Sudan - PM Access',
-      'The Democratic Republic of the Congo',
-      'The Democratic Republic of the Congo - PM Access',
-      'United Kingdom',
-      'United States',
-      //'WOC',
-      //'No Division'
-    ]; // Add divisions to turn "on"
+    'Afghanistan',
+    'Afghanistan - PM Access',
+    'DR Congo',
+    'GSC - United Kingdom',
+    'Germany',
+    'Global Support Center',
+    'Headquarters',
+    'Headquarters - PM Access',
+    'Iraq',
+    'Iraq - PM Access',
+    //'Kosovo',
+    'Nigeria',
+    'Nigeria - PM Access',
+    //'Rwanda',
+    'South Sudan',
+    'South Sudan - PM Access',
+    'The Democratic Republic of the Congo',
+    'The Democratic Republic of the Congo - PM Access',
+    'United Kingdom',
+    'United States',
+    //'WOC',
+    //'No Division'
+  ]; // Add divisions to turn "on"
 
     const employee = state.data; // We get the current employee
     state.workEmail = employee.fields['Work Email'];
