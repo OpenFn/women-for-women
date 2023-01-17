@@ -33,26 +33,29 @@ each(
     };
 
     const activeDivisions = [
-      'Headquarters',
-      'Headquarters - PM Access',
-      'GSC - United Kingdom',
-      'Afghanistan',
-      'Afghanistan - PM Access',
-      'Iraq',
-      'Iraq - PM Access',
-      //'Kosovo',
-      'Nigeria',
-      'Nigeria - PM Access',
-      //'Rwanda',
-      'South Sudan',
-      'South Sudan - PM Access',
-      'The Democratic Republic of the Congo',
-      'The Democratic Republic of the Congo - PM Access',
-      'United Kingdom',
-      'United States',
-      //'WOC',
-      //'No Division'
-    ]; // Add divisions to turn "on"
+    'Afghanistan',
+    'Afghanistan - PM Access',
+    'DR Congo',
+    'GSC - United Kingdom',
+    'Germany',
+    'Global Support Center',
+    'Headquarters',
+    'Headquarters - PM Access',
+    'Iraq',
+    'Iraq - PM Access',
+    //'Kosovo',
+    'Nigeria',
+    'Nigeria - PM Access',
+    //'Rwanda',
+    'South Sudan',
+    'South Sudan - PM Access',
+    'The Democratic Republic of the Congo',
+    'The Democratic Republic of the Congo - PM Access',
+    'United Kingdom',
+    'United States',
+    //'WOC',
+    //'No Division'
+  ]; // Add divisions to turn "on"
 
     //const activeDivisions = ['Afghanistan', 'Afghanistan - PM Access', 'Headquarters', 'Headquarters - PM Access', 'Nigeria', 'Nigeria - PM Access']; // Old method
 
