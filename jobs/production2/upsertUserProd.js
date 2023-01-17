@@ -4,7 +4,9 @@ alterState(state => {
     'Afghanistan - PM Access': '69d68699-bb6e-48a9-860b-0a56d313ebaf',
     Headquarters: '418e20a0-79cf-4682-a3b3-b3fbeff00493',
     'Headquarters - PM Access': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
-    'GSC - United Kingdom': '418e20a0-79cf-4682-a3b3-b3fbeff00493', //test adding to GH
+    'GSC - United Kingdom': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
+    'Germany': '37112086-95c5-4aae-bc61-2beff285fc51',
+    'Global Support Center': '418e20a0-79cf-4682-a3b3-b3fbeff00493',//test adding to GH
     Iraq: '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
     'Iraq - PM Access': '02d9fa2c-5694-49bd-a87e-ef4d62ff85dd',
     Nigeria: 'cd4bb036-19c3-471f-9f7a-eeb311fe08fa',
@@ -298,6 +300,8 @@ alterState(state => {
     'Afghanistan',
     'Afghanistan - PM Access',
     'GSC - United Kingdom',
+    'Germany',
+    'Global Support Center',
     'Headquarters',
     'Headquarters - PM Access',
     'Iraq',
