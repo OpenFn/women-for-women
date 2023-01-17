@@ -2,6 +2,7 @@ alterState(state => {
   const administrativeUnitsMap = {
     Afghanistan: '69d68699-bb6e-48a9-860b-0a56d313ebaf',
     'Afghanistan - PM Access': '69d68699-bb6e-48a9-860b-0a56d313ebaf',
+    'DR Congo': '97c9cdbc-0aec-4483-89f7-e700949d8b7a',
     Headquarters: '418e20a0-79cf-4682-a3b3-b3fbeff00493',
     'Headquarters - PM Access': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
     'GSC - United Kingdom': '418e20a0-79cf-4682-a3b3-b3fbeff00493',
