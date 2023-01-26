@@ -702,7 +702,7 @@ each(
                 surname: fields['Last Name'],
                 usageLocation: state.stateMap[fields.Location],
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-                mobilePhone: '$null',
+                //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
@@ -811,7 +811,7 @@ each(
                 surname: fields['Last Name'],
                 usageLocation: state.stateMap[fields.Location],
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
-                mobilePhone: '$null',
+                //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
