@@ -26,8 +26,8 @@ alterState(state => {
   };
 
   const groupMap = {
-   // 'Full User (paid)': 'b72cf67b-e9f5-4241-b1ed-52ee21c38b08', //Licenses M365 Business Premium
-    'Full User (paid)': '4934c375-00e1-4cbb-a962-e5683d6d271a', //Licenses M365 E3
+   'Full User (paid)': 'b72cf67b-e9f5-4241-b1ed-52ee21c38b08', //Licenses M365 Business Premium
+    //'Full User (paid)': '4934c375-00e1-4cbb-a962-e5683d6d271a', //Licenses M365 E3
     'Mobile User (free)': '46ce29be-25d0-4c6d-8772-4f6a2c792258', //Licenses O365 E1
   };
 
