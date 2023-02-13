@@ -1,12 +1,12 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
-      'wfwi Card Master 03022023',
-      'wfwi Direct Debits 03022023',
-      'wfwi Transactions - Cards 03022023',
-      'wfwi Transactions - DD 03022023',
-      'wfwi Custom CC Fields 03022023',
-      'wfwi Custom DD Fields 03022023',
+      'wfwi Card Master 10022023',
+      'wfwi Direct Debits 10022023',
+      'wfwi Transactions - Cards 10022023',
+      'wfwi Transactions - DD 10022023',
+      'wfwi Custom CC Fields 10022023',
+      'wfwi Custom DD Fields 10022023',
     ];
     console.log('Files to sync: ', partialFilenames);
 
