@@ -39,7 +39,10 @@ fn(state => {
     )[0].input;
 
     const latestFile = state.data.filter(
-      file => file.name.split('.')[0].toLowerCase().includes(latestInputDate) && file.name.split('.')[1] === 'csv'
+      file =>
+        file.name.split('.')[0].toLowerCase().includes(fileNames) &&
+        file.name.split('.')[0].toLowerCase().includes(latestInputDate) &&
+        file.name.split('.')[1] === 'csv'
     );
 
     // console.log('submission dates', fileSubmissionDates);
