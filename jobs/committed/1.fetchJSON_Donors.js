@@ -1,20 +1,57 @@
 list('/');
 
+// pluck the latest CSV file
 fn(state => {
-  const fileNames = ['wfwi donors 20230227'];
+  const fileNames = 'wfwi donors';
   console.log('Files to sync: ', fileNames);
 
-  const files = state.data.filter(
-    file => fileNames.includes(file.name.split('.')[0].toLowerCase()) && file.name.split('.')[1] === 'csv'
-  );
+  const fileSubmissionDates = state.data
+    .filter(file => file.name.split('.')[0].toLowerCase().includes(fileNames) && file.name.split('.')[1] === 'csv')
+    .map(file => {
+      const inputDate = file.name.split('.')[0].match(/\d+$/);
 
-  if (files.length === 0) console.log('No new CSV files found.');
+      if (inputDate !== null) {
+        const year = inputDate[0].substring(0, 4);
+        const month = inputDate[0].substring(4, 6);
+        const day = inputDate[0].substring(6, 8);
 
-  return { ...state, files };
+        const dateObj = new Date(`${year}-${month}-${day}`);
+
+        return isNaN(dateObj) ? [] : { input: inputDate[0], formatted: dateObj.toISOString().substring(0, 10) };
+      }
+      return [];
+    })
+    .flat();
+
+  if (fileSubmissionDates.length === 0) {
+    console.log('No new CSV files found.');
+    return { ...state, latestFile: [] };
+  } else {
+    const latestFileDate = new Date(
+      Math.max.apply(
+        null,
+        fileSubmissionDates.map(date => Date.parse(date.formatted))
+      )
+    );
+
+    const latestInputDate = fileSubmissionDates.filter(
+      date => date.formatted === latestFileDate.toISOString().substring(0, 10)
+    )[0].input;
+
+    const latestFile = state.data.filter(
+      file => file.name.split('.')[0].toLowerCase().includes(latestInputDate) && file.name.split('.')[1] === 'csv'
+    );
+
+    // console.log('submission dates', fileSubmissionDates);
+    // console.log('latest date', latestInputDate);
+    // console.log('latest file', latestFile);
+
+    return { ...state, latestFile };
+  }
 });
 
 each(
-  '$.files[*]',
+  '$.latestFile[*]',
   fn(state => {
     const { configuration, data } = state;
 
