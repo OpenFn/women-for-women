@@ -2,7 +2,7 @@ list('/');
 
 // pluck the latest CSV file
 fn(state => {
-  const fileNames = 'wfwi donors 20230228';
+  const fileNames = 'wfwi donors';
   console.log('Files to sync: ', fileNames);
 
   const fileSubmissionDates = state.data
