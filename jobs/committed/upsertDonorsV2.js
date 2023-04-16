@@ -216,12 +216,13 @@ beta.each(
                           const FirstNameDup = records[0].FirstName;
                           // A112. If a matching Contact has been found...
                           console.log(`Logging duplicate email: ${email} with different names.`);
-                          state.dupErrorsDifferentNames.push(
-                            `Logging duplicate email: ${email} with these different names: ['${firstLetterUppercased(
-                              FirstName
-                            )}' - '${FirstNameDup}' ]`
-                          );
-                          return state;
+                          upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
+                          // state.dupErrorsDifferentNames.push(
+                          //   `Logging duplicate email: ${email} with these different names: ['${firstLetterUppercased(
+                          //     FirstName
+                          //   )}' - '${FirstNameDup}' ]`
+                          // );
+                          // return state;
                         }
                       });
                     } else {
@@ -286,7 +287,7 @@ beta.each(
         const { FirstName, LastModifiedDate, Id, Email } = records[0];
         // CG Date is more recent than SF ?
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-        //if (new Date() > new Date(LastModifiedDate)) {
+          //if (new Date() > new Date(LastModifiedDate)) {
           // YES
           email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
           // prettier-ignore
