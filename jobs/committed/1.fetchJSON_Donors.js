@@ -120,7 +120,7 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          upload: '07042022',
+          dataset: 'wfwi Donors',
         };
         fileChunks.push(fileContent);
       });
