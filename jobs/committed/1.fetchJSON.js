@@ -5,8 +5,8 @@ alterState(state => {
       'wfwi Direct Debits 20230417',
       'wfwi Transactions - Cards 20230417',
       'wfwi Transactions - DD 20230417',
-      'wfwi Custom CC Fields 20230417',
       'wfwi Custom DD Fields 20230417',
+      'wfwi Custom CC Fields 20230417',
     ];
     console.log('Files to sync: ', partialFilenames);
 
