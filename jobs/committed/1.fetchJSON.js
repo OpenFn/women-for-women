@@ -1,27 +1,105 @@
-alterState(state => {
-  return list('/')(state).then(state => {
-    const partialFilenames = [
-      'wfwi Card Master',
-      'wfwi Direct Debits',
-      'wfwi Transactions - Cards',
-      'wfwi Transactions - DD',
-      'wfwi Custom CC Fields',
-      'wfwi Custom DD Fields',
-    ];
-    console.log('Files to sync: ', partialFilenames);
+// alterState(state => {
+//   return list('/')(state).then(state => {
+//     const partialFilenames = [
+//       'wfwi Card Master',
+//       'wfwi Direct Debits',
+//       'wfwi Transactions - Cards',
+//       'wfwi Transactions - DD',
+//       'wfwi Custom CC Fields',
+//       'wfwi Custom DD Fields',
+//     ];
+//     console.log('Files to sync: ', partialFilenames);
 
-    const files = state.data.filter(
-      file => partialFilenames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv'
+//     const files = state.data.filter(
+//       file => partialFilenames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv'
+//     );
+
+//     if (files.length === 0) console.log('No new CSV files found.');
+
+//     return { ...state, files };
+//   });
+// });
+
+list('/');
+
+fn(state => {
+  const fileNames = [
+    'wfwi Card Master',
+    'wfwi Direct Debits',
+    'wfwi Transactions - Cards',
+    'wfwi Transactions - DD',
+    'wfwi Custom CC Fields',
+    'wfwi Custom DD Fields',
+  ];
+  console.log('Files to sync: ', fileNames);
+  const today = new Date();
+  const fileSubmissionDates = state.data
+    .filter(file => fileNames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv')
+    .map(file => {
+      const inputDate = file.name.split('.')[0].match(/\d+$/);
+
+      if (inputDate !== null) {
+        const year = inputDate[0].substring(0, 4);
+        const month = inputDate[0].substring(4, 6);
+        const day = inputDate[0].substring(6, 8);
+
+        const dateObj = new Date(`${year}-${month}-${day}`);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1); // set the date to yesterday
+
+        // const yesterdayDate = dateObj.toDateString() === yesterday.toDateString();
+
+        console.log(
+          dateObj.toDateString() === yesterday.toDateString() && dateObj.toISOString().substring(0, 10),
+          'yesterday'
+        ); // output: Sun Apr 16 2023 00:00:00 GMT-0700 (Pacific Daylight Time)
+
+        return isNaN(dateObj)
+          ? []
+          : {
+              input: inputDate[0],
+              formatted: dateObj.toISOString().substring(0, 10),
+            };
+      }
+
+      return [];
+    })
+    .flat();
+
+  if (fileSubmissionDates.length === 0) {
+    console.log('No new CSV files found.');
+    return { ...state, latestFile: [] };
+  } else {
+    const latestFileDate = new Date(
+      Math.max.apply(
+        null,
+        fileSubmissionDates.map(date => Date.parse(date.formatted))
+      )
     );
 
-    if (files.length === 0) console.log('No new CSV files found.');
+    const latestInputDate = fileSubmissionDates.filter(
+      date => date.formatted === latestFileDate.toISOString().substring(0, 10)
+    )[0].input;
 
-    return { ...state, files };
-  });
+    const latestFile = state.data.filter(
+      file =>
+        file.name.split('.')[0].toLowerCase().includes(fileNames) &&
+        file.name.split('.')[0].toLowerCase().includes(latestInputDate) &&
+        file.name.split('.')[1] === 'csv'
+    );
+
+    // console.log('submission dates', fileSubmissionDates);
+    // console.log('latest date', latestInputDate);
+    // console.log('latest file', latestFile);
+
+    console.log(latestFile);
+    return { ...state, latestFile };
+  }
 });
 
 each(
-  '$.files[*]',
+  '$.latestFile[*]',
   alterState(state => {
     const { configuration, data } = state;
 
