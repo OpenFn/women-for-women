@@ -1,25 +1,3 @@
-// alterState(state => {
-//   return list('/')(state).then(state => {
-//     const partialFilenames = [
-//       'wfwi Card Master',
-//       'wfwi Direct Debits',
-//       'wfwi Transactions - Cards',
-//       'wfwi Transactions - DD',
-//       'wfwi Custom CC Fields',
-//       'wfwi Custom DD Fields',
-//     ];
-//     console.log('Files to sync: ', partialFilenames);
-
-//     const files = state.data.filter(
-//       file => partialFilenames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv'
-//     );
-
-//     if (files.length === 0) console.log('No new CSV files found.');
-
-//     return { ...state, files };
-//   });
-// });
-
 list('/');
 
 fn(state => {
@@ -33,7 +11,7 @@ fn(state => {
   ];
   console.log('Files to sync: ', fileNames);
   const today = new Date();
-  const fileSubmissionDates = state.data
+  const yesterdayFiles = state.data
     .filter(file => fileNames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv')
     .map(file => {
       const inputDate = file.name.split('.')[0].match(/\d+$/);
@@ -48,64 +26,27 @@ fn(state => {
         const yesterday = new Date(today);
         yesterday.setDate(today.getDate() - 1); // set the date to yesterday
 
-        // const yesterdayDate = dateObj.toDateString() === yesterday.toDateString();
-
-        console.log(
-          dateObj.toDateString() === yesterday.toDateString() && dateObj.toISOString().substring(0, 10),
-          'yesterday'
-        ); // output: Sun Apr 16 2023 00:00:00 GMT-0700 (Pacific Daylight Time)
-
-        return isNaN(dateObj)
-          ? []
-          : {
-              input: inputDate[0],
-              formatted: dateObj.toISOString().substring(0, 10),
-            };
+        // check for yesterday files only
+        return dateObj.toDateString() === yesterday.toDateString() ? file : [];
       }
 
       return [];
     })
     .flat();
 
-  if (fileSubmissionDates.length === 0) {
-    console.log('No new CSV files found.');
-    return { ...state, latestFile: [] };
-  } else {
-    const latestFileDate = new Date(
-      Math.max.apply(
-        null,
-        fileSubmissionDates.map(date => Date.parse(date.formatted))
-      )
-    );
+  if (yesterdayFiles.length === 0) console.log('No new CSV files found.');
 
-    const latestInputDate = fileSubmissionDates.filter(
-      date => date.formatted === latestFileDate.toISOString().substring(0, 10)
-    )[0].input;
-
-    const latestFile = state.data.filter(
-      file =>
-        file.name.split('.')[0].toLowerCase().includes(fileNames) &&
-        file.name.split('.')[0].toLowerCase().includes(latestInputDate) &&
-        file.name.split('.')[1] === 'csv'
-    );
-
-    // console.log('submission dates', fileSubmissionDates);
-    // console.log('latest date', latestInputDate);
-    // console.log('latest file', latestFile);
-
-    console.log(latestFile);
-    return { ...state, latestFile };
-  }
+  return { ...state, yesterdayFiles };
 });
 
 each(
-  '$.latestFile[*]',
-  alterState(state => {
+  '$.yesterdayFiles[*]',
+  fn(state => {
     const { configuration, data } = state;
 
     const chunk = (arr, chunkSize) => {
-      var R = [];
-      for (var i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
+      let R = [];
+      for (let i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
       return R;
     };
 
@@ -131,9 +72,9 @@ each(
         }
       });
 
-      for (i = 0; i < json.length - 1; i++) {
+      for (let i = 0; i < json.length - 1; i++) {
         let index = [];
-        for (j = i + 1; j < json.length; j++) {
+        for (let j = i + 1; j < json.length; j++) {
           console;
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
