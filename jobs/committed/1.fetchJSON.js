@@ -1,33 +1,52 @@
-alterState(state => {
-  return list('/')(state).then(state => {
-    const partialFilenames = [
-      'wfwi Card Master',
-      'wfwi Direct Debits',
-      'wfwi Transactions - Cards',
-      'wfwi Transactions - DD',
-      'wfwi Custom CC Fields',
-      'wfwi Custom DD Fields',
-    ];
-    console.log('Files to sync: ', partialFilenames);
+list('/');
 
-    const files = state.data.filter(
-      file => partialFilenames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv'
-    );
+fn(state => {
+  const fileNames = [
+    'wfwi Card Master',
+    'wfwi Direct Debits',
+    'wfwi Transactions - Cards',
+    'wfwi Transactions - DD',
+    'wfwi Custom CC Fields',
+    'wfwi Custom DD Fields',
+  ];
+  console.log('Files to sync: ', fileNames);
+  const today = new Date();
+  const yesterdayFiles = state.data
+    .filter(file => fileNames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv')
+    .map(file => {
+      const inputDate = file.name.split('.')[0].match(/\d+$/);
 
-    if (files.length === 0) console.log('No new CSV files found.');
+      if (inputDate !== null) {
+        const year = inputDate[0].substring(0, 4);
+        const month = inputDate[0].substring(4, 6);
+        const day = inputDate[0].substring(6, 8);
 
-    return { ...state, files };
-  });
+        const dateObj = new Date(`${year}-${month}-${day}`);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1); // set the date to yesterday
+
+        // check for yesterday files only
+        return dateObj.toDateString() === yesterday.toDateString() ? file : [];
+      }
+
+      return [];
+    })
+    .flat();
+
+  if (yesterdayFiles.length === 0) console.log('No new CSV files found.');
+
+  return { ...state, yesterdayFiles };
 });
 
 each(
-  '$.files[*]',
-  alterState(state => {
+  '$.yesterdayFiles[*]',
+  fn(state => {
     const { configuration, data } = state;
 
     const chunk = (arr, chunkSize) => {
-      var R = [];
-      for (var i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
+      let R = [];
+      for (let i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
       return R;
     };
 
@@ -53,9 +72,9 @@ each(
         }
       });
 
-      for (i = 0; i < json.length - 1; i++) {
+      for (let i = 0; i < json.length - 1; i++) {
         let index = [];
-        for (j = i + 1; j < json.length; j++) {
+        for (let j = i + 1; j < json.length; j++) {
           console;
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
