@@ -127,9 +127,9 @@ beta.each(
 
     const checkAddress = address => (address === 'Blank' || address === 'No Address' ? undefined : address);
 
-    let address = `${checkAddress(dataValue('Address1')(state))} ${checkAddress(
+    let address = `${checkAddress(dataValue('Address1')(state))}_${checkAddress(
       dataValue('Address2')(state)
-    )} ${checkAddress(dataValue('Address3')(state))} ${checkAddress(dataValue('Address4')(state))}`;
+    )}_${checkAddress(dataValue('Address3')(state))}_${checkAddress(dataValue('Address4')(state))}`;
 
     address = address
       ? trimValue(
@@ -137,6 +137,8 @@ beta.each(
             .replace(/'/g, "\\'")
             .replace(/undefined/g, '')
             .replace(/Blank/g, '')
+            .replace(/__/g, '_')
+            .replace(/_/g, ', ')
         )
       : address;
 
