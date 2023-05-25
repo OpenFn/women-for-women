@@ -1,5 +1,5 @@
 // Note that we get _almost_ entirely empty records in the initial state.
-// We are assuming that they should be silently discarded. Is this the case?
+// If empty rows, we are assuming that they should be silently discarded.
 fn(state => {
   const json = state.data.json.filter(x => x.CardMasterID);
   return { ...state, data: { ...state.data, json } };
@@ -88,8 +88,8 @@ fn(state => {
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
-    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG',
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG', //before we could rely on CG PromoCode
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
   }));
@@ -106,7 +106,6 @@ fn(state => {
       'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
       Type__c: 'Recurring Donation',
       'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.PromoCode,
-      //'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKRG',
       npe03__Amount__c: state.selectAmount(x),
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
@@ -131,8 +130,8 @@ fn(state => {
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
-    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG',
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`, //TO TEST - ADDED TO MAPPING
+    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG', //before we could rely on CG PromoCode
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
   }));
@@ -154,7 +153,6 @@ fn(state => {
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
-    //'Campaign.Source_Code__c': 'UKWEB',
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
     'RecordType.Name': 'Individual Giving',
   }));
