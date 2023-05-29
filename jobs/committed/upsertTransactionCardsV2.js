@@ -156,6 +156,7 @@ fn(state => {
     'Campaign.Source_Code__c': x.PromoCode,
     //'Campaign.Source_Code__c': 'UKWEB',
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': undefined,
     'RecordType.Name': 'Individual Giving',
   }));
 
