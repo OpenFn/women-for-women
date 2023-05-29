@@ -5,6 +5,7 @@ fn(state => {
   const dupErrorsFirstNameAddress = [];
 
   const formatDate = date => {
+    //to clean CG date format
     if (!date) return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
@@ -16,7 +17,7 @@ fn(state => {
   };
 
   const baseMapping = (x, address, EmailSF) => {
-    // DATA CLEANING ========================================================
+    // DATA CLEANING LOGIC =====================================================
     let zipCode = x.Postcode || '';
     if (zipCode && zipCode.length > 20) {
       zipErrors.push(x.Postcode);
@@ -35,16 +36,12 @@ fn(state => {
         ? 'Not Eligible - Non Tax Payer'
         : x['Gift Aid Status'];
 
-    //const CallDate = OkToPhone === true ? x['LastChangedDateTime'] : undefined;
     const CallDate = OkToPhone === true ? x['OK to phone changedate'] : undefined;
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
-    //const TextDate = TextOptIn === true ? x['LastChangedDateTime'] : undefined;
     const TextDate = TextOptIn === true ? x['OK to text changedate'] : undefined;
     const TextMethod = TextOptIn === true ? 'Online Donation' : undefined;
-    //const EmailDate = OkToEmail === true ? x['LastChangedDateTime'] : undefined;
     const EmailDate = OkToEmail === true ? x['OK to email changedate'] : undefined;
     const EmailMethod = OkToEmail === true ? 'Online Donation' : undefined;
-    //const MailDate = OkToMail === true ? x['LastChangedDateTime'] : undefined;
     const MailDate = OkToMail === true ? x['OK to mail changedate'] : undefined;
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
 
@@ -61,6 +58,7 @@ fn(state => {
         : `${x.PrimKey}@incomplete.com`;
 
     // ======================================================================
+    // Contact field mappings
     return {
       Committed_Giving_ID__c: x.PrimKey,
       wfw_Legacy_Supporter_ID__c: x.PersonRef,
@@ -129,9 +127,9 @@ beta.each(
 
     const checkAddress = address => (address === 'Blank' || address === 'No Address' ? undefined : address);
 
-    let address = `${checkAddress(dataValue('Address1')(state))} ${checkAddress(
+    let address = `${checkAddress(dataValue('Address1')(state))}_${checkAddress(
       dataValue('Address2')(state)
-    )} ${checkAddress(dataValue('Address3')(state))} ${checkAddress(dataValue('Address4')(state))}`;
+    )}_${checkAddress(dataValue('Address3')(state))}_${checkAddress(dataValue('Address4')(state))}`;
 
     address = address
       ? trimValue(
@@ -139,6 +137,8 @@ beta.each(
             .replace(/'/g, "\\'")
             .replace(/undefined/g, '')
             .replace(/Blank/g, '')
+            .replace(/__/g, '_')
+            .replace(/_/g, ', ')
         )
       : address;
 
@@ -154,6 +154,7 @@ beta.each(
 
       return state;
       // throw new Error(`Duplicated email found for ${email}`);
+      // ^removed because we now check for dupe emails in the first job where we GET csvs
     }
 
     await query(
@@ -170,7 +171,6 @@ beta.each(
           FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef) || 'UNDEFINED'}'`
         )(state).then(async state => {
           const { FirstName, EmailAddress } = state.data;
-          //console.log('here2', state.data);
           const sizeLegacyMatch = state.references[0].totalSize;
           const { records } = state.references[0];
 
@@ -247,7 +247,7 @@ beta.each(
                 const { LastModifiedDate, Id } = records[0];
                 const EmailSF = records[0].npe01__HomeEmail__c;
                 // A2. If a matching Contact has been found...
-                //if (new Date() > new Date(LastModifiedDate)) { //<-use to override SF details
+                //if (new Date() > new Date(LastModifiedDate)) { //<-use to override SF details if we want to compare today's date with CG date
                 if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
                   // If CG is more recent than SF
                   upsertCondition = 2; // We update Contact
@@ -287,19 +287,11 @@ beta.each(
         const { FirstName, LastModifiedDate, Id, Email } = records[0];
         // CG Date is more recent than SF ?
         if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-          //if (new Date() > new Date(LastModifiedDate)) {
-          // YES
+          //if (new Date() > new Date(LastModifiedDate)) { //if we want to compare today's date to SF date
           email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
           // prettier-ignore
           return update(
             'Contact',
-            //AK's test mapping
-            // state => ({
-            //     ...state.baseMapping(state.data), 
-            //     'Id': dataValue('Id')(state),
-            //     'Committed_Giving_ID__c': PrimKey,
-            //     'npe01__HomeEmail__c': email
-            // })
             fields(
               field('Id', Id),
               field('Committed_Giving_ID__c', PrimKey),
