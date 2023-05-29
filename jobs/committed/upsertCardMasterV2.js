@@ -71,8 +71,8 @@ fn(state => {
     if (x.RecurringCancelDate) return 'Closed';
     // 2. If csv.RecurringCancelDate not defined, then check csv.LastCredited as follows:
     if (!x.RecurringCancelDate) {
-      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
-      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
+      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then 'Lapsed'.
+      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then 'Lapsed'
       if (!x.LastCredited && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
 
       // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
