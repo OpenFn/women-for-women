@@ -60,6 +60,7 @@ fn(state => {
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
         Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
+        npe03__Open_Ended_Status__c: x.CancelDate && x.Status !== 'Live' ? 'Closed' : undefined,
       };
     });
 

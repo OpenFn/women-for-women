@@ -96,6 +96,7 @@ fn(state => {
       npe03__Amount__c: x.Amount.replace(/�/, ''),
       Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       Closeout_Reason__c: x.RecurringCancelReason,
+      npe03__Open_Ended_Status__c: x.RecurringCancelDate && x.Occurrence === 'None' ? 'Closed' : undefined,
       //Active__c: checkActiveInactiveStatus(x), //Nov 2022 Request: To not uncheck Active, only add Closeout Date
       npsp__Status__c: checkNpspActiveInactiveStatus(x),
       npsp__PaymentMethod__c: 'Credit Card',
