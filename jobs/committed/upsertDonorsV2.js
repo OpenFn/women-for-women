@@ -24,10 +24,10 @@ fn(state => {
       zipCode = x.Postcode.substring(0, 20);
     }
 
-    const OkToPhone = x['OK to phone'] === 'Yes' ? true : false;
-    const OkToEmail = x['OK to email'] === 'Yes' ? true : false;
-    const OkToMail = x['OK to mail'] === 'Yes' ? true : false;
-    const TextOptIn = x['OK to text'] === 'Yes' ? true : false;
+    const OkToPhone = x['OK to phone'] === 'Yes' ? true : x['OK to phone'] === 'No' ? false : undefined;
+    const OkToEmail = x['OK to email'] === 'Yes' ? true : x['OK to email'] === 'No' ? false : undefined;
+    const OkToMail = x['OK to mail'] === 'Yes' ? true : x['OK to mail'] === 'No' ? false : undefined;
+    const TextOptIn = x['OK to text'] === 'Yes' ? true : x['OK to text'] === 'No' ? false : undefined;
     const Deceased = x['Deceased'] === 'Yes' ? true : false;
     const Gift =
       x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' || x['Gift Aid Status'] === 'true'
@@ -68,8 +68,8 @@ fn(state => {
       MailingStreet: address === 'Blank' || address === 'No Address' ? undefined : address,
       // ? address.replace(/undefined/g, '')
       // : address,
-      MailingCity: x.Address5,
-      MailingState: x.Address6,
+      MailingCity: x.Address5 ? x.Address5.trim() : x.Address5,
+      MailingState: x.Address6 ? x.Address6.trim() : x.Address6,
       MailingPostalCode: zipCode,
       MailingCountry: x.Country,
       HomePhone: x.TelNumber1,
@@ -139,6 +139,7 @@ beta.each(
           .replace(/___/g, '')
           .replace(/__/g, '_')
           .replace(/_/g, ', ')
+          .trim()
       : address;
     console.log('address POST-formatting ::', address);
 
