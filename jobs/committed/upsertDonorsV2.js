@@ -189,7 +189,7 @@ beta.each(
               if (sizeEmailMatch === 0 || originalEmail === '') {
                 // A1. If no matching Contact has been found OR if email blank...
                 await query(
-                  `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+                  `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate, wfw_Legacy_Supporter_ID__c, wfw_Donor_Source__c 
                   FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(firstLetterUppercased(FirstName)))}'
                   AND MailingStreet = '${trimValue(address) || 'UNDEFINED'}'`
                 )(state).then(async state => {
@@ -215,12 +215,16 @@ beta.each(
                           }))(state);
                         } else {
                           const FirstNameDup = records[0].FirstName;
+                          const SupportIDSF = records[0].wfw_Legacy_Supporter_ID__c;
+                          const donorSource = records[0].wfw_Donor_Source__c;
                           // A112. If a matching Contact has been found...
                           console.log(`Logging duplicate email: ${email} with different names.`);
                           upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
-                          return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
+                          return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
                             ...state.baseMapping(state.data, address, EmailSF),
                             FirstName: FirstNameDup,
+                            wfw_Legacy_Supporter_ID__c: SupportIDSF,
+                            wfw_Donor_Source__c: donorSource,
                           }))(state);
                           // state.dupErrorsDifferentNames.push(
                           //   `Logging duplicate email: ${email} with these different names: ['${firstLetterUppercased(
