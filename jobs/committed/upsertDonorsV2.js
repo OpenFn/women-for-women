@@ -251,8 +251,9 @@ beta.each(
                 // A2. If a matching Contact has been found...
                 /*OLD ::*/ //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) { //OLD condition: If CG data is more recent than SF
                 //NEW condition: If today is more recent than SF data
-                if (new Date() > new Date(LastModifiedDate)) {
+                if (EmailSF) {
                   //<-use to override SF details if we want to compare today's date with CG date
+                  console.log('Matching SF Contact found. Updating with CG donor profile details...');
                   upsertCondition = 2; // We update Contact
                   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
                     ...state.baseMapping(state.data, address, EmailSF, SupportIDSF, donorSource),
