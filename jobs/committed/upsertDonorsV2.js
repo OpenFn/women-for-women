@@ -65,12 +65,9 @@ fn(state => {
       Salutation: x.Title,
       FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
       LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
-      MailingStreet:
-        address === 'Blank' || address === 'No Address'
-          ? undefined
-          : address
-          ? address.replace(/undefined/g, '')
-          : address,
+      MailingStreet: address === 'Blank' || address === 'No Address' ? undefined : address,
+      // ? address.replace(/undefined/g, '')
+      // : address,
       MailingCity: x.Address5,
       MailingState: x.Address6,
       MailingPostalCode: zipCode,
@@ -135,7 +132,7 @@ beta.each(
       ? trimValue(
           address
             .replace(/'/g, "\\'")
-            .replace(/undefined/g, '')
+            //.replace(/undefined/g, '')
             .replace(/Blank/g, '')
             .replace(/__/g, '_')
             .replace(/_/g, ', ')
