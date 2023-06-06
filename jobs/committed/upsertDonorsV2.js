@@ -24,10 +24,6 @@ fn(state => {
       zipCode = x.Postcode.substring(0, 20);
     }
 
-    const OkToPhone = x['OK to phone'] === 'Yes' ? true : x['OK to phone'] === 'No' ? false : undefined;
-    const OkToEmail = x['OK to email'] === 'Yes' ? true : x['OK to email'] === 'No' ? false : undefined;
-    const OkToMail = x['OK to mail'] === 'Yes' ? true : x['OK to mail'] === 'No' ? false : undefined;
-    const TextOptIn = x['OK to text'] === 'Yes' ? true : x['OK to text'] === 'No' ? false : undefined;
     const Deceased = x['Deceased'] === 'Yes' ? true : false;
     const Gift =
       x['Gift Aid Status'] === 'True' || x['Gift Aid Status'] === 'TRUE' || x['Gift Aid Status'] === 'true'
@@ -36,14 +32,52 @@ fn(state => {
         ? 'Not Eligible - Non Tax Payer'
         : x['Gift Aid Status'];
 
-    const CallDate = OkToPhone === true ? x['OK to phone changedate'] : undefined;
+    //======= Comms Methods & Opt-Ins =======================//
+    const OkToPhone = x['OK to phone'];
+    const OkToEmail = x['OK to email'];
+    const OkToMail = x['OK to mail'];
+    const OkToText = x['OK to text'];
+    const CallDate = formatDate(x['OK to phone changedate']);
+    const TextDate = formatDate(x['OK to text changedate']);
+    const MailDate = formatDate(x['OK to mail changedate']);
+    const EmailDate = formatDate(x['OK to email changedate']);
+
     const CallMethod = OkToPhone === true ? 'Online Donation' : undefined;
-    const TextDate = TextOptIn === true ? x['OK to text changedate'] : undefined;
-    const TextMethod = TextOptIn === true ? 'Online Donation' : undefined;
-    const EmailDate = OkToEmail === true ? x['OK to email changedate'] : undefined;
+    const TextMethod = OkToText === true ? 'Online Donation' : undefined;
     const EmailMethod = OkToEmail === true ? 'Online Donation' : undefined;
-    const MailDate = OkToMail === true ? x['OK to mail changedate'] : undefined;
     const MailMethod = OkToMail === true ? 'Online Donation' : undefined;
+
+    const dayBefore = () => {
+      let d = new Date();
+      d.setDate(d.getDate() - 2); //-2 = day before yesterday
+      return d.toISOString().split('T')[0];
+    };
+
+    const checkNewDate = changeDate => {
+      var dayBeforeSync = dayBefore();
+      console.log('changeDate formatted ::', changeDate);
+      //is changeDate a newer date? (Meaning we should update options in Salesforce)
+      if (changeDate > dayBeforeSync) {
+        console.log('changeDate is new? TRUE');
+        return true;
+      } else {
+        console.log('changeDate is new? FALSE');
+        return false;
+      }
+    };
+
+    function OptInCheck(OkToContact, ChangeDate) {
+      const result =
+        OkToContact === 'Yes' && checkNewDate(ChangeDate) === true
+          ? true
+          : OkToContact === 'No' && checkNewDate(ChangeDate) === true
+          ? false
+          : undefined;
+      console.log('OkToContact ::', OkToContact);
+      console.log('ChangeDate ::', ChangeDate);
+      console.log('Opt In Result?', result);
+      return result;
+    }
 
     const emailAddress =
       EmailSF !== null
@@ -66,8 +100,6 @@ fn(state => {
       FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
       LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
       MailingStreet: address === 'Blank' || address === 'No Address' ? undefined : address,
-      // ? address.replace(/undefined/g, '')
-      // : address,
       MailingCity: x.Address5 ? x.Address5.trim() : x.Address5,
       MailingState: x.Address6 ? x.Address6.trim() : x.Address6,
       MailingPostalCode: zipCode,
@@ -77,17 +109,17 @@ fn(state => {
       MobilePhone: x.Tel2Number,
       npe01__HomeEmail__c: emailAddress,
       npe01__Preferred_Email__c: x.EmailAddress ? 'Personal' : undefined,
-      Call_Opt_In__c: OkToPhone,
-      Call_Opt_In_Date__c: formatDate(CallDate),
+      Call_Opt_In__c: OptInCheck(OkToPhone, CallDate),
+      Call_Opt_In_Date__c: OptInCheck(OkToPhone, CallDate) ? CallDate : undefined,
       Call_Opt_In_Method__c: CallMethod,
-      Email_Opt_in__c: OkToEmail,
-      Email_Opt_In_Date__c: formatDate(EmailDate),
+      Email_Opt_in__c: OptInCheck(OkToEmail, EmailDate),
+      Email_Opt_In_Date__c: OptInCheck(OkToEmail, EmailDate) ? EmailDate : undefined,
       Email_Opt_In_Method__c: EmailMethod,
-      Mail_Opt_in__c: OkToMail,
-      Mail_Opt_In_Date__c: formatDate(MailDate),
+      Mail_Opt_in__c: OptInCheck(OkToMail, MailDate),
+      Mail_Opt_In_Date__c: OptInCheck(OkToMail, MailDate) ? MailDate : undefined,
       Mail_Opt_In_Method__c: MailMethod,
-      Text_Opt_In__c: TextOptIn,
-      Text_Opt_In_Date__c: formatDate(TextDate),
+      Text_Opt_In__c: OptInCheck(OkToText, TextDate),
+      Text_Opt_In_Date__c: OptInCheck(OkToText, TextDate) ? TextDate : undefined,
       Text_Opt_In_Method__c: TextMethod,
       wfw_Method_of_Confirmation__c: 'Online',
       npsp__Deceased__c: Deceased,
