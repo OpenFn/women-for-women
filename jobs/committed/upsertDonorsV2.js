@@ -218,6 +218,10 @@ beta.each(
                           // A112. If a matching Contact has been found...
                           console.log(`Logging duplicate email: ${email} with different names.`);
                           upsertCondition = 1; // We upsert the new contact on Committed_Giving_ID__c
+                          return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
+                            ...state.baseMapping(state.data, address, EmailSF),
+                            FirstName: FirstNameDup,
+                          }))(state);
                           // state.dupErrorsDifferentNames.push(
                           //   `Logging duplicate email: ${email} with these different names: ['${firstLetterUppercased(
                           //     FirstName
