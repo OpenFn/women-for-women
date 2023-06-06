@@ -158,7 +158,7 @@ beta.each(
     }
 
     await query(
-      `Select Id, FirstName, Email, LastModifiedDate from Contact where Committed_Giving_ID__c = '${PrimKey}'`
+      `Select Id, FirstName, Email, LastModifiedDate, wfw_Donor_Source__c, wfw_Legacy_Supporter_ID__c, Committed_Giving_ID__c from Contact where Committed_Giving_ID__c = '${PrimKey}'`
     )(state).then(async state => {
       const { records } = state.references[0];
 
@@ -289,25 +289,36 @@ beta.each(
         });
       } else {
         const { FirstName, LastModifiedDate, Id, Email } = records[0];
-        // CG Date is more recent than SF ?
-        if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-          //if (new Date() > new Date(LastModifiedDate)) { //if we want to compare today's date to SF date
-          email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
-          // prettier-ignore
-          return update(
-            'Contact',
-            fields(
-              field('Id', Id),
-              field('Committed_Giving_ID__c', PrimKey),
-              field('npe01__HomeEmail__c', email)
-            )
-          )(state);
-        } else {
-          // NO
-          const { Surname } = state.data;
-          console.log(`Skipping update. Salesforce Contact is more recent for ${PrimKey} - ${FirstName} ${Surname}`);
-          return state;
-        }
+        const SupportIDSF = records[0].wfw_Legacy_Supporter_ID__c;
+        const donorSource = records[0].wfw_Donor_Source__c;
+        const PrimKey = records[0].Committed_Giving_ID__c;
+        console.log('Existing SF Contact found for donor with PrimKey ', PrimKey);
+
+        return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
+          ...state.baseMapping(state.data, Email, SupportIDSF, donorSource),
+        }))(state);
+
+        //== CHANGE REQUEST June 2023 to now override SF Donor with CG profile. ====//
+        //== Replaces logic below that used to see if CG data was more recent =====//
+        // // CG Date is more recent than SF ?
+        // if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+        //   //if (new Date() > new Date(LastModifiedDate)) { //if we want to compare today's date to SF date
+        //   email = Email == null ? `${PrimKey}@incomplete.com` : undefined;
+        //   // prettier-ignore
+        //   return update(
+        //     'Contact',
+        //     fields(
+        //       field('Id', Id),
+        //       field('Committed_Giving_ID__c', PrimKey),
+        //       field('npe01__HomeEmail__c', email)
+        //     )
+        //   )(state);
+        // } else {
+        //   // NO
+        //   const { Surname } = state.data;
+        //   console.log(`Skipping update. Salesforce Contact is more recent for ${PrimKey} - ${FirstName} ${Surname}`);
+        //   return state;
+        // }
       }
     });
     return state;
