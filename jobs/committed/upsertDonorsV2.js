@@ -53,19 +53,20 @@ fn(state => {
       return d.toISOString().split('T')[0];
     };
 
+    //Is the CG OptIn "changeDate" a newer date? (Meaning we should update comm options in Salesforce)
     const checkNewDate = changeDate => {
       var dayBeforeSync = dayBefore();
-      console.log('changeDate formatted ::', changeDate);
-      //is changeDate a newer date? (Meaning we should update options in Salesforce)
+      //console.log('changeDate formatted ::', changeDate);
       if (changeDate > dayBeforeSync) {
-        console.log('changeDate is new? TRUE');
+        //console.log('changeDate is new? TRUE');
         return true;
       } else {
-        console.log('changeDate is new? FALSE');
+        //console.log('changeDate is new? FALSE');
         return false;
       }
     };
 
+    //Logic to set Salesforce 'Opt In' fields depending on if the CG change is new and has a changedate
     function OptInCheck(OkToContact, ChangeDate) {
       const result =
         OkToContact === 'Yes' && checkNewDate(ChangeDate) === true
@@ -73,9 +74,9 @@ fn(state => {
           : OkToContact === 'No' && checkNewDate(ChangeDate) === true
           ? false
           : undefined;
-      console.log('OkToContact ::', OkToContact);
-      console.log('ChangeDate ::', ChangeDate);
-      console.log('Opt In Result?', result);
+      // console.log('OkToContact ::', OkToContact);
+      // console.log('ChangeDate ::', ChangeDate);
+      // console.log('Opt In Result?', result);
       return result;
     }
 
