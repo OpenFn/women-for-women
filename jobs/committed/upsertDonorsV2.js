@@ -199,7 +199,7 @@ beta.each(
                     // A11. If no matching Contact has been found...
                     if (originalEmail !== '') {
                       await query(
-                        `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+                        `SELECT Id, FirstName, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate, wfw_Legacy_Supporter_ID__c, wfw_Donor_Source__c 
                       FROM CONTACT WHERE npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
                       )(state).then(async state => {
                         const { records } = state.references[0];
@@ -246,13 +246,16 @@ beta.each(
                 console.log('modified', records[0].LastModifiedDate);
                 const { LastModifiedDate, Id } = records[0];
                 const EmailSF = records[0].npe01__HomeEmail__c;
+                const SupportIDSF = records[0].wfw_Legacy_Supporter_ID__c;
+                const donorSource = records[0].wfw_Donor_Source__c;
                 // A2. If a matching Contact has been found...
-                //if (new Date() > new Date(LastModifiedDate)) { //<-use to override SF details if we want to compare today's date with CG date
-                if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-                  // If CG is more recent than SF
+                /*OLD ::*/ //if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) { //OLD condition: If CG data is more recent than SF
+                //NEW condition: If today is more recent than SF data
+                if (new Date() > new Date(LastModifiedDate)) {
+                  //<-use to override SF details if we want to compare today's date with CG date
                   upsertCondition = 2; // We update Contact
                   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
-                    ...state.baseMapping(state.data, address, EmailSF),
+                    ...state.baseMapping(state.data, address, EmailSF, SupportIDSF, donorSource),
                   }))(state);
                 } else {
                   upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
