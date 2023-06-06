@@ -131,14 +131,14 @@ beta.each(
     console.log('address PRE-formatting ::', address);
 
     address = address
-      ? trimValue(
-          address
-            .replace(/'/g, "\\'")
-            //.replace(/undefined/g, '')
-            .replace(/Blank/g, '')
-            .replace(/__/g, '_')
-            .replace(/_/g, ', ')
-        )
+      ? address
+          .replace(/'/g, "\\'")
+          .replace(/undefined/g, '')
+          .replace(/Blank/g, '')
+          .replace(/____/g, '')
+          .replace(/___/g, '')
+          .replace(/__/g, '_')
+          .replace(/_/g, ', ')
       : address;
     console.log('address POST-formatting ::', address);
 
