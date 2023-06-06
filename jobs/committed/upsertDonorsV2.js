@@ -128,6 +128,8 @@ beta.each(
       dataValue('Address2')(state)
     )}_${checkAddress(dataValue('Address3')(state))}_${checkAddress(dataValue('Address4')(state))}`;
 
+    console.log('address PRE-formatting ::', address);
+
     address = address
       ? trimValue(
           address
@@ -138,6 +140,7 @@ beta.each(
             .replace(/_/g, ', ')
         )
       : address;
+    console.log('address POST-formatting ::', address);
 
     let email = dataValue('EmailAddress')(state);
     const originalEmail = dataValue('EmailAddress')(state);
