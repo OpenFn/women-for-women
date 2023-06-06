@@ -256,7 +256,9 @@ beta.each(
                   console.log('Matching SF Contact found. Updating with CG donor profile details...');
                   upsertCondition = 2; // We update Contact
                   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
-                    ...state.baseMapping(state.data, address, EmailSF, SupportIDSF, donorSource),
+                    ...state.baseMapping(state.data, address, EmailSF),
+                    wfw_Legacy_Supporter_ID__c: SupportIDSF,
+                    wfw_Donor_Source__c: donorSource,
                   }))(state);
                 } else {
                   upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
@@ -295,7 +297,9 @@ beta.each(
         console.log('Existing SF Contact found for donor with PrimKey ', PrimKey);
 
         return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
-          ...state.baseMapping(state.data, Email, SupportIDSF, donorSource),
+          ...state.baseMapping(state.data, address, Email),
+          wfw_Legacy_Supporter_ID__c: SupportIDSF,
+          wfw_Donor_Source__c: donorSource,
         }))(state);
 
         //== CHANGE REQUEST June 2023 to now override SF Donor with CG profile. ====//
