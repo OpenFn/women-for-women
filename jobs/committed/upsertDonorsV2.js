@@ -211,7 +211,7 @@ beta.each(
           if (sizeLegacyMatch === 0) {
             // A. If no matching Contact has been found...
             await query(
-              `SELECT Id, FirstName, Email, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate 
+              `SELECT Id, FirstName, Email, npe01__HomeEmail__c, LastName, MailingStreet, LastModifiedDate, wfw_Legacy_Supporter_ID__c, wfw_Donor_Source__c 
               FROM CONTACT WHERE FirstName = '${trimValue(removeSlash(firstLetterUppercased(FirstName)))}'
               AND Email = '${trimValue(EmailAddress)}'` //AK Change to match on email, not just personal email?
               //AND npe01__HomeEmail__c = '${trimValue(EmailAddress)}'`
