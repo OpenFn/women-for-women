@@ -50,32 +50,14 @@ each(
       return R;
     };
 
-    return getCSV(`/${data.name}`)(state).then(async state => {
+    return getCSV(`/${data.name}`, { flatKeys: true })(state).then(async state => {
+      const json = state.data;
+
       const splitName = data.name.split('.');
-      console.log(state.data.length);
-      let json = [];
-      let headers = state.data[0].split(',');
-      headers = headers.map(h => (h = h.replace(/"/g, '')));
-
-      state.data.slice(1).forEach(data => {
-        let row = data.split(',');
-
-        let obj = {};
-        for (let j = 0; j < row.length; j++) {
-          obj[headers[j]] = row[j].replace(/"/g, '');
-        }
-
-        if (!Object.values(obj).every(v => !v)) {
-          // Note, we don't push objects into the array if all their values are
-          // empty strings or otherwise falsy.
-          json.push(obj);
-        }
-      });
 
       for (let i = 0; i < json.length - 1; i++) {
         let index = [];
         for (let j = i + 1; j < json.length; j++) {
-          console;
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
               index.push(j);
