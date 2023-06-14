@@ -154,7 +154,7 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': x.CardMasterID && x.CardMasterID !== '' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': undefined,
     'RecordType.Name': 'Individual Giving',
   }));
 
