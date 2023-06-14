@@ -49,7 +49,7 @@ fn(state => {
   const groupedCardMaster = [];
   for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
 
-  let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length <= 1);
+  let cardMasterIDLessThan1 = groupedCardMaster.filter(x => x.length < 1); //Changed from: x => x.length <= 1
 
   cardMasterIDLessThan1 = flattenArray(cardMasterIDLessThan1);
 
