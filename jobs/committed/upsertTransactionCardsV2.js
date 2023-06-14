@@ -155,9 +155,8 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': undefined,
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': x.CardMasterID && x.CardMasterID !== '' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
     'RecordType.Name': 'Individual Giving',
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': undefined,
   }));
 
   console.log('Count of new "RDs" to upsert:', uniqueRDs.length);
