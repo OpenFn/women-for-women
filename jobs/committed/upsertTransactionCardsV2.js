@@ -111,7 +111,6 @@ fn(state => {
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
       CG_Credit_Card_ID__c: x.CardMasterID,
-      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     };
   });
 
