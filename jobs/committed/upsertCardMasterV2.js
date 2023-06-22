@@ -73,10 +73,10 @@ fn(state => {
     if (!x.RecurringCancelDate) {
       // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then 'Lapsed'.
       // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then 'Lapsed'
-      if (!x.LastCredited && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
+      if (!x.LastCredited  && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
 
       // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
-      if (x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
+      if (!x.NextDate && x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return 'Lapsed';
       // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
