@@ -62,7 +62,7 @@ fn(state => {
         return true;
 
       //e. if no LastCredited date, but occurrnece is defined...then active = true
-      if (!x.LastCredited && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
+      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
     }
   };
 
