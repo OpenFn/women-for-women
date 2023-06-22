@@ -82,7 +82,7 @@ fn(state => {
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return 'Active';
       //e. if no LastCredited date, but occurrnece is defined...then active = true
-      if (!x.LastCredited && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return 'Active';
+      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return 'Active';
     }
   };
 
