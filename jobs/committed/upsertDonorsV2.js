@@ -338,7 +338,7 @@ beta.each(
         const PrimKey = records[0].Committed_Giving_ID__c;
         console.log('Existing SF Contact found for donor with PrimKey ', PrimKey);
 
-        return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
+        return upsertIf(dataValue('PrimKey'), 'Contact', 'Committed_Giving_ID__c', state => ({
           ...state.baseMapping(state.data, address, Email),
           wfw_Legacy_Supporter_ID__c: SupportIDSF,
           wfw_Donor_Source__c: donorSource,
