@@ -34,13 +34,17 @@ fn(state => {
         Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
         npe03__Amount__c: x['Current amount'],
-        npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
+        npsp__Status__c: x.Status === 'Live' ? 'Active' : undefined,
         Active__c: x.Status === 'Live' ? true : undefined, //Nov 2022 Request: To not uncheck Active, only add Closeout Date
         Closeout_Reason__c: x.CancelReason,
         npe03__Installment_Period__c: x.PaymentFrequency === 'Annually' ? 'Yearly' : x.PaymentFrequency,
         npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
         npe03__Next_Payment_Date__c: !x.CancelDate ? formatDate(x.NextDate) : undefined,
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
+        Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
+        npsp__PaymentMethod__c: 'Direct Debit',
+        Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
+        npe03__Open_Ended_Status__c: x.CancelDate && x.Status !== 'Live' ? 'Closed' : undefined,
         of_Sisters_Requested__c:
           x['Current amount'] == '22.00'
             ? 1
@@ -57,10 +61,6 @@ fn(state => {
         //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 66)) :
         //       x['FirstAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 22)) :
         //       undefined),
-        Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
-        npsp__PaymentMethod__c: 'Direct Debit',
-        Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
-        npe03__Open_Ended_Status__c: x.CancelDate && x.Status !== 'Live' ? 'Closed' : undefined,
       };
     });
 
