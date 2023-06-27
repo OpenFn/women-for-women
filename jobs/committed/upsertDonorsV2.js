@@ -57,7 +57,7 @@ fn(state => {
     const checkNewDate = changeDate => {
       var dayBeforeSync = dayBefore();
       //console.log('changeDate formatted ::', changeDate);
-      if (changeDate > dayBeforeSync) {
+      if (changeDate >= dayBeforeSync) {
         //console.log('changeDate is new? TRUE');
         return true;
       } else {
@@ -96,7 +96,7 @@ fn(state => {
     // Contact field mappings
     return {
       Committed_Giving_ID__c: x.PrimKey,
-      wfw_Legacy_Supporter_ID__c: x.PersonRef,
+      wfw_Legacy_Supporter_ID__c: x.PersonRef && x.PersonRef !== '' ? x.PersonRef : undefined,
       Salutation: x.Title,
       FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
       LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
@@ -127,7 +127,7 @@ fn(state => {
       wfw_Gift_Aid__c: Gift,
       wfw_Date_of_Declaration_Confirmation__c: formatDate(x['Gift Aid date']),
       CG_Opt_In_Date__c: formatDate(x['Gift Aid date']),
-      wfw_Donor_Source__c: x.DonorSource,
+      wfw_Donor_Source__c: x.DonorSource && x.DonorSource !== '' ? x.DonorSource : undefined,
     };
   };
   return {
@@ -201,10 +201,10 @@ beta.each(
         //NOTE: Removed because if PersonRef was NOT defined, then no action taken on Contact
         //if (!state.data.PersonRef) return state;
         await query(
-          `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, LastModifiedDate 
+          `SELECT Id, FirstName, LastName, MailingStreet, npe01__HomeEmail__c, HomePhone, wfw_Legacy_Supporter_ID__c, wfw_Donor_Source__c, LastModifiedDate 
           FROM CONTACT WHERE wfw_Legacy_Supporter_ID__c = '${trimValue(PersonRef) || 'UNDEFINED'}'`
         )(state).then(async state => {
-          const { FirstName, EmailAddress } = state.data;
+          const { FirstName, EmailAddress, address } = state.data;
           const sizeLegacyMatch = state.references[0].totalSize;
           const { records } = state.references[0];
 
@@ -315,20 +315,27 @@ beta.each(
           } else {
             const { LastModifiedDate, Id } = records[0];
             const EmailSF = records[0].npe01__HomeEmail__c;
+            const donorSource = records[0].wfw_Donor_Source__c;
             // B. If a matching Contact has been found...
-            if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
-              // If CG is more recent than SF
-              return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
-                ...state.baseMapping(state.data, address, EmailSF),
-              }))(state);
-            } else {
-              // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
-              console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
-              return update(
-                'Contact',
-                fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')))
-              )(state);
-            }
+            console.log('Updating SF Contact with matching Legacy Supporter ID...');
+            return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
+              ...state.baseMapping(state.data, address, EmailSF),
+              wfw_Donor_Source__c: donorSource,
+            }))(state);
+            // CHANGE REQUEST June 2023: Removed below logic to always update donor profile details with CG info
+            // if (new Date(LastChangedDateTime) > new Date(LastModifiedDate)) {
+            //   // If CG is more recent than SF
+            //   return upsertIf(dataValue('PrimKey'), 'Contact', 'wfw_Legacy_Supporter_ID__c', state => ({
+            //     ...state.baseMapping(state.data, address, EmailSF),
+            //   }))(state);
+            // } else {
+            //   // upsertCondition = 3; // We update contact but only Committed_Giving_ID__c
+            //   console.log('SF Contact is more recently updated than the CG contact. Skipping update.');
+            //   return update(
+            //     'Contact',
+            //     fields(field('Id', Id), field('Committed_Giving_ID__c', dataValue('PrimKey')), field())
+            //   )(state);
+            // }
           }
         });
       } else {
