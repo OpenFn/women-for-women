@@ -136,7 +136,7 @@ fn(state => {
     'RecordType.Name': 'Individual Giving',
   }));
 
-  // 1st type of opportunities in this array ==> Regular once-off donations to insert
+  // 1st type of opportunities in this array ==> Regular once-off OR recurring donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
     Name: x.TransactionReference,
     Committed_Giving_ID__c: selectGivingId(x),
@@ -144,7 +144,7 @@ fn(state => {
     Amount: state.selectAmount(x),
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
-    Donation_Type__c: 'General Donation',
+    Donation_Type__c: x.CampaignCode==='Regular Giving' ? 'Recurring Donation' : 'General Donation',
     StageName: 'Closed Won',
     npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
     Transaction_Reference_Id__c: x.TransactionReference,
@@ -154,7 +154,7 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': undefined,
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': x.CampaignCode==='Regular Giving' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
     'RecordType.Name': 'Individual Giving',
   }));
 
