@@ -705,7 +705,8 @@ each(
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
                 //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
-                extension_0e3b88c6070d4aafb9218e409d1174ec_Pronouns: fields['Pronouns'],
+                extension_0e3b88c6070d4aafb9218e409d1174ec_Pronouns: fields['Pronouns'] ? [fields['Pronouns']] : undefined,
+                ms-Exch-Extension-Attribute1: fields['Pronouns'] ? [fields['Pronouns']]: undefined,
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
@@ -815,7 +816,8 @@ each(
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
                 //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
-                extension_0e3b88c6070d4aafb9218e409d1174ec_Pronouns: fields['Pronouns'],
+                extension_0e3b88c6070d4aafb9218e409d1174ec_Pronouns: fields['Pronouns'] ? [fields['Pronouns']] : undefined,
+                ms-Exch-Extension-Attribute1: fields['Pronouns'] ? [fields['Pronouns']] : undefined,
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
