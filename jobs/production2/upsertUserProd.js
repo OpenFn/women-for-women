@@ -705,7 +705,7 @@ each(
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
                 //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
-                facsimiletelephonenumber: fields['Pronouns'],
+                msExchExtensionCustomAttribute1: fields['Pronouns'],
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
@@ -815,7 +815,7 @@ each(
                 //middleName: fields['Middle Name'], // --------Request not supported? Property invalid error--------
                 //mobilePhone: '$null',
                 extension_0e3b88c6070d4aafb9218e409d1174ec_mobileNumber: fields['Mobile Phone'],
-                facsimiletelephonenumber: fields['Pronouns'],
+                msExchExtensionCustomAttribute1: fields['Pronouns'],
                 businessPhones: fields['Work Phone'] ? [fields['Work Phone']] : undefined, // don't map if blank; do not return empty array`[]` or will hit error
                 //preferredName: fields['Preferred Name'], // ---------Request not supported?---------
                 givenName: fields['First Name'],
