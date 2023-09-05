@@ -1,4 +1,4 @@
-1alterState(state => {
+alterState(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
       'wfwi Donors 20230831',
