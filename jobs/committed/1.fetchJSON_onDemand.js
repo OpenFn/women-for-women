@@ -83,7 +83,8 @@ each(
           fileType: type,
           json: sets,
           uploadDate: new Date(data.modifyTime).toISOString(),
-          dataset: type.substring(0, type.length - 9),
+          dataset: "testing"
+          //dataset: type.substring(0, type.length - 9),
         };
         fileChunks.push(fileContent);
       });
