@@ -60,8 +60,6 @@ each(
     return getCSV(`/${fileName}`, { flatKeys: true })(state).then(async state => {
       let json = state.data;
 
-      console.log(json, fileName);
-
       // TODO what does this code do?
       for (let i = 0; i < json.length - 1; i++) {
         let index = [];
