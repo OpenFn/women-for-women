@@ -1,8 +1,6 @@
-alterState(state => {
+fn(state => {
   return list('/')(state).then(state => {
-    const partialFilenames = [
-      'wfwi Donors 20230831',
-    ];
+    const partialFilenames = ['wfwi Donors 20230831'];
     console.log('Files to sync: ', partialFilenames);
 
     const files = state.data.filter(
@@ -17,41 +15,29 @@ alterState(state => {
 
 each(
   '$.files[*]',
-  alterState(state => {
+  fn(state => {
     const { configuration, data } = state;
 
-    const chunk = (arr, chunkSize) => {
-      var R = [];
-      for (var i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
-      return R;
-    };
+    const fileName = data.name;
+    let fileType;
+    switch (true) {
+      case fileName.includes('Extract'):
+        fileType = 'extract';
+        break;
+      case fileName.includes('Component'):
+        fileType = 'component';
+        break;
+      default:
+        fileType = fileName.split('.')[0];
+    }
 
-    return getCSV(`/${data.name}`)(state).then(async state => {
-      const splitName = data.name.split('.');
-      console.log(state.data.length);
-      let json = [];
-      let headers = state.data[0].split(',');
-      headers = headers.map(h => (h = h.replace(/"/g, '')));
+    return getCSV(`/${fileName}`, { flatKeys: true })(state).then(async state => {
+      let json = state.data;
 
-      state.data.slice(1).forEach(data => {
-        let row = data.split(',');
-
-        let obj = {};
-        for (let j = 0; j < row.length; j++) {
-          obj[headers[j]] = row[j].replace(/"/g, '');
-        }
-
-        if (!Object.values(obj).every(v => !v)) {
-          // Note, we don't push objects into the array if all their values are
-          // empty strings or otherwise falsy.
-          json.push(obj);
-        }
-      });
-
-      for (i = 0; i < json.length - 1; i++) {
+      // TODO What does this code below do ?
+      for (let i = 0; i < json.length - 1; i++) {
         let index = [];
-        for (j = i + 1; j < json.length; j++) {
-          console;
+        for (let j = i + 1; j < json.length; j++) {
           if (json[i]['EmailAddress'] && json[j]['EmailAddress']) {
             if (json[i]['EmailAddress'].toLowerCase() === json[j]['EmailAddress'].toLowerCase()) {
               index.push(j);
@@ -65,38 +51,18 @@ each(
         }
       }
 
-      const jsonSets = chunk(json, 50); // chunking into arrays of 1000 objects
+      const jsonSets = chunk(json, 50); // chunking into arrays of 50 objects
 
       console.log(jsonSets.length, 'sets.');
 
-      const type =
-        data.name.includes('Extract') === true
-          ? 'extract'
-          : data.name.includes('Component') === true
-          ? 'component'
-          : splitName[0];
-
-      const fileChunks = [];
-      jsonSets.forEach(sets => {
-        const fileContent = {
-          fileName: data.name,
-          fileType: type,
-          json: sets,
-          uploadDate: new Date(data.modifyTime).toISOString(),
-          dataset: "testing"
-          //dataset: type.substring(0, type.length - 9),
-        };
-        fileChunks.push(fileContent);
-      });
-
-      // const fileContent = {
-      //   fileName: data.name,
-      //   fileType: type,
-      //   json,
-      //   uploadDate: new Date(data.modifyTime).toISOString(),
-      // };
-      // console.log('fileContent', fileContent);
-      // return state;
+      const fileChunks = jsonSets.map(sets => ({
+        fileName,
+        fileType,
+        json: sets,
+        uploadDate: new Date(data.modifyTime).toISOString(),
+        dataset: 'testing',
+        //dataset: fileType.substring(0, fileType.length - 9),
+      }));
 
       let countInbox = 0;
       const postToInbox = async data => {
@@ -104,7 +70,7 @@ each(
         console.log(`${countInbox} request to inbox`);
 
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         await http.post({
           url: configuration.openfnInboxUrl,
           data,

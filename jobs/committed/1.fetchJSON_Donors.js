@@ -58,33 +58,25 @@ each(
   fn(state => {
     const { configuration, data } = state;
 
-    const chunk = (arr, chunkSize) => {
-      var R = [];
-      for (var i = 0, len = arr.length; i < len; i += chunkSize) R.push(arr.slice(i, i + chunkSize));
-      return R;
-    };
+    const fileName = data.name;
+    let fileType;
+    switch (true) {
+      case fileName.includes('Extract'):
+        fileType = 'extract';
+        break;
+      case fileName.includes('Component'):
+        fileType = 'component';
+        break;
+      default:
+        fileType = fileName.split('.')[0];
+    }
 
     const toLowerCase = string => {
       return string ? string.toLowerCase() : '';
     };
 
-    return getCSV(`/${data.name}`)(state).then(async state => {
-      const splitName = data.name.split('.');
-      console.log(state.data.length);
-      let json = [];
-      let headers = state.data[0].split(',');
-      headers = headers.map(h => (h = h.replace(/"/g, '')));
-
-      state.data.slice(1).forEach(data => {
-        // let row = data.split(',');
-        let row = data.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
-
-        let obj = {};
-        for (let j = 0; j < row.length; j++) {
-          obj[headers[j]] = row[j].replace(/"/g, '');
-        }
-        json.push(obj);
-      });
+    return getCSV(`/${data.name}`, { flatKeys: true })(state).then(async state => {
+      let json = state.data;
 
       const duplicates = [];
       for (let i = 0; i < json.length; i++) {
@@ -100,30 +92,17 @@ each(
 
       const filteredJson = json.filter(js => !duplicates.includes(toLowerCase(js['EmailAddress'])));
 
-      json = [];
-
       const jsonSets = chunk(filteredJson, 50); // chunking into arrays of 50 objects; need smaller Contact batch sizes
 
       console.log(jsonSets.length, 'sets.');
 
-      const type =
-        data.name.includes('Extract') === true
-          ? 'extract'
-          : data.name.includes('Component') === true
-          ? 'component'
-          : splitName[0];
-
-      const fileChunks = [];
-      jsonSets.forEach(sets => {
-        const fileContent = {
-          fileName: data.name,
-          fileType: type,
-          json: sets,
-          uploadDate: new Date(data.modifyTime).toISOString(),
-          dataset: 'wfwi Donors',
-        };
-        fileChunks.push(fileContent);
-      });
+      const fileChunks = jsonSets.map(sets => ({
+        fileName,
+        fileType,
+        json: sets,
+        uploadDate: new Date(data.modifyTime).toISOString(),
+        dataset: 'wfwi Donors',
+      }));
 
       let countInbox = 0;
       const postToInbox = async data => {
@@ -145,7 +124,7 @@ each(
 
       if (duplicates.length > 0) {
         console.log('Duplicate rows detected in Committed Giving:');
-        duplicates.map(d => console.log(d));
+        duplicates.forEach(d => console.log(d));
         console.log('End of duplicates rows.');
         throw new Error(`Aborting run; duplicates detected.`);
       }
