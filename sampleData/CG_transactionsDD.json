@@ -1,0 +1,33 @@
+{
+  "__query_params": {},
+  "dataset": "wfwi Transactions - DD",
+  "fileName": "wfwi Transactions - DD 20230907.csv",
+  "fileType": "wfwi Transactions - DD 20230907",
+  "json": [
+    {
+      "Amount": "5.00",
+      "CampaignCode": "Regular Giving",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI001322",
+      "DDid": "795211",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260611",
+      "PromoCode": "UKRGDRDP0517",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Donation"
+    },
+    {
+      "Amount": "22.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI000011",
+      "DDid": "700011",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "110920231248340611WSWomenforWomen",
+      "PromoCode": "UKSPDDT",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    }
+  ]}
