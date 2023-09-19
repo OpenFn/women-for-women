@@ -9,7 +9,7 @@
       "CampaignCode": "Regular Giving",
       "ClientName": "Women for Women",
       "DDRefforBank": "WFWI001322",
-      "DDid": "795211",
+      "DDid": "79523200",
       "Date": "01/09/2023 00:00:00",
       "PrimKey": "WFWI110720211442260611",
       "PromoCode": "UKRGDRDP0517",
@@ -17,15 +17,28 @@
       "Status": "Paid",
       "TransType": "Donation"
     },
-    {
+     {
       "Amount": "22.00",
       "CampaignCode": "Sponsorship",
       "ClientName": "Women for Women",
-      "DDRefforBank": "WFWI000011",
-      "DDid": "700011",
+      "DDRefforBank": "WFWI0013411",
+      "DDid": "79057000",
       "Date": "01/09/2023 00:00:00",
-      "PrimKey": "110920231248340611WSWomenforWomen",
-      "PromoCode": "UKSPDDT",
+      "PrimKey": "WFWI271120171742240411",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "44.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI0013511",
+      "DDid": "79111000",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "WFWI071220170844580411",
+      "PromoCode": "UKSPWEBDD",
       "Reason": "",
       "Status": "Paid",
       "TransType": "Sponsorship"
