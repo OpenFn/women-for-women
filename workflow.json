@@ -1,0 +1,176 @@
+{
+    "start": "upsertDirectDebits",
+    "jobs": [
+        {
+            "id": "upsertDirectDebits",
+            "state": {
+                "data": {
+                    "__query_params": {},
+                    "dataset": "wfwi Direct Debits",
+                    "fileName": "wfwi Direct Debits 20230907.csv",
+                    "fileType": "wfwi Direct Debits 20230907",
+                    "json": [
+                        {
+                            "AccountName": "Erin James",
+                            "AccountNumber": "07011811",
+                            "AddedDateTime": "27/11/2017 17:42:25",
+                            "AddedUser": "Website",
+                            "CancelDate": "",
+                            "CancelReason": "",
+                            "ChangedDateTime": "27/02/2020 14:25:57",
+                            "ChangedUser": "akrolls",
+                            "ClientName": "Women for Women",
+                            "Current amount": "22.00",
+                            "DDId": "79057000",
+                            "DDRefforBank": "WFWI0013411",
+                            "EndDate": "",
+                            "FirstAmount": "25.00",
+                            "LastClaimDate": "01/09/2023 00:00:00",
+                            "NextDate": "01/10/2023 00:00:00",
+                            "PaymentFrequency": "Monthly",
+                            "PrimKey": "WFWI271120171742240411",
+                            "SortCode": "3094001",
+                            "StartDate": "25/12/2017 00:00:00",
+                            "Status": "Live",
+                            "TransType": "Sponsorship"
+                        },
+                        {
+                            "AccountName": "Ash Ketchum",
+                            "AccountNumber": "67733911",
+                            "AddedDateTime": "11/01/2018 15:23:18",
+                            "AddedUser": "akrolls",
+                            "CancelDate": "",
+                            "CancelReason": "",
+                            "ChangedDateTime": "11/01/2018 15:24:42",
+                            "ChangedUser": "akrolls",
+                            "ClientName": "Women for Women",
+                            "Current amount": "5.00",
+                            "DDId": "79523200",
+                            "DDRefforBank": "WFWI00137100",
+                            "EndDate": "",
+                            "FirstAmount": "5.00",
+                            "LastClaimDate": "01/09/2023 00:00:00",
+                            "NextDate": "01/10/2023 00:00:00",
+                            "PaymentFrequency": "Monthly",
+                            "PrimKey": "WFWI110720211442260611",
+                            "SortCode": "502000",
+                            "StartDate": "01/02/2018 00:00:00",
+                            "Status": "Live",
+                            "TransType": "Donation"
+                        },
+                        {
+                            "AccountName": "Amber Test",
+                            "AccountNumber": "180752008",
+                            "AddedDateTime": "07/12/2017 08:37:11",
+                            "AddedUser": "Website",
+                            "CancelDate": "",
+                            "CancelReason": "",
+                            "ChangedDateTime": "25/09/2018 12:13:28",
+                            "ChangedUser": "akrolls",
+                            "ClientName": "Women for Women",
+                            "Current amount": "44.00",
+                            "DDId": "79111000",
+                            "DDRefforBank": "WFWI0013511",
+                            "EndDate": "",
+                            "FirstAmount": "48.00",
+                            "LastClaimDate": "01/09/2023 00:00:00",
+                            "NextDate": "01/10/2023 00:00:00",
+                            "PaymentFrequency": "Monthly",
+                            "PrimKey": "WFWI071220170844580411",
+                            "SortCode": "089011",
+                            "StartDate": "01/02/2018 00:00:00",
+                            "Status": "Live",
+                            "TransType": "Sponsorship"
+                        },
+                        {
+                            "AccountName": "Aicha Dev",
+                            "AccountNumber": "00332611",
+                            "AddedDateTime": "11/07/2022 12:52:03",
+                            "AddedUser": "Website",
+                            "CancelDate": "04/09/2023 00:00:00",
+                            "CancelReason": "1 - Instruction Cancelled by Payer",
+                            "ChangedDateTime": "04/09/2023 00:00:00",
+                            "ChangedUser": "TEST",
+                            "ClientName": "Women for Women",
+                            "Current amount": "264.00",
+                            "DDId": "1179811",
+                            "DDRefforBank": "WFWI003211",
+                            "EndDate": "",
+                            "FirstAmount": "264.00",
+                            "LastClaimDate": "25/08/2023 00:00:00",
+                            "NextDate": "",
+                            "PaymentFrequency": "Annually",
+                            "PrimKey": "WFWI110720211442260611",
+                            "SortCode": "801211",
+                            "StartDate": "25/08/2022 00:00:00",
+                            "Status": "Cancelled",
+                            "TransType": "Sponsorship"
+                        }
+                    ],
+                    "uploadDate": "2023-09-14T13:11:02.000Z"
+                }
+            },
+            "adaptor": "salesforce",
+            "configuration": "tmp/sf-creds.json",
+            "expression": "jobs/committed/upsertDirectDebits.js",
+            "next": {
+                "upsertTransactionDDV2": "state.error"
+            }
+        },
+        {
+            "id": "upsertTransactionDDV2",
+            "state": {
+                "data": {
+                    "__query_params": {},
+                    "dataset": "wfwi Transactions - DD",
+                    "fileName": "wfwi Transactions - DD 20230907.csv",
+                    "fileType": "wfwi Transactions - DD 20230907",
+                    "json": [
+                        {
+                            "Amount": "5.00",
+                            "CampaignCode": "Regular Giving",
+                            "ClientName": "Women for Women",
+                            "DDRefforBank": "WFWI001322",
+                            "DDid": "79523200",
+                            "Date": "01/09/2023 00:00:00",
+                            "PrimKey": "WFWI110720211442260611",
+                            "PromoCode": "UKRGDRDP0517",
+                            "Reason": "",
+                            "Status": "Paid",
+                            "TransType": "Donation"
+                        },
+                        {
+                            "Amount": "22.00",
+                            "CampaignCode": "Sponsorship",
+                            "ClientName": "Women for Women",
+                            "DDRefforBank": "WFWI0013411",
+                            "DDid": "79057000",
+                            "Date": "01/09/2023 00:00:00",
+                            "PrimKey": "WFWI271120171742240411",
+                            "PromoCode": "UKSPWEBDD",
+                            "Reason": "",
+                            "Status": "Paid",
+                            "TransType": "Sponsorship"
+                        },
+                        {
+                            "Amount": "44.00",
+                            "CampaignCode": "Sponsorship",
+                            "ClientName": "Women for Women",
+                            "DDRefforBank": "WFWI0013511",
+                            "DDid": "79111000",
+                            "Date": "01/09/2023 00:00:00",
+                            "PrimKey": "WFWI071220170844580411",
+                            "PromoCode": "UKSPWEBDD",
+                            "Reason": "",
+                            "Status": "Paid",
+                            "TransType": "Sponsorship"
+                        }
+                    ]
+                }
+            },
+            "adaptor": "salesforce",
+            "configuration": "tmp/sf-creds.json",
+            "expression": "jobs/committed/upsertTransactionDDV2.js"
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 fn(state => {
   const formatDate = date => {
+    console.log(date);
     if (!date || date === 'NULL') return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
@@ -23,6 +24,26 @@ fn(state => {
   //   return undefined;
   // };
 
+  const formatEmpty = item => (item === '' ? undefined : item);
+  const addDaysToDate = (inputDate, daysToAdd) => {
+    const date = new Date(inputDate);
+    date.setDate(date.getDate() + daysToAdd);
+    return date;
+  };
+  const mapCancelDate = (cancelDate, paymentFrequency, lastClaimDate) => {
+    switch (paymentFrequency) {
+      case 'Monthly':
+        return formatDate(cancelDate);
+
+      case 'Annually':
+        const resultDate = addDaysToDate(lastClaimDate.split(' ')[0], 364);
+        console.log(resultDate, 'result Date');
+        return resultDate.toISOString().slice(0, 10);
+      default:
+        return formatDate(cancelDate);
+    }
+  };
+
   const donations = state.data.json
     .filter(x => x.PrimKey)
     .map(x => {
@@ -43,8 +64,10 @@ fn(state => {
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
-        Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
-        npe03__Open_Ended_Status__c: x.CancelDate && x.Status !== 'Live' ? 'Closed' : undefined,
+        Closeout_Date__c: x.CancelDate
+          ? mapCancelDate(x.CancelDate, x.PaymentFrequency, x.LastClaimDate)
+          : formatEmpty(x.CancelDate),
+        npe03__Open_Ended_Status__c: 'Closed',
         of_Sisters_Requested__c:
           x['Current amount'] == '22.00'
             ? 1
@@ -64,21 +87,53 @@ fn(state => {
       };
     });
 
-  return { ...state, donations };
+  return { ...state, donations, formatDate };
 });
-
-bulk(
-  'npe03__Recurring_Donation__c', // the sObject
-  'upsert', //  the operation
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => state.donations
-);
 
 fn(state => {
-  // lighten state
-  return { ...state, donations: [] };
+  const { formatDate } = state;
+  const mapPledged = (ddid, status, paymentFrequency, lastClaimDate, nextDate) => {
+    if (status === 'Cancelled' && paymentFrequency === 'Monthly') {
+      let addMonth = new Date(lastClaimDate);
+      addMonth = addMonth.setDate(addMonth.getMonth() + 1);
+      return `${ddid}_${formatDate(addMonth)}_Pledged`;
+    }
+    if (status === 'Cancelled' && paymentFrequency === 'Annually') {
+      let addYear = new Date(lastClaimDate);
+      addYear = addYear.setDate(addYear.getYear() + 1);
+      return `${ddid}_${formatDate(addYear)}_Pledged`;
+    }
+
+    if (status !== 'Cancelled') {
+      return `${ddid}_${formatDate(nextDate)}_Pledged`;
+    }
+  };
+
+  const opportunity = state.data.json
+    .filter(x => x.PrimKey)
+    .map(x => ({
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
+      CG_Pledged_Donation_ID__c: mapPledged(x.DDid, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
+      StageName: x.CancelDate !== '' ? 'Pledged' : 'Closed Lost',
+      CloseDate: x.NextDate !== '' ? formatDate(x.NextDate) : 'undefined',
+      Amount: x.Amount,
+    }));
+
+  return { ...state, opportunity };
 });
+
+// bulk(
+//   'npe03__Recurring_Donation__c', // the sObject
+//   'upsert', //  the operation
+//   {
+//     extIdField: 'Committed_Giving_ID__c',
+//     failOnError: true,
+//     allowNoOp: true,
+//   },
+//   state => state.donations
+// );
+
+// fn(state => {
+//   // lighten state
+//   return { ...state, donations: [] };
+// });

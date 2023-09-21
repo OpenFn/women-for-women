@@ -29,13 +29,12 @@ fn(state => {
   };
 });
 
-
 fn(state => {
   const cleanDate = date => {
     if (!date) return undefined;
     date = date.replace(/[:\/]/g, '');
     return date.replace(/\s+/g, '');
-  }
+  };
 
   const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.Date)}`;
 
@@ -72,17 +71,16 @@ fn(state => {
   return { ...state, opportunities };
 });
 
-
-bulk(
-  'Opportunity',
-  'upsert',
-  {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
-    allowNoOp: true,
-  },
-  state => state.opportunities
-);
+// bulk(
+//   'Opportunity',
+//   'upsert',
+//   {
+//     extIdField: 'Committed_Giving_ID__c',
+//     failOnError: true,
+//     allowNoOp: true,
+//   },
+//   state => state.opportunities
+// );
 
 alterState(state => {
   // lighten state
