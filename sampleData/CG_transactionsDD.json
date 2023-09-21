@@ -42,5 +42,31 @@
       "Reason": "",
       "Status": "Paid",
       "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "264.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI00002444",
+      "DDid": "69989500",
+      "Date": "25/05/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260699",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "66.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI00056311",
+      "DDid": "72820000",
+      "Date": "25/08/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260699",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
     }
   ]}
