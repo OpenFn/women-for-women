@@ -1,11 +1,17 @@
 fn(state => {
   const formatDate = date => {
-    console.log(date);
     if (!date || date === 'NULL') return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
+  };
+
+  const parseCustomDate = dateString => {
+    const [day, month, year, time] = dateString.split(/[\s/]/);
+    const [hours, minutes, seconds] = time.split(':');
+
+    return new Date(year, month - 1, day, hours, minutes, seconds);
   };
 
   const selectAmount = item => {
@@ -25,19 +31,22 @@ fn(state => {
   // };
 
   const formatEmpty = item => (item === '' ? undefined : item);
+
   const addDaysToDate = (inputDate, daysToAdd) => {
-    const date = new Date(inputDate);
-    date.setDate(date.getDate() + daysToAdd);
-    return date;
+    const startDate = new Date(inputDate);
+
+    const endDate = startDate.setDate(startDate.getDate() + daysToAdd);
+
+    return new Date(endDate);
   };
+
   const mapCancelDate = (cancelDate, paymentFrequency, lastClaimDate) => {
     switch (paymentFrequency) {
       case 'Monthly':
         return formatDate(cancelDate);
 
       case 'Annually':
-        const resultDate = addDaysToDate(lastClaimDate.split(' ')[0], 364);
-        console.log(resultDate, 'result Date');
+        const resultDate = addDaysToDate(parseCustomDate(lastClaimDate), 364);
         return resultDate.toISOString().slice(0, 10);
       default:
         return formatDate(cancelDate);
@@ -113,7 +122,7 @@ fn(state => {
     .filter(x => x.PrimKey)
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
-      CG_Pledged_Donation_ID__c: mapPledged(x.DDid, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
+      CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       StageName: x.CancelDate !== '' ? 'Pledged' : 'Closed Lost',
       CloseDate: x.NextDate !== '' ? formatDate(x.NextDate) : 'undefined',
       Amount: x.Amount,
