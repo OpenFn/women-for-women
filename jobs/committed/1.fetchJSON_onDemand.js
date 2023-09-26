@@ -1,7 +1,7 @@
 alterState(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
-      'wfwi Donors 20230831',
+      'wfwi Donors 20230922',
     ];
     console.log('Files to sync: ', partialFilenames);
 
