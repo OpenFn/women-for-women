@@ -130,6 +130,20 @@ fn(state => {
       const newYear = new Date(addYear).toISOString().split('T')[0];
       return `${ddid}_${newYear}_Pledged`;
     }
+    
+    if (status === 'Cancelled' && paymentFrequency === 'SemiAnnually') {
+      let addMonth = new Date(lastClaimDate);
+      addMonth = addMonth.setMonth(addMonth.getMonth() + 6);
+      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      return `${ddid}_${newMonth}_Pledged`;
+    }
+    
+    if (status === 'Cancelled' && paymentFrequency === 'Quarterly') {
+      let addMonth = new Date(lastClaimDate);
+      addMonth = addMonth.setMonth(addMonth.getMonth() + 3);
+      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      return `${ddid}_${newMonth}_Pledged`;
+    }
 
     if (status !== 'Cancelled') {
       return `${ddid}_${formatDateYMD(nextDate)}_Pledged`;
