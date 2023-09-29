@@ -1,0 +1,72 @@
+{
+  "__query_params": {},
+  "dataset": "wfwi Transactions - DD",
+  "fileName": "wfwi Transactions - DD 20230907.csv",
+  "fileType": "wfwi Transactions - DD 20230907",
+  "json": [
+    {
+      "Amount": "5.00",
+      "CampaignCode": "Regular Giving",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI001322",
+      "DDid": "79523200",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260611",
+      "PromoCode": "UKRGDRDP0517",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Donation"
+    },
+     {
+      "Amount": "22.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI0013411",
+      "DDid": "79057000",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "WFWI271120171742240411",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "44.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI0013511",
+      "DDid": "79111000",
+      "Date": "01/09/2023 00:00:00",
+      "PrimKey": "WFWI071220170844580411",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "264.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI00002444",
+      "DDid": "69989500",
+      "Date": "25/05/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260699",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    },
+    {
+      "Amount": "66.00",
+      "CampaignCode": "Sponsorship",
+      "ClientName": "Women for Women",
+      "DDRefforBank": "WFWI00056311",
+      "DDid": "72820000",
+      "Date": "25/08/2023 00:00:00",
+      "PrimKey": "WFWI110720211442260699",
+      "PromoCode": "UKSPWEBDD",
+      "Reason": "",
+      "Status": "Paid",
+      "TransType": "Sponsorship"
+    }
+  ]}
