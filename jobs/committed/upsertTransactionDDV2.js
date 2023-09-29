@@ -29,19 +29,26 @@ fn(state => {
   };
 });
 
-
 fn(state => {
   const cleanDate = date => {
     if (!date) return undefined;
     date = date.replace(/[:\/]/g, '');
     return date.replace(/\s+/g, '');
-  }
+  };
 
   const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.Date)}`;
+  const formatDateYMD = inputDate => {
+    // Split the input date string into date and time parts
+    const datePart = inputDate.split(' ')[0];
+    // Split the date part into day, month, and year
+    const [day, month, year] = datePart.split('/');
 
+    return year + '-' + month + '-' + day;
+  };
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: selectGivingId(x),
+      CG_Pledged_Donation_ID__c: `${x.DDid}_${formatDateYMD(x.Date)}_Pledged`,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
@@ -72,19 +79,18 @@ fn(state => {
   return { ...state, opportunities };
 });
 
-
 bulk(
   'Opportunity',
   'upsert',
   {
-    extIdField: 'Committed_Giving_ID__c',
+    extIdField: 'CG_Pledged_Donation_ID__c',
     failOnError: true,
     allowNoOp: true,
   },
   state => state.opportunities
 );
 
-alterState(state => {
+fn(state => {
   // lighten state
   return { ...state, opportunities: [] };
 });
