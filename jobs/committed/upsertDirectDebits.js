@@ -155,7 +155,7 @@ fn(state => {
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
       CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
-      StageName: x.CancelDate !== '' ? 'Pledged' : 'Closed Lost',
+      StageName: x.CancelDate !== '' ? 'Closed Lost' : 'Pledged',
       CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
       Amount: x['Current amount'],
       Name: x.DDRefforBank,
