@@ -7,6 +7,13 @@ fn(state => {
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
+  const parseCustomDate = dateString => {
+    const [day, month, year, time] = dateString.split(/[\s/]/);
+    const [hours, minutes, seconds] = time.split(':');
+
+    return new Date(year, month - 1, day, hours, minutes, seconds);
+  };
+
   const selectAmount = item => {
     if (item['Current amount']) {
       return isNaN(item['Current amount'])
@@ -22,6 +29,38 @@ fn(state => {
   //   }
   //   return undefined;
   // };
+
+  const formatEmpty = item => (item === '' ? undefined : item);
+
+  const addDaysToDate = (inputDate, daysToAdd) => {
+    const startDate = new Date(inputDate);
+
+    const endDate = startDate.setDate(startDate.getDate() + daysToAdd);
+
+    return new Date(endDate);
+  };
+
+  const mapCancelDate = (cancelDate, paymentFrequency, lastClaimDate) => {
+    switch (paymentFrequency) {
+      case 'Monthly':
+        return formatDate(cancelDate);
+
+      case 'Annually':
+        const add364Days = addDaysToDate(parseCustomDate(lastClaimDate), 364);
+        return add364Days.toISOString();
+
+      case 'SemiAnnually':
+        const add181Days = addDaysToDate(parseCustomDate(lastClaimDate), 181);
+        return add181Days.toISOString();
+
+      case 'Quarterly':
+        const add90Days = addDaysToDate(parseCustomDate(lastClaimDate), 90);
+        return add90Days.toISOString();
+
+      default:
+        return formatDate(cancelDate);
+    }
+  };
 
   const donations = state.data.json
     .filter(x => x.PrimKey)
@@ -43,8 +82,10 @@ fn(state => {
         npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
         Committed_Giving_Direct_Debit_Reference__c: x.DDRefforBank,
         npsp__PaymentMethod__c: 'Direct Debit',
-        Closeout_Date__c: x.CancelDate ? formatDate(x.CancelDate) : x.CancelDate,
-        npe03__Open_Ended_Status__c: x.CancelDate && x.Status !== 'Live' ? 'Closed' : undefined,
+        Closeout_Date__c: x.CancelDate
+          ? mapCancelDate(x.CancelDate, x.PaymentFrequency, x.LastClaimDate)
+          : formatEmpty(x.CancelDate),
+        npe03__Open_Ended_Status__c: 'Closed',
         of_Sisters_Requested__c:
           x['Current amount'] == '22.00'
             ? 1
@@ -64,9 +105,53 @@ fn(state => {
       };
     });
 
-  return { ...state, donations };
+  return { ...state, donations, formatDate };
 });
 
+fn(state => {
+  const formatDateYMD = inputDate => {
+    // Split the input date string into date and time parts
+    const datePart = inputDate.split(' ')[0];
+    // Split the date part into day, month, and year
+    const [day, month, year] = datePart.split('/');
+
+    return year + '-' + month + '-' + day;
+  };
+
+  const mapPledged = (ddid, status, paymentFrequency, lastClaimDate, nextDate) => {
+    if (status === 'Cancelled' && paymentFrequency === 'Monthly') {
+      let addMonth = new Date(lastClaimDate);
+      addMonth = addMonth.setMonth(addMonth.getMonth() + 1);
+      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      return `${ddid}_${newMonth}_Pledged`;
+    }
+    if (status === 'Cancelled' && paymentFrequency === 'Annually') {
+      let addYear = new Date(formatDateYMD(lastClaimDate));
+      addYear = addYear.setFullYear(addYear.getFullYear() + 1);
+      const newYear = new Date(addYear).toISOString().split('T')[0];
+      return `${ddid}_${newYear}_Pledged`;
+    }
+
+    if (status !== 'Cancelled') {
+      return `${ddid}_${formatDateYMD(nextDate)}_Pledged`;
+    }
+  };
+
+  const opportunities = state.data.json
+    .filter(x => x.PrimKey)
+    .map(x => ({
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
+      CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
+      StageName: x.CancelDate !== '' ? 'Pledged' : 'Closed Lost',
+      CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
+      Amount: x['Current amount'],
+      Name: x.DDRefforBank,
+    }));
+
+  return { ...state, opportunities };
+});
+
+// Upserting donation
 bulk(
   'npe03__Recurring_Donation__c', // the sObject
   'upsert', //  the operation
@@ -78,7 +163,19 @@ bulk(
   state => state.donations
 );
 
+// Upserting opportunities
+bulk(
+  'Opportunity', // the sObject
+  'upsert', // the operation
+  {
+    extIdField: 'CG_Pledged_Donation_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => state.opportunities
+);
+
 fn(state => {
   // lighten state
-  return { ...state, donations: [] };
+  return { ...state, donations: [], opportunities: [] };
 });
