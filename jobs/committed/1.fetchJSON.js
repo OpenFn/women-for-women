@@ -1,5 +1,3 @@
-list('/');
-
 fn(state => {
   const fileNames = [
     'wfwi Card Master',
@@ -9,34 +7,71 @@ fn(state => {
     'wfwi Custom CC Fields',
     'wfwi Custom DD Fields',
   ];
-  console.log('Files to sync: ', fileNames);
+
+  // Get today's date in the "yyyyMMdd" format
   const today = new Date();
-  const yesterdayFiles = state.data
-    .filter(file => fileNames.some(s => file.name.includes(s)) && file.name.split('.')[1] === 'csv')
-    .map(file => {
-      const inputDate = file.name.split('.')[0].match(/\d+$/);
+  const todayDate = today.toISOString().slice(0, 10).replace(/-/g, '');
 
-      if (inputDate !== null) {
-        const year = inputDate[0].substring(0, 4);
-        const month = inputDate[0].substring(4, 6);
-        const day = inputDate[0].substring(6, 8);
+  // Calculate yesterday's date
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayDate = yesterday.toISOString().slice(0, 10).replace(/-/g, '');
 
-        const dateObj = new Date(`${year}-${month}-${day}`);
+  return list(
+    '/',
+    file => {
+      const fileName = file.name;
+      const containsSpecifiedName = fileName && fileNames.some(name => fileName.includes(name));
+      const containYesterdayDate = fileName && fileName.includes(yesterdayDate);
+      // Files contain todays date
+      // const containTodayDate = fileName && fileName.includes(todayDate);
 
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1); // set the date to yesterday
+      return containsSpecifiedName && containYesterdayDate;
+    },
+    state => {
+      const yesterdayFiles = state.data;
+      if (yesterdayFiles.length === 0) console.log('No CSV files found, Will send alert email shortly');
 
-        // check for yesterday files only
-        return dateObj.toDateString() === yesterday.toDateString() ? file : [];
-      }
+      const foundFiles = yesterdayFiles.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
+      const missingFiles = fileNames.filter(fileName => !foundFiles.includes(fileName));
 
-      return [];
-    })
-    .flat();
+      return {
+        ...state,
+        data: {},
+        yesterdayFiles,
+        missingFiles,
+        today,
+        yesterday,
+        todayDate,
+        yesterdayDate,
+        fileNames,
+      };
+    }
+  )(state);
+});
 
-  if (yesterdayFiles.length === 0) console.log('No new CSV files found.');
+fn(state => {
+  const { missingFiles, yesterdayDate, today, yesterday } = state;
 
-  return { ...state, yesterdayFiles };
+  if (missingFiles.length > 0) {
+    const url = state.configuration.openfnInboxUrl;
+    const data = {
+      missingFiles,
+      missingDate: yesterday.toISOString().slice(0, 10),
+      runStartDate: today.toISOString(),
+      notificationType: 'missing-files',
+    };
+    console.log('The following files are missing for', yesterdayDate);
+    console.log(JSON.stringify(missingFiles, null, 2));
+
+    return http
+      .post({ url, data })(state)
+      .then(() => {
+        console.log(`Posted missing to OpenFn Inbox.\n`);
+        return { ...state, references: [], data: {} };
+      });
+  }
+  return state;
 });
 
 each(
