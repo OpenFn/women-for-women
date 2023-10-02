@@ -46,10 +46,10 @@ fn(state => {
       //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
       CurrencyIsoCode: 'GBP',
-      StageName: 'Closed Won',
+      StageName: x['Status'] === 'Unpaid' ? 'Closed Lost' : 'Closed Won',
+      npsp__Closed_Lost_Reason__c: x['Status'] === 'Unpaid' ?  x['Reason'] :undefined, 
       CloseDate: state.formatDate(x['Date']),
       Transaction_Date_Time__c: state.formatDate(x['Date']),
-      npsp__Closed_Lost_Reason__c: x['Unpaid reason'], //Q: Map from DirectDebit?
       'Campaign.Source_Code__c': x['PromoCode'],
       Name: x.DDRefforBank,
       Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
