@@ -4,12 +4,12 @@ fn(state => {
       // 'wfwi Donors 20230929',
       // 'wfwi Donors 20230930',
       // 'wfwi Donors 20231001',
-      'wfwi Card Master 20230929',
-      'wfwi Direct Debits 20230929',
-      'wfwi Transactions - Cards 20230929',
-      'wfwi Transactions - DD 20230929',
-      'wfwi Custom CC Fields 20230929', 
-      'wfwi Custom DD Fields 20230929', 
+      'wfwi Card Master 20230930',
+      'wfwi Direct Debits 20230930',
+      'wfwi Transactions - Cards 20230930',
+      'wfwi Transactions - DD 20230930',
+      'wfwi Custom CC Fields 20230930', 
+      'wfwi Custom DD Fields 20230930', 
     ];
     console.log('Files to sync: ', partialFilenames);
 
