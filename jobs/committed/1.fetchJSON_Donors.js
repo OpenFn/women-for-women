@@ -10,19 +10,19 @@ fn(state => {
     file => {
       const fileName = file.name;
       const containsSpecifiedName = fileName && fileNames.some(name => fileName.includes(name));
-      const containTodayDate = fileName && fileName.includes(20231001);
+      const containTodayDate = fileName && fileName.includes(todayDate);
 
       return containsSpecifiedName && containTodayDate;
     },
     state => {
       // pluck the latest CSV file
-      const latestFile = state.data;
-      if (latestFile.length === 0) console.log('No CSV files found, Will send alert email shortly');
+      const latestFiles = state.data;
+      if (latestFiles.length === 0) console.log('No CSV files found, Will send alert email shortly');
 
-      const foundFiles = latestFile.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
+      const foundFiles = latestFiles.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
       const missingFiles = fileNames.filter(fileName => !foundFiles.includes(fileName));
 
-      return { ...state, data: {}, latestFile, missingFiles, today, todayDate };
+      return { ...state, data: {}, latestFiles, missingFiles, today, todayDate };
     }
   )(state);
 });
@@ -52,7 +52,7 @@ fn(state => {
 });
 
 each(
-  '$.latestFile[*]',
+  '$.latestFiles[*]',
   fn(state => {
     const { configuration, data } = state;
 

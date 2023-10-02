@@ -12,38 +12,29 @@ fn(state => {
   const today = new Date();
   const todayDate = today.toISOString().slice(0, 10).replace(/-/g, '');
 
-  // Calculate yesterday's date
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-  const yesterdayDate = yesterday.toISOString().slice(0, 10).replace(/-/g, '');
-
   return list(
     '/',
     file => {
       const fileName = file.name;
       const containsSpecifiedName = fileName && fileNames.some(name => fileName.includes(name));
-      const containYesterdayDate = fileName && fileName.includes(yesterdayDate);
-      // Files contain todays date
-      // const containTodayDate = fileName && fileName.includes(todayDate);
+      const containTodayDate = fileName && fileName.includes(todayDate);
 
-      return containsSpecifiedName && containYesterdayDate;
+      return containsSpecifiedName && containTodayDate;
     },
     state => {
-      const yesterdayFiles = state.data;
-      if (yesterdayFiles.length === 0) console.log('No CSV files found, Will send alert email shortly');
+      const latestFiles = state.data;
+      if (latestFiles.length === 0) console.log('No CSV files found, Will send alert email shortly');
 
-      const foundFiles = yesterdayFiles.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
+      const foundFiles = latestFiles.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
       const missingFiles = fileNames.filter(fileName => !foundFiles.includes(fileName));
 
       return {
         ...state,
         data: {},
-        yesterdayFiles,
+        latestFiles,
         missingFiles,
         today,
-        yesterday,
         todayDate,
-        yesterdayDate,
         fileNames,
       };
     }
@@ -51,13 +42,13 @@ fn(state => {
 });
 
 fn(state => {
-  const { missingFiles, yesterdayDate, today, yesterday } = state;
+  const { missingFiles, today } = state;
 
   if (missingFiles.length > 0) {
     const url = state.configuration.openfnInboxUrl;
     const data = {
       missingFiles,
-      missingDate: yesterday.toISOString().slice(0, 10),
+      missingDate: today.toISOString().slice(0, 10),
       runStartDate: today.toISOString(),
       notificationType: 'missing-files',
     };
@@ -75,7 +66,7 @@ fn(state => {
 });
 
 each(
-  '$.yesterdayFiles[*]',
+  '$.latestFiles[*]',
   fn(state => {
     const { configuration, data } = state;
 
