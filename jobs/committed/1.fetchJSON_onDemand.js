@@ -70,8 +70,8 @@ each(
         fileType,
         json: sets,
         uploadDate: new Date(data.modifyTime).toISOString(),
-        dataset: 'testing',
-        //dataset: fileType.substring(0, fileType.length - 9),
+        //dataset: 'testing',
+        dataset: fileType.substring(0, fileType.length - 9),
       }));
 
       let countInbox = 0;
