@@ -117,35 +117,35 @@ fn(state => {
     return year + '-' + month + '-' + day;
   };
 
-  const mapPledged = (ddid, status, paymentFrequency, lastClaimDate, nextDate) => {
-    if (status === 'Cancelled' && paymentFrequency === 'Monthly') {
+  const mapPledged = (ddid, cancelDate, paymentFrequency, lastClaimDate, nextDate) => {
+    if (cancelDate && paymentFrequency === 'Monthly') {
       let addMonth = new Date(lastClaimDate);
       addMonth = addMonth.setMonth(addMonth.getMonth() + 1);
       const newMonth = new Date(addMonth).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
-    if (status === 'Cancelled' && paymentFrequency === 'Annually') {
+    if (cancelDate && paymentFrequency === 'Annually') {
       let addYear = new Date(formatDateYMD(lastClaimDate));
       addYear = addYear.setFullYear(addYear.getFullYear() + 1);
       const newYear = new Date(addYear).toISOString().split('T')[0];
       return `${ddid}_${newYear}_Pledged`;
     }
-    
-    if (status === 'Cancelled' && paymentFrequency === 'SemiAnnually') {
+
+    if (cancelDate && paymentFrequency === 'SemiAnnually') {
       let addMonth = new Date(lastClaimDate);
       addMonth = addMonth.setMonth(addMonth.getMonth() + 6);
       const newMonth = new Date(addMonth).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
-    
-    if (status === 'Cancelled' && paymentFrequency === 'Quarterly') {
+
+    if (cancelDate && paymentFrequency === 'Quarterly') {
       let addMonth = new Date(lastClaimDate);
       addMonth = addMonth.setMonth(addMonth.getMonth() + 3);
       const newMonth = new Date(addMonth).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
 
-    if (status !== 'Cancelled') {
+    if (cancelDate == '') {
       return `${ddid}_${formatDateYMD(nextDate)}_Pledged`;
     }
   };
@@ -154,7 +154,7 @@ fn(state => {
     .filter(x => x.PrimKey)
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
-      CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.Status, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
+      CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       StageName: x.CancelDate !== '' ? 'Closed Lost' : 'Pledged',
       CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
       Amount: x['Current amount'],
