@@ -117,31 +117,36 @@ fn(state => {
     return year + '-' + month + '-' + day;
   };
 
+  function addMonths(date, months) {
+    const cleanDate = parseDate(date);
+    const newDate = new Date(cleanDate);
+    newDate.setMonth(cleanDate.getMonth() + months);
+    return newDate;
+  }
+
+  function parseDate(dateString) {
+    const [day, month, year] = dateString.split(/[/ :]/);
+    const jsDate = new Date(`${year}-${month}-${day}`);
+    return jsDate;
+  }
   const mapPledged = (ddid, cancelDate, paymentFrequency, lastClaimDate, nextDate) => {
     if (cancelDate && paymentFrequency === 'Monthly') {
-      let addMonth = new Date(lastClaimDate);
-      addMonth = addMonth.setMonth(addMonth.getMonth() + 1);
-      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
     if (cancelDate && paymentFrequency === 'Annually') {
-      let addYear = new Date(formatDateYMD(lastClaimDate));
-      addYear = addYear.setFullYear(addYear.getFullYear() + 1);
-      const newYear = new Date(addYear).toISOString().split('T')[0];
+      const newYear = addMonths(lastClaimDate, 12).toISOString().split('T')[0];
       return `${ddid}_${newYear}_Pledged`;
     }
 
     if (cancelDate && paymentFrequency === 'SemiAnnually') {
-      let addMonth = new Date(lastClaimDate);
-      addMonth = addMonth.setMonth(addMonth.getMonth() + 6);
-      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      const newMonth = addMonths(lastClaimDate, 6).toISOString().split('T')[0];
+
       return `${ddid}_${newMonth}_Pledged`;
     }
 
     if (cancelDate && paymentFrequency === 'Quarterly') {
-      let addMonth = new Date(lastClaimDate);
-      addMonth = addMonth.setMonth(addMonth.getMonth() + 3);
-      const newMonth = new Date(addMonth).toISOString().split('T')[0];
+      const newMonth = addMonths(lastClaimDate, 3).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
 
