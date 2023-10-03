@@ -12,9 +12,9 @@ fn(state => {
     to,
     cc,
     subject: 'Committed Giving Data Sync: No file found',
-    html: `Dear admins, <br/><br/> Committed Giving file exports may have NOT been uploaded to the SFTP server for date ${missingDate}: <b>${missingFiles.join(
+    html: `Dear admins, <br/><br/> Committed Giving file exports may have NOT been uploaded to the SFTP server for date ${missingDate}. The missing files are: <b>${missingFiles.join(
       ','
-    )}</b>
+    )}</b>.
    Please review the sftp server and upload any missing CSV exports. Contact OpenFn at <a href='mailto:support@openfn.org'>support@openfn.org</a> with any questions.`,
   };
 
