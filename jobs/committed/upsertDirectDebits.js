@@ -164,6 +164,7 @@ fn(state => {
       CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
       Amount: x['Current amount'],
       Name: x.DDRefforBank,
+      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`
     }));
 
   return { ...state, opportunities };
