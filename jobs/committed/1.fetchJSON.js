@@ -52,7 +52,7 @@ fn(state => {
       runStartDate: today.toISOString(),
       notificationType: 'missing-files',
     };
-    console.log('The following files are missing for', yesterdayDate);
+    console.log('The following files are missing for', today);
     console.log(JSON.stringify(missingFiles, null, 2));
 
     return http
