@@ -188,14 +188,10 @@ fn(state => {
       };
     });
 
-  function removeDuplicates(arr) {
-    return [...new Set(arr)];
-  }
-
   //combine all recurring donations into 1 array --> to later map to pledged Opps
   const sponsorshipsRaw = multipleOf22;
   const donationsRaw = state.data.json.filter(x => !multipleOf22IDs.includes(x.CardMasterID));
-  const allDonations = removeDuplicates(sponsorshipsRaw.concat(donationsRaw));
+  const allDonations = sponsorshipsRaw.concat(donationsRaw);
 
   return { ...state, sponsorships, donations, allDonations, formatDate };
 });
@@ -249,8 +245,14 @@ fn(state => {
     }
   };
 
+  function removeDuplicates(arr) {
+    return [...new Set(arr)];
+  }
+
+  const cleanedDonations = removeDuplicates(allDonations);
   //console.log('# pledged opportunities to schedule ::', allDonations.length);
-  console.log('pledged opportunities to schedule ::', allDonations);
+  console.log('pledged opportunities to schedule ::', cleanedDonations);
+
   const opportunities = allDonations.map(x => ({
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     CG_Pledged_Donation_ID__c: mapPledged(
