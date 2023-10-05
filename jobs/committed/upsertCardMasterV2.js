@@ -1,23 +1,32 @@
 fn(state => {
-  const json = state.data.json.filter(x => x.PrimKey);
-  return { ...state, data: { ...state.data, json } };
-});
-
-fn(state => {
   const formatDate = date => {
-    if (!date) return null;
+    if (!date || date === 'NULL') return null;
     date = date.split(' ')[0];
     const parts = date.match(/(\d+)/g);
-    const year = parts !== null ? (String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`) : parts;
+    const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
 
+  const parseCustomDate = dateString => {
+    const [day, month, year, time] = dateString.split(/[\s/]/);
+    const [hours, minutes, seconds] = time.split(':');
+
+    return new Date(year, month - 1, day, hours, minutes, seconds);
+  };
+
   const selectAmount = item => {
-    if (item.Amount) {
-      return isNaN(item.Amount) ? item.Amount.replace(/[^-.0-9]/g, '').replace(/�5/g, '') : parseInt(item.Amount);
+    if (item['Amount']) {
+      return isNaN(item['Amount']) ? item['Amount'].replace(/[^-.0-9]/g, '') : parseInt(item['Amount']);
     }
     return undefined;
   };
+  // Use for TransType re-processing if CG provides the incorrect value
+  // const selectAmount = item => {
+  //   if (item['FirstAmount']) { //CHANGED FROM: 'Amount'
+  //     return isNaN(item['FirstAmount']) ? item['FirstAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['FirstAmount']);
+  //   }
+  //   return undefined;
+  // };
 
   const increaseMonth = date => {
     let dateEstablished = formatDate(date);
@@ -26,11 +35,14 @@ fn(state => {
     return new Date(dateEstablished).toISOString();
   };
 
-  const increaseYear = date => {
-    let dateEstablished = formatDate(date);
-    const year = new Date(dateEstablished).getUTCFullYear();
-    dateEstablished = new Date(dateEstablished).setUTCFullYear(year + 1);
-    return new Date(dateEstablished).toISOString();
+  const formatEmpty = item => (item === '' ? undefined : item);
+
+  const addDaysToDate = (inputDate, daysToAdd) => {
+    const startDate = new Date(inputDate);
+
+    const endDate = startDate.setDate(startDate.getDate() + daysToAdd);
+
+    return new Date(endDate);
   };
 
   const checkMonth = date => {
@@ -45,24 +57,28 @@ fn(state => {
     return year;
   };
 
-  const checkActiveInactiveStatus = x => {
-    // 1. If csv.RecurringCancelDate defined, then sf.Active__c: false
-    if (x.RecurringCancelDate) return false;
-    // 2. If csv.RecurringCancelDate not defined, then check csv.LastCredited as follows:
-    if (!x.RecurringCancelDate) {
-      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then sf.Active__c: false.
-      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then sf.Active__c: false.
-      if (!x.LastCredited && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return false;
+  const mapCancelDate = (cancelDate, paymentFrequency, lastClaimDate) => {
+    switch (paymentFrequency) {
+      case 'Monthly':
+        return formatDate(cancelDate);
 
-      // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
-      if (!x.NextDate && x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
-        return false;
-      // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
-      if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
-        return true;
+      case 'Yearly':
+        const add364Days = addDaysToDate(parseCustomDate(lastClaimDate), 364);
+        return add364Days.toISOString();
 
-      //e. if no LastCredited date, but occurrnece is defined...then active = true
-      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
+      case 'Semi Annually':
+        const add181Days = addDaysToDate(parseCustomDate(lastClaimDate), 181);
+        return add181Days.toISOString();
+
+      case 'SemiAnnually':
+        return add181Days.toISOString();
+
+      case 'Quarterly':
+        const add90Days = addDaysToDate(parseCustomDate(lastClaimDate), 90);
+        return add90Days.toISOString();
+
+      default:
+        return formatDate(cancelDate);
     }
   };
 
@@ -73,10 +89,14 @@ fn(state => {
     if (!x.RecurringCancelDate) {
       // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then 'Lapsed'.
       // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then 'Lapsed'
-      if (!x.LastCredited  && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
+      if (!x.LastCredited && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return 'Lapsed';
 
       // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, return Active__c: false.
-      if (!x.NextDate && x.LastCredited && new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3)))
+      if (
+        !x.NextDate &&
+        x.LastCredited &&
+        new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3))
+      )
         return 'Lapsed';
       // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
@@ -86,33 +106,54 @@ fn(state => {
     }
   };
 
+  const checkNpspActiveStatus = x => {
+    // If csv.RecurringCancelDate not defined, then check csv.LastCredited as follows:
+    if (!x.RecurringCancelDate) {
+      // a. If csv.LastCredited not defined && csv.Occurrence also not defined OR None, then 'Lapsed'.
+      // b. If csv.LastCredited not defined && csv.Occurrence = Monthly OR Yearly, then 'Lapsed'
+      if (!x.LastCredited && !x.NextDate && (!x.Occurrence || x.Occurrence === 'None')) return undefined;
+
+      // c. If csv.LastCredited is defined... check if date is older than 3 months from today (csv.LastCredited < (today - 3months) == true). If older, don't set Active__c: true.
+      if (
+        !x.NextDate &&
+        x.LastCredited &&
+        new Date(x.LastCredited) < new Date(new Date().setMonth(new Date().getMonth() - 3))
+      )
+        return undefined;
+      // d. If csv.LastCredited is defined... check if date is NOT older than 3 months from today (csv.LastCredited < (today - 3months) == false). If not older than 3mo, then return Active__c: true.
+      if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
+        return true;
+      //e. if no LastCredited date, but occurrnece is defined...then active = true
+      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
+    }
+  };
+
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: `${x.PrimKey}${x.CardMasterID}`,
-      CG_Credit_Card_ID__c: x.CardMasterID,
-      Name: x.CardMasterID,
+      Committed_Giving_Direct_Debit_ID__c: x.CardMasterID,
       'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
-      npe03__Installment_Period__c: Number(selectAmount(x)) % 264 === 0 ? 'Yearly' : 'Monthly',
-      npe03__Amount__c: x.Amount.replace(/�/, ''),
-      Closeout_Date__c: x.RecurringCancelDate ? formatDate(x.RecurringCancelDate) : x.RecurringCancelDate,
-      Closeout_Reason__c: x.RecurringCancelReason,
-      npe03__Open_Ended_Status__c: x.RecurringCancelDate && x.Occurrence === 'None' ? 'Closed' : undefined,
-      //Active__c: checkActiveInactiveStatus(x), //Nov 2022 Request: To not uncheck Active, only add Closeout Date
+      npe03__Amount__c: x['Amount'],
       npsp__Status__c: checkNpspActiveInactiveStatus(x),
+      Active__c: checkNpspActiveStatus(x),
+      Closeout_Reason__c: x.RecurringCancelReason,
+      npe03__Installment_Period__c: x.Occurrence === 'None' || x.Occurrence === '' ? undefined : x.Occurrence,
+      npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
+      npsp__StartDate__c: x.AddedDateTime ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
+      npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
       npsp__PaymentMethod__c: 'Credit Card',
-      npe03__Date_Established__c: formatDate(x.AddedDateTime),
-      npsp__StartDate__c: increaseMonth(x.AddedDateTime),
-      npe03__Next_Payment_Date__c: !x.RecurringCancelDate
-        ? Number(selectAmount(x)) % 264 === 0
-          ? formatDate(x.NextDate)
-          : x.LastCredited && x.LastCredited != ''
-          ? increaseMonth(x.LastCredited)
-          : undefined
-        : undefined, //Note: This is required to trigger auto-insert of related Opps
+      Closeout_Date__c: x.RecurringCancelDate ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
+      npe03__Open_Ended_Status__c: 'Closed',
       of_Sisters_Requested__c:
-        Number(selectAmount(x)) % 264 === 0
-          ? Math.abs(Number(selectAmount(x)) / 264)
-          : Math.abs(Number(selectAmount(x)) / 22),
+        x['Amount'] == '22.00'
+          ? 1
+          : x['Amount'] % 264 === 0 || x.Occurrence === 'Yearly'
+          ? Math.floor(Math.abs(x['Amount'] / 264))
+          : x.Occurrence === 'Quarterly'
+          ? Math.floor(Math.abs(x['Amount'] / 66))
+          : x['Amount'] % 22 === 0 || x.Occurrence === 'Monthly'
+          ? Math.floor(Math.abs(x['Amount'] / 22))
+          : undefined,
       Expiration_Month__c: checkMonth(x.CCExpiry), //Parse month; SF expects text, but output should still be a number like '2' for February
       Expiration_Year__c: checkYear(x.CCExpiry), //Parse year; SF expects integer like '2021'
     };
@@ -153,8 +194,96 @@ fn(state => {
       };
     });
 
-  return { ...state, sponsorships, donations, formatDate };
+  //combine all recurring donations into 1 array
+  const allDonations = sponsorships.concat(donations);
+
+  return { ...state, sponsorships, donations, allDonations, formatDate };
 });
+
+fn(state => {
+  const formatDateYMD = inputDate => {
+    // Split the input date string into date and time parts
+    const datePart = inputDate.split(' ')[0];
+    // Split the date part into day, month, and year
+    const [day, month, year] = datePart.split('/');
+
+    return year + '-' + month + '-' + day;
+  };
+
+  function addMonths(date, months) {
+    const cleanDate = parseDate(date);
+    const newDate = new Date(cleanDate);
+    newDate.setMonth(cleanDate.getMonth() + months);
+    return newDate;
+  }
+
+  function parseDate(dateString) {
+    const [day, month, year] = dateString.split(/[/ :]/);
+    const jsDate = new Date(`${year}-${month}-${day}`);
+    return jsDate;
+  }
+  const mapPledged = (cardmasterid, cancelDate, paymentFrequency, lastClaimDate, nextDate) => {
+    if (cancelDate && paymentFrequency === 'Monthly') {
+      const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
+      return `${cardmasterid}_${newMonth}_Pledged`;
+    }
+    if (cancelDate && paymentFrequency === 'Annually') {
+      const newYear = addMonths(lastClaimDate, 12).toISOString().split('T')[0];
+      return `${cardmasterid}_${newYear}_Pledged`;
+    }
+
+    if (cancelDate && paymentFrequency === 'SemiAnnually') {
+      const newMonth = addMonths(lastClaimDate, 6).toISOString().split('T')[0];
+
+      return `${cardmasterid}_${newMonth}_Pledged`;
+    }
+
+    if (cancelDate && paymentFrequency === 'Quarterly') {
+      const newMonth = addMonths(lastClaimDate, 3).toISOString().split('T')[0];
+      return `${cardmasterid}_${newMonth}_Pledged`;
+    }
+
+    if (cancelDate == '') {
+      return `${cardmasterid}_${formatDateYMD(nextDate)}_Pledged`;
+    }
+  };
+
+  console.log('# pledged opportunities to schedule ::', allDonations.length);
+  const opportunities = allDonations
+    .filter(x => x.PrimKey)
+    .map(x => ({
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+      CG_Pledged_Donation_ID__c: mapPledged(
+        x.CardMasterID,
+        x.RecurringCancelDate,
+        x.Occurrence,
+        x.LastCredited,
+        x.NextDate
+      ),
+      StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
+      CloseDate: x.RecurringCancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
+      Amount: x['Amount'],
+      Name: x.CardMasterID,
+      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
+    }));
+
+  return { ...state, opportunities };
+});
+
+// Upserting recurring donations
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => {
+    console.log('Bulk upserting donations.');
+    state => state.donations;
+  }
+);
 
 bulk(
   'npe03__Recurring_Donation__c',
@@ -170,21 +299,19 @@ bulk(
   }
 );
 
+// Upserting opportunities
 bulk(
-  'npe03__Recurring_Donation__c',
-  'upsert',
+  'Opportunity', // the sObject
+  'upsert', // the operation
   {
-    extIdField: 'Committed_Giving_ID__c',
+    extIdField: 'CG_Pledged_Donation_ID__c',
     failOnError: true,
     allowNoOp: true,
   },
-  state => {
-    console.log('Bulk upserting donations.');
-    return state.donations;
-  }
+  state => state.opportunities
 );
 
 fn(state => {
   // lighten state
-  return { ...state, sponsorships: [], donations: [] };
+  return { ...state, donations: [], opportunities: [] };
 });
