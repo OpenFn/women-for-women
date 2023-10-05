@@ -138,7 +138,7 @@ fn(state => {
       return `${ddid}_${newYear}_Pledged`;
     }
 
-    if (cancelDate && paymentFrequency === 'SemiAnnually') {
+    if (cancelDate && paymentFrequency === 'Semi Annually') {
       const newMonth = addMonths(lastClaimDate, 6).toISOString().split('T')[0];
 
       return `${ddid}_${newMonth}_Pledged`;
@@ -154,13 +154,35 @@ fn(state => {
     }
   };
 
+  const setCloseDate = (cancelDate, paymentFrequency, lastClaimDate, nextDate) => {
+    if (cancelDate && paymentFrequency === 'Monthly') {
+      return addMonths(lastClaimDate, 1).toISOString().split('T')[0];
+    }
+
+    if (cancelDate && paymentFrequency === 'Annually') {
+      return addMonths(lastClaimDate, 12).toISOString().split('T')[0];
+    }
+
+    if (cancelDate && paymentFrequency === 'Semi Annually') {
+      return addMonths(lastClaimDate, 6).toISOString().split('T')[0];
+    }
+
+    if (cancelDate && paymentFrequency === 'Quarterly') {
+      return addMonths(lastClaimDate, 3).toISOString().split('T')[0];
+    }
+
+    if (cancelDate == '') {
+      return formatDateYMD(nextDate);
+    }
+  };
+
   const opportunities = state.data.json
     .filter(x => x.PrimKey)
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
       CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       StageName: x.CancelDate !== '' ? 'Closed Lost' : 'Pledged',
-      CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
+      CloseDate: setCloseDate(x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       Amount: x['Current amount'],
       Name: x.DDRefforBank,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
