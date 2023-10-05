@@ -304,7 +304,10 @@ bulk(
     failOnError: true,
     allowNoOp: true,
   },
-  state => state.opportunities
+  state => {
+    console.log('Bulk upserting Pledged opps.');
+    return state.opportunities
+  }
 );
 
 fn(state => {
