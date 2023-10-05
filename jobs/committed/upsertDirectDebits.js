@@ -49,8 +49,11 @@ fn(state => {
         const add364Days = addDaysToDate(parseCustomDate(lastClaimDate), 364);
         return add364Days.toISOString();
 
-      case 'SemiAnnually':
+      case 'Semi Annually':
         const add181Days = addDaysToDate(parseCustomDate(lastClaimDate), 181);
+        return add181Days.toISOString();
+
+      case 'SemiAnnually':
         return add181Days.toISOString();
 
       case 'Quarterly':
@@ -164,7 +167,7 @@ fn(state => {
       CloseDate: x.CancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.CancelDate),
       Amount: x['Current amount'],
       Name: x.DDRefforBank,
-      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`
+      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
     }));
 
   return { ...state, opportunities };
