@@ -161,7 +161,7 @@ fn(state => {
       ...baseMapping(x),
       ...{
         Type__c: 'Sponsorship',
-        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKSPCC',
+        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKWEBSP',
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
       },
     };
@@ -183,7 +183,7 @@ fn(state => {
         ...{
           Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c':
-            Number(selectAmount(x)) % 22 === 0 ? 'UKSPCC' : 'UKRG',
+            Number(selectAmount(x)) % 22 === 0 ? 'UKWEBSP' : 'UKWEBRG',
         },
       };
     });
@@ -224,13 +224,13 @@ fn(state => {
       const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;
     }
-    
+
     //TODO: Confirm how to determine frequency if we only see None now
-    if (cancelDate && paymentFrequency === 'None') { 
+    if (cancelDate && paymentFrequency === 'None') {
       const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;
     }
-    
+
     if (cancelDate && paymentFrequency === 'Annually') {
       const newYear = addMonths(lastClaimDate, 12).toISOString().split('T')[0];
       return `${cardmasterid}_${newYear}_Pledged`;
@@ -246,7 +246,7 @@ fn(state => {
       const newMonth = addMonths(lastClaimDate, 3).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;
     }
-    
+
     if (cancelDate == '' && paymentFrequency === 'Monthly') {
       const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;

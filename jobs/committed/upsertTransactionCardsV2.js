@@ -99,7 +99,7 @@ fn(state => {
     Method_of_Payment__c: 'Credit',
     CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
-    'Campaign.Source_Code__c': x.PromoCode,
+    'Campaign.Source_Code__c': x.PromoCode || 'UKWEB',
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
