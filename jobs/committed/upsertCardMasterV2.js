@@ -224,6 +224,13 @@ fn(state => {
       const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;
     }
+    
+    //TODO: Confirm how to determine frequency if we only see None now
+    if (cancelDate && paymentFrequency === 'None') { 
+      const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
+      return `${cardmasterid}_${newMonth}_Pledged`;
+    }
+    
     if (cancelDate && paymentFrequency === 'Annually') {
       const newYear = addMonths(lastClaimDate, 12).toISOString().split('T')[0];
       return `${cardmasterid}_${newYear}_Pledged`;
