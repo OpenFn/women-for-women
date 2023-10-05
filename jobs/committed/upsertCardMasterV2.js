@@ -20,14 +20,7 @@ fn(state => {
     }
     return undefined;
   };
-  // Use for TransType re-processing if CG provides the incorrect value
-  // const selectAmount = item => {
-  //   if (item['FirstAmount']) { //CHANGED FROM: 'Amount'
-  //     return isNaN(item['FirstAmount']) ? item['FirstAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['FirstAmount']);
-  //   }
-  //   return undefined;
-  // };
-
+  
   const increaseMonth = date => {
     let dateEstablished = formatDate(date);
     const month = new Date(dateEstablished).getUTCMonth();
@@ -136,14 +129,14 @@ fn(state => {
       npe03__Amount__c: x['Amount'],
       npsp__Status__c: checkNpspActiveInactiveStatus(x),
       Active__c: checkNpspActiveStatus(x),
-      Closeout_Reason__c: x.RecurringCancelReason,
+      Closeout_Reason__c: x.RecurringCancelReason!=='' ? x.RecurringCancelReason : undefined,
       npe03__Installment_Period__c: x.Occurrence === 'None' || x.Occurrence === '' ? undefined : x.Occurrence,
       npe03__Date_Established__c:
         x.AddedDateTime && x.AddedDateTime !== '' ? formatDate(x.AddedDateTime) : x.AddedDateTime,
       npsp__StartDate__c: x.AddedDateTime && x.AddedDateTime !== '' ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
       npsp__EndDate__c: x.EndDate && x.EndDate !== '' ? formatDate(x.EndDate) : x.EndDate,
       npsp__PaymentMethod__c: 'Credit Card',
-      Closeout_Date__c: x.RecurringCancelDate ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
+      Closeout_Date__c: x.RecurringCancelDate !=='' ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       npe03__Open_Ended_Status__c: 'Closed',
       of_Sisters_Requested__c:
         x['Amount'] == '22.00'
@@ -252,7 +245,7 @@ fn(state => {
     }
   };
 
-  console.log('# pledged opportunities to schedule ::', allDonations.length);
+  //console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', allDonations);
   const opportunities = allDonations.map(x => ({
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
