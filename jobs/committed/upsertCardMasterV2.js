@@ -196,6 +196,7 @@ fn(state => {
 
   //combine all recurring donations into 1 array
   const allDonations = sponsorships.concat(donations);
+  console.log('allDonations ::', allDonations);
 
   return { ...state, sponsorships, donations, allDonations, formatDate };
 });
