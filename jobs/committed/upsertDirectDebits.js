@@ -67,7 +67,7 @@ fn(state => {
         'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
         Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
-        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
+        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG',
         npe03__Amount__c: x['Current amount'],
         npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : undefined, //Nov 2022 Request: To not uncheck Active, only add Closeout Date
