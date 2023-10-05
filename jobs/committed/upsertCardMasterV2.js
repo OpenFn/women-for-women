@@ -251,6 +251,7 @@ fn(state => {
   };
 
   console.log('# pledged opportunities to schedule ::', allDonations.length);
+  console.log('pledged opportunities to schedule ::', allDonations);
   const opportunities = allDonations
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
