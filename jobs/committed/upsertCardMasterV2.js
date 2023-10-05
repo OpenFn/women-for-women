@@ -20,7 +20,7 @@ fn(state => {
     }
     return undefined;
   };
-  
+
   const increaseMonth = date => {
     let dateEstablished = formatDate(date);
     const month = new Date(dateEstablished).getUTCMonth();
@@ -129,14 +129,14 @@ fn(state => {
       npe03__Amount__c: x['Amount'],
       npsp__Status__c: checkNpspActiveInactiveStatus(x),
       Active__c: checkNpspActiveStatus(x),
-      Closeout_Reason__c: x.RecurringCancelReason!=='' ? x.RecurringCancelReason : undefined,
+      Closeout_Reason__c: x.RecurringCancelReason !== '' ? x.RecurringCancelReason : undefined,
       npe03__Installment_Period__c: x.Occurrence === 'None' || x.Occurrence === '' ? undefined : x.Occurrence,
       npe03__Date_Established__c:
         x.AddedDateTime && x.AddedDateTime !== '' ? formatDate(x.AddedDateTime) : x.AddedDateTime,
       npsp__StartDate__c: x.AddedDateTime && x.AddedDateTime !== '' ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
       npsp__EndDate__c: x.EndDate && x.EndDate !== '' ? formatDate(x.EndDate) : x.EndDate,
       npsp__PaymentMethod__c: 'Credit Card',
-      Closeout_Date__c: x.RecurringCancelDate !=='' ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
+      Closeout_Date__c: x.RecurringCancelDate !== '' ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       npe03__Open_Ended_Status__c: 'Closed',
       of_Sisters_Requested__c:
         x['Amount'] == '22.00'
@@ -188,10 +188,14 @@ fn(state => {
       };
     });
 
+  function removeDuplicates(arr) {
+    return [...new Set(arr)];
+  }
+
   //combine all recurring donations into 1 array --> to later map to pledged Opps
   const sponsorshipsRaw = multipleOf22;
   const donationsRaw = state.data.json.filter(x => !multipleOf22IDs.includes(x.CardMasterID));
-  const allDonations = sponsorshipsRaw.concat(donationsRaw);
+  const allDonations = removeDuplicates(sponsorshipsRaw.concat(donationsRaw));
 
   return { ...state, sponsorships, donations, allDonations, formatDate };
 });
@@ -306,7 +310,7 @@ bulk(
   },
   state => {
     console.log('Bulk upserting Pledged opps.');
-    return state.opportunities
+    return state.opportunities;
   }
 );
 
