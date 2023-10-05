@@ -201,6 +201,7 @@ fn(state => {
 });
 
 fn(state => {
+  const { allDonations } = state; 
   const formatDateYMD = inputDate => {
     // Split the input date string into date and time parts
     const datePart = inputDate.split(' ')[0];
