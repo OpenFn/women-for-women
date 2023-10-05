@@ -196,7 +196,7 @@ fn(state => {
 
   //combine all recurring donations into 1 array
   const allDonations = sponsorships.concat(donations);
-  console.log('allDonations ::', allDonations);
+  //console.log('allDonations ::', allDonations);
 
   return { ...state, sponsorships, donations, allDonations, formatDate };
 });
@@ -262,7 +262,7 @@ fn(state => {
         x.NextDate
       ),
       StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
-      CloseDate: x.RecurringCancelDate == '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
+      CloseDate: x.RecurringCancelDate ==='' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
       Amount: x['Amount'],
       Name: x.CardMasterID,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
