@@ -246,6 +246,11 @@ fn(state => {
       const newMonth = addMonths(lastClaimDate, 3).toISOString().split('T')[0];
       return `${cardmasterid}_${newMonth}_Pledged`;
     }
+    
+    if (cancelDate == '' && paymentFrequency === 'Monthly') {
+      const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
+      return `${cardmasterid}_${newMonth}_Pledged`;
+    }
 
     if (cancelDate == '') {
       return `${cardmasterid}_${formatDateYMD(nextDate)}_Pledged`;
