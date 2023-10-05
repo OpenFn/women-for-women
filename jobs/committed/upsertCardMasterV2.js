@@ -138,9 +138,9 @@ fn(state => {
       Active__c: checkNpspActiveStatus(x),
       Closeout_Reason__c: x.RecurringCancelReason,
       npe03__Installment_Period__c: x.Occurrence === 'None' || x.Occurrence === '' ? undefined : x.Occurrence,
-      npe03__Date_Established__c: x.AddedDateTime ? formatDate(x.AddedDateTime) : x.AddedDateTime,
-      npsp__StartDate__c: x.AddedDateTime ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
-      npsp__EndDate__c: x.EndDate ? formatDate(x.EndDate) : x.EndDate,
+      npe03__Date_Established__c: x.AddedDateTime && x.AddedDateTime!=='' ? formatDate(x.AddedDateTime) : x.AddedDateTime,
+      npsp__StartDate__c: x.AddedDateTime && x.AddedDateTime!=='' ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
+      npsp__EndDate__c: x.EndDate && x.EndDate!==''? formatDate(x.EndDate) : x.EndDate,
       npsp__PaymentMethod__c: 'Credit Card',
       Closeout_Date__c: x.RecurringCancelDate ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       npe03__Open_Ended_Status__c: 'Closed',
@@ -252,7 +252,6 @@ fn(state => {
 
   console.log('# pledged opportunities to schedule ::', allDonations.length);
   const opportunities = allDonations
-    .filter(x => x.PrimKey)
     .map(x => ({
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
       CG_Pledged_Donation_ID__c: mapPledged(
