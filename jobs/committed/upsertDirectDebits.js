@@ -84,8 +84,11 @@ fn(state => {
         of_Sisters_Requested__c:
           x['Current amount'] == '22.00'
             ? 1
-            : x['Current amount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship')
+            : (x['Current amount'] % 264 === 0 && x.PaymentFrequency === 'Annually') ||
+              (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship')
             ? Math.floor(Math.abs(x['Current amount'] / 264))
+            : x['Current amount'] % 132 === 0 && x.PaymentFrequency === 'Semi Annually' && x.TransType === 'Sponsorship'
+            ? Math.floor(Math.abs(x['Current amount'] / 132))
             : x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship'
             ? Math.floor(Math.abs(x['Current amount'] / 66))
             : x['Current amount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship')
