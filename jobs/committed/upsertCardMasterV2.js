@@ -138,9 +138,10 @@ fn(state => {
       Active__c: checkNpspActiveStatus(x),
       Closeout_Reason__c: x.RecurringCancelReason,
       npe03__Installment_Period__c: x.Occurrence === 'None' || x.Occurrence === '' ? undefined : x.Occurrence,
-      npe03__Date_Established__c: x.AddedDateTime && x.AddedDateTime!=='' ? formatDate(x.AddedDateTime) : x.AddedDateTime,
-      npsp__StartDate__c: x.AddedDateTime && x.AddedDateTime!=='' ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
-      npsp__EndDate__c: x.EndDate && x.EndDate!==''? formatDate(x.EndDate) : x.EndDate,
+      npe03__Date_Established__c:
+        x.AddedDateTime && x.AddedDateTime !== '' ? formatDate(x.AddedDateTime) : x.AddedDateTime,
+      npsp__StartDate__c: x.AddedDateTime && x.AddedDateTime !== '' ? increaseMonth(x.AddedDateTime) : x.AddedDateTime,
+      npsp__EndDate__c: x.EndDate && x.EndDate !== '' ? formatDate(x.EndDate) : x.EndDate,
       npsp__PaymentMethod__c: 'Credit Card',
       Closeout_Date__c: x.RecurringCancelDate ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       npe03__Open_Ended_Status__c: 'Closed',
@@ -194,15 +195,16 @@ fn(state => {
       };
     });
 
-  //combine all recurring donations into 1 array
-  const allDonations = sponsorships.concat(donations);
-  //console.log('allDonations ::', allDonations);
+  //combine all recurring donations into 1 array --> to later map to pledged Opps
+  const sponsorshipsRaw = multipleOf22;
+  const donationsRaw = state.data.json.filter(x => !multipleOf22IDs.includes(x.CardMasterID));
+  const allDonations = sponsorshipsRaw.concat(donationsRaw);
 
   return { ...state, sponsorships, donations, allDonations, formatDate };
 });
 
 fn(state => {
-  const { allDonations } = state; 
+  const { allDonations } = state;
   const formatDateYMD = inputDate => {
     // Split the input date string into date and time parts
     const datePart = inputDate.split(' ')[0];
@@ -252,22 +254,21 @@ fn(state => {
 
   console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', allDonations);
-  const opportunities = allDonations
-    .map(x => ({
-      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-      CG_Pledged_Donation_ID__c: mapPledged(
-        x.CardMasterID,
-        x.RecurringCancelDate,
-        x.Occurrence,
-        x.LastCredited,
-        x.NextDate
-      ),
-      StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
-      CloseDate: x.RecurringCancelDate ==='' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
-      Amount: x['Amount'],
-      Name: x.CardMasterID,
-      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
-    }));
+  const opportunities = allDonations.map(x => ({
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+    CG_Pledged_Donation_ID__c: mapPledged(
+      x.CardMasterID,
+      x.RecurringCancelDate,
+      x.Occurrence,
+      x.LastCredited,
+      x.NextDate
+    ),
+    StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
+    CloseDate: x.RecurringCancelDate === '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
+    Amount: x['Amount'],
+    Name: x.CardMasterID,
+    'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
+  }));
 
   return { ...state, opportunities };
 });
