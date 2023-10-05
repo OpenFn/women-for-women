@@ -277,7 +277,7 @@ bulk(
   },
   state => {
     console.log('Bulk upserting donations.');
-    state => state.donations;
+    return state.donations;
   }
 );
 
