@@ -22,13 +22,6 @@ fn(state => {
     }
     return undefined;
   };
-  // Use for TransType re-processing if CG provides the incorrect value
-  // const selectAmount = item => {
-  //   if (item['FirstAmount']) { //CHANGED FROM: 'Current amount'
-  //     return isNaN(item['FirstAmount']) ? item['FirstAmount'].replace(/[^-.0-9]/g, '') : parseInt(item['FirstAmount']);
-  //   }
-  //   return undefined;
-  // };
 
   const formatEmpty = item => (item === '' ? undefined : item);
 
@@ -76,7 +69,7 @@ fn(state => {
         Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKSPCC' : 'UKRG',
         npe03__Amount__c: x['Current amount'],
-        npsp__Status__c: x.Status === 'Live' ? 'Active' : undefined,
+        npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : undefined, //Nov 2022 Request: To not uncheck Active, only add Closeout Date
         Closeout_Reason__c: x.CancelReason,
         npe03__Installment_Period__c: x.PaymentFrequency === 'Annually' ? 'Yearly' : x.PaymentFrequency,
