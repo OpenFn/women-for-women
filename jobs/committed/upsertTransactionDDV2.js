@@ -50,11 +50,9 @@ fn(state => {
       Committed_Giving_ID__c: selectGivingId(x),
       CG_Pledged_Donation_ID__c: `${x.DDid}_${formatDateYMD(x.Date)}_Pledged`,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
-      //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
       CurrencyIsoCode: 'GBP',
-      StageName: x['Status'] === 'Unpaid' ? 'Closed Lost' : 'Closed Won',
-      npsp__Closed_Lost_Reason__c: x['Status'] === 'Unpaid' ? x['Reason'] : undefined,
+      StageName: 'Closed Won',
       CloseDate: state.formatDate(x['Date']),
       Transaction_Date_Time__c: state.formatDate(x['Date']),
       'Campaign.Source_Code__c': x['PromoCode'] || 'UKWEB',
@@ -67,7 +65,7 @@ fn(state => {
   };
 
   const opportunities = state.data.json
-    // .filter(o => state.selectIDs.includes(`${o.PrimKey}${o.DDId}`))
+    .filter(o => o.Status !== 'Unpaid') //DO NOT CREATE CLOSED WON OPPS from canclced transactions
     .map(x => {
       return {
         ...baseMapping(x),
