@@ -175,10 +175,20 @@ fn(state => {
       return formatDateYMD(nextDate);
     }
   };
+  
+  const cleanDate = date => {
+    if (!date) return undefined;
+    date = date.replace(/[:\/]/g, '');
+    return date.replace(/\s+/g, '');
+  };
+  
+  const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.NextDate)}`;
+
 
   const opportunities = state.data.json
     .filter(x => x.PrimKey)
     .map(x => ({
+      Committed_Giving_ID__c: selectGivingId(x),
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
       CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       StageName: x.CancelDate !== '' ? 'Closed Lost' : 'Pledged',
