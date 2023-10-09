@@ -13,6 +13,8 @@ fn(state => {
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
+  
+  
 
   function reduceArray(array, groupBy) {
     return array.reduce((r, a) => {
@@ -71,7 +73,7 @@ fn(state => {
 fn(state => {
   const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
 
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x['Transaction Date'])}`;
 
   const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
 
