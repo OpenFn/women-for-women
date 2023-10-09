@@ -6,6 +6,8 @@ fn(state => {
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
+  
+
 
   const parseCustomDate = dateString => {
     const [day, month, year, time] = dateString.split(/[\s/]/);
@@ -265,7 +267,7 @@ fn(state => {
   //console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', cleanedDonations);
 
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.NextDate}`;
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x.NextDate)}`;
 
   const opportunities = cleanedDonations.map(x => ({
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
