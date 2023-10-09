@@ -175,15 +175,14 @@ fn(state => {
       return formatDateYMD(nextDate);
     }
   };
-  
+
   const cleanDate = date => {
     if (!date) return undefined;
     date = date.replace(/[:\/]/g, '');
     return date.replace(/\s+/g, '');
   };
-  
-  const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.NextDate)}`;
 
+  const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.NextDate)}`;
 
   const opportunities = state.data.json
     .filter(x => x.PrimKey)
@@ -219,13 +218,27 @@ bulk(
   'upsert', // the operation
   {
     extIdField: 'CG_Pledged_Donation_ID__c',
-    failOnError: true,
+    failOnError: false,
     allowNoOp: true,
   },
   state => state.opportunities
 );
 
 fn(state => {
+  const errors = state.references.flat().filter(item => !item.success);
+
+  const checkDupError = errors.map(err =>
+    err.errors.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  );
+
+  if (errors.length > 0) {
+    if (errors.length === checkDupError.length) {
+      console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
+    } else {
+      console.error('Errors detected:');
+      throw new Error(JSON.stringify(errors, null, 2));
+    }
+  }
   // lighten state
   return { ...state, donations: [], opportunities: [] };
 });
