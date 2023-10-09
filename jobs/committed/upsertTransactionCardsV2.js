@@ -203,7 +203,7 @@ bulk(
   'upsert',
   {
     extIdField: 'CG_Pledged_Donation_ID__c',
-    failOnError: true,
+    failOnError: false,
     allowNoOp: true,
   },
   state => {
@@ -211,3 +211,22 @@ bulk(
     return state.transactions;
   }
 );
+
+fn(state => {
+  const errors = state.references.flat().filter(item => !item.success);
+
+  const checkDupError = errors.map(err =>
+    err.errors.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  );
+
+  if (errors.length > 0) {
+    if (errors.length === checkDupError.length) {
+      console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
+    } else {
+      console.error('Errors detected:');
+      throw new Error(JSON.stringify(errors, null, 2));
+    }
+  }
+
+  return state;
+});
