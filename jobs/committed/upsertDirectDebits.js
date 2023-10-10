@@ -235,8 +235,7 @@ fn(state => {
     if (errors.length === checkDupError.length) {
       console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
     } else {
-      console.error('Errors detected:');
-      throw new Error(JSON.stringify(errors, null, 2));
+      throw new Error('Errors detected, scroll up to see the resutls')
     }
   }
   // lighten state
