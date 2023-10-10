@@ -96,7 +96,7 @@ fn(state => {
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Transaction_Date_Time__c: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode || 'UKWEB',
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': selectRDId(x),
@@ -120,7 +120,7 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
-      CG_Credit_Card_ID__c: x.CardMasterID,
+      //CG_Credit_Card_ID__c: x.CardMasterID,
     };
   });
 
@@ -138,7 +138,7 @@ fn(state => {
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
@@ -161,7 +161,7 @@ fn(state => {
     Transaction_Reference_Id__c: x.TransactionReference,
     CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
