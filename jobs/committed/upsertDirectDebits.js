@@ -200,7 +200,7 @@ fn(state => {
   return { ...state, opportunities };
 });
 
-Upserting donation
+//Upserting donation
 bulk(
   'npe03__Recurring_Donation__c', // the sObject
   'upsert', //  the operation
