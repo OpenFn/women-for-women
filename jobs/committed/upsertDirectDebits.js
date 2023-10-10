@@ -227,8 +227,8 @@ bulk(
 fn(state => {
   const errors = state.references.flat().filter(item => !item.success);
 
-  const checkDupError = errors.map(err =>
-    err.errors.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  const checkDupError = errors.filter(err =>
+    err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
   );
 
   if (errors.length > 0) {

@@ -6,8 +6,6 @@ fn(state => {
     const year = String(parts[2]).length > 2 ? parts[2] : `20${parts[2]}`;
     return parts ? new Date(Number(year), parts[1] - 1, parts[0]).toISOString() : parts;
   };
-  
-
 
   const parseCustomDate = dateString => {
     const [day, month, year, time] = dateString.split(/[\s/]/);
@@ -336,8 +334,8 @@ bulk(
 fn(state => {
   const errors = state.references.flat().filter(item => !item.success);
 
-  const checkDupError = errors.map(err =>
-    err.errors.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  const checkDupError = errors.filter(err =>
+    err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
   );
 
   if (errors.length > 0) {
