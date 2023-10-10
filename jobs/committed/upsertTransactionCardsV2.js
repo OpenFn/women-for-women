@@ -225,5 +225,5 @@ fn(state => {
     }
   }
 
-  return state;
+    return { ...state, opportunities: [] };
 });
