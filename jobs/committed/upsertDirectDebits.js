@@ -128,11 +128,12 @@ fn(state => {
     const jsDate = new Date(`${year}-${month}-${day}`);
     return jsDate;
   }
-  const mapPledged = (ddid, cancelDate, paymentFrequency, lastClaimDate, nextDate) => {
-    if (cancelDate && paymentFrequency === 'Monthly') {
+  const mapPledged = (ddid, cancelDate, paymentFrequency, lastClaimDate, nextDate, startDate) => {
+    if (cancelDate && paymentFrequency === 'Monthly' && lastClaimDate !== startDate) {
       const newMonth = addMonths(lastClaimDate, 1).toISOString().split('T')[0];
       return `${ddid}_${newMonth}_Pledged`;
     }
+
     if (cancelDate && paymentFrequency === 'Annually') {
       const newYear = addMonths(lastClaimDate, 12).toISOString().split('T')[0];
       return `${ddid}_${newYear}_Pledged`;
@@ -186,6 +187,10 @@ fn(state => {
 
   const opportunities = state.data.json
     .filter(x => x.PrimKey)
+    //NOTE: Added logic below to filter out donations canceled the same month
+    // We don't need to schedule the next pledged opp, if it was closed the same month the donation started
+    .filter(x => x.CancelDate !== '' && x.LastClaimDate === x.StartDate)
+    //=================================================================//
     .map(x => ({
       Committed_Giving_ID__c: selectGivingId(x),
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId}`,
@@ -235,7 +240,7 @@ fn(state => {
     if (errors.length === checkDupError.length) {
       console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
     } else {
-      throw new Error('Errors detected, scroll up to see the resutls')
+      throw new Error('Errors detected, scroll up to see the resutls');
     }
   }
   // lighten state
