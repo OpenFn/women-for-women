@@ -52,7 +52,7 @@ fn(state => {
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
       Amount: state.selectAmount(x),
       CurrencyIsoCode: 'GBP',
-      StageName: 'Closed Won',
+      StageName: x.Status === 'Unpaid' ? 'Closed Lost' : 'Closed Won',
       CloseDate: state.formatDate(x['Date']),
       Transaction_Date_Time__c: state.formatDate(x['Date']),
       'Campaign.Source_Code__c': x['PromoCode'] || 'UKWEB',
@@ -64,13 +64,11 @@ fn(state => {
     };
   };
 
-  const opportunities = state.data.json
-    .filter(o => o.Status !== 'Unpaid') //DO NOT CREATE CLOSED WON OPPS from canclced transactions
-    .map(x => {
-      return {
-        ...baseMapping(x),
-      };
-    });
+  const opportunities = state.data.json.map(x => {
+    return {
+      ...baseMapping(x),
+    };
+  });
 
   console.log('Count of opportunities:', opportunities.length);
 
@@ -99,7 +97,7 @@ fn(state => {
     if (errors.length === checkDupError.length) {
       console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
     } else {
-      throw new Error('Errors detected, scroll up to see the resutls')
+      throw new Error('Errors detected, scroll up to see the resutls');
     }
   }
   // lighten state
