@@ -189,7 +189,7 @@ fn(state => {
     .filter(x => x.PrimKey)
     //NOTE: Added logic below to filter out donations canceled the same month
     // We don't need to schedule the next pledged opp, if it was closed the same month the donation started
-    .filter(x => x.CancelDate !== '' && x.LastClaimDate === x.StartDate)
+    .filter(x => !(x.CancelDate !== '' && x.LastClaimDate === x.StartDate))
     //=================================================================//
     .map(x => ({
       Committed_Giving_ID__c: selectGivingId(x),
