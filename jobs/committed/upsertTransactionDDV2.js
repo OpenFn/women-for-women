@@ -29,28 +29,33 @@ fn(state => {
   };
 });
 
-
 fn(state => {
   const cleanDate = date => {
     if (!date) return undefined;
     date = date.replace(/[:\/]/g, '');
     return date.replace(/\s+/g, '');
-  }
+  };
 
   const selectGivingId = x => `${x.PrimKey}${x.DDId || x.DDid}${x.DDRefforBank}${cleanDate(x.Date)}`;
+  const formatDateYMD = inputDate => {
+    // Split the input date string into date and time parts
+    const datePart = inputDate.split(' ')[0];
+    // Split the date part into day, month, and year
+    const [day, month, year] = datePart.split('/');
 
+    return year + '-' + month + '-' + day;
+  };
   const baseMapping = x => {
     return {
       Committed_Giving_ID__c: selectGivingId(x),
+      CG_Pledged_Donation_ID__c: `${x.DDid}_${formatDateYMD(x.Date)}_Pledged`,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
-      //'Account.Committed_Giving_ID__c': `${x.PrimKey}`, //Q: SHOULD WE MAP ACCTS?
       Amount: state.selectAmount(x),
       CurrencyIsoCode: 'GBP',
-      StageName: x['Status'] === 'Unpaid' ? 'Closed Lost' : 'Closed Won',
-      npsp__Closed_Lost_Reason__c: x['Status'] === 'Unpaid' ?  x['Reason'] :undefined, 
+      StageName: x.Status === 'Unpaid' ? 'Closed Lost' : 'Closed Won',
       CloseDate: state.formatDate(x['Date']),
       Transaction_Date_Time__c: state.formatDate(x['Date']),
-      'Campaign.Source_Code__c': x['PromoCode'],
+      'Campaign.Source_Code__c': x['PromoCode'] || 'UKWEB',
       Name: x.DDRefforBank,
       Donation_Type__c: x['TransType'] === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
       Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund',
@@ -59,32 +64,42 @@ fn(state => {
     };
   };
 
-  const opportunities = state.data.json
-    // .filter(o => state.selectIDs.includes(`${o.PrimKey}${o.DDId}`))
-    .map(x => {
-      return {
-        ...baseMapping(x),
-      };
-    });
+  const opportunities = state.data.json.map(x => {
+    return {
+      ...baseMapping(x),
+    };
+  });
 
   console.log('Count of opportunities:', opportunities.length);
 
   return { ...state, opportunities };
 });
 
-
 bulk(
   'Opportunity',
   'upsert',
   {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
+    extIdField: 'CG_Pledged_Donation_ID__c',
+    failOnError: false,
     allowNoOp: true,
   },
   state => state.opportunities
 );
 
-alterState(state => {
+fn(state => {
+  const errors = state.references.flat().filter(item => !item.success);
+
+  const checkDupError = errors.filter(err =>
+    err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  );
+
+  if (errors.length > 0) {
+    if (errors.length === checkDupError.length) {
+      console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
+    } else {
+      throw new Error('Errors detected, scroll up to see the resutls');
+    }
+  }
   // lighten state
   return { ...state, opportunities: [] };
 });

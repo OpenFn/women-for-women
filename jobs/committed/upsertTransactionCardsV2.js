@@ -71,25 +71,35 @@ fn(state => {
 fn(state => {
   const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
 
-  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${x.CardTransId}`;
+  const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x['Transaction Date'])}`;
 
   const selectRDId = x => `${x.PrimKey}${x.CardMasterID}`;
 
+  const formatDateYMD = inputDate => {
+    // Split the input date string into date and time parts
+    const datePart = inputDate.split(' ')[0];
+    // Split the date part into day, month, and year
+    const [day, month, year] = datePart.split('/');
+
+    return year + '-' + month + '-' + day;
+  };
+
   const opportunities = transactionsMultipleOf22.map(x => ({
+    CG_Pledged_Donation_ID__c: `${x.CardMasterID}_${formatDateYMD(x['Transaction Date'])}_Pledged`,
     Name: x.TransactionReference,
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
     StageName: 'Closed Won',
     Committed_Giving_ID__c: selectGivingId(x),
     Amount: state.selectAmount(x),
+    CurrencyIsoCode: 'GBP',
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Transaction_Date_Time__c: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
-    'Campaign.Source_Code__c': x.PromoCode,
-    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG', //before we could rely on CG PromoCode
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+    'Campaign.Source_Code__c': x.PromoCode || 'UKWEB',
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': selectRDId(x),
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
   }));
@@ -110,7 +120,7 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
       npe03__Installment_Period__c,
-      CG_Credit_Card_ID__c: x.CardMasterID,
+      //CG_Credit_Card_ID__c: x.CardMasterID,
     };
   });
 
@@ -119,6 +129,7 @@ fn(state => {
   });
 
   const transactionGreaterThan1 = cardMasterIDGreaterThan1.map(x => ({
+    CG_Pledged_Donation_ID__c: `${x.CardMasterID}_${formatDateYMD(x['Transaction Date'])}_Pledged`,
     Name: x.TransactionReference,
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
     StageName: 'Closed Won',
@@ -127,10 +138,9 @@ fn(state => {
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     CloseDate: x['Transaction Date'] ? state.formatDate(x['Transaction Date']) : undefined,
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
-    //'Campaign.Source_Code__c': state.multipleOf22(x) ? 'UKSPCC' : 'UKRG', //before we could rely on CG PromoCode
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
@@ -138,23 +148,25 @@ fn(state => {
 
   // 1st type of opportunities in this array ==> Regular once-off OR recurring donations to insert
   const transactionLessThan1 = cardMasterIDLessThan1.map(x => ({
+    CG_Pledged_Donation_ID__c: `${x.CardMasterID}_${formatDateYMD(x['Transaction Date'])}_Pledged`,
     Name: x.TransactionReference,
     Committed_Giving_ID__c: selectGivingId(x),
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
     Amount: state.selectAmount(x),
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
-    Donation_Type__c: x.CampaignCode==='Regular Giving' ? 'Recurring Donation' : 'General Donation',
+    Donation_Type__c: x.CampaignCode === 'Regular Giving' ? 'Recurring Donation' : 'General Donation',
     StageName: 'Closed Won',
     npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
     Transaction_Reference_Id__c: x.TransactionReference,
     CloseDate: x.CreatedDate ? state.formatDate(x.CreatedDate) : state.formatDate(x.SettlementDate),
     Method_of_Payment__c: 'Credit',
-    CG_Credit_Card_ID__c: x.CardTransId,
+    //CG_Credit_Card_ID__c: x.CardTransId,
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     Transaction_Date_Time__c: state.formatDate(x['Transaction Date']),
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': x.CampaignCode==='Regular Giving' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
+    'npe03__Recurring_Donation__r.Committed_Giving_ID__c':
+      x.CampaignCode === 'Regular Giving' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
     'RecordType.Name': 'Individual Giving',
   }));
 
@@ -188,8 +200,8 @@ bulk(
   'Opportunity',
   'upsert',
   {
-    extIdField: 'Committed_Giving_ID__c',
-    failOnError: true,
+    extIdField: 'CG_Pledged_Donation_ID__c',
+    failOnError: false,
     allowNoOp: true,
   },
   state => {
@@ -197,3 +209,21 @@ bulk(
     return state.transactions;
   }
 );
+
+fn(state => {
+  const errors = state.references.flat().filter(item => !item.success);
+
+  const checkDupError = errors.filter(err =>
+    err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
+  );
+
+  if (errors.length > 0) {
+    if (errors.length === checkDupError.length) {
+      console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
+    } else {
+      throw new Error('Errors detected, scroll up to see the resutls')
+    }
+  }
+
+    return { ...state, opportunities: [] };
+});

@@ -1,60 +1,58 @@
-list('/');
-
-// pluck the latest CSV file
 fn(state => {
-  const fileNames = 'wfwi donors';
-  console.log('Files to sync: ', fileNames);
+  const fileNames = ['wfwi Donors'];
 
-  const fileSubmissionDates = state.data
-    .filter(file => file.name.split('.')[0].toLowerCase().includes(fileNames) && file.name.split('.')[1] === 'csv')
-    .map(file => {
-      const inputDate = file.name.split('.')[0].match(/\d+$/);
+  // Get today's date in the "yyyyMMdd" format
+  const today = new Date();
+  const todayDate = today.toISOString().slice(0, 10).replace(/-/g, '');
 
-      if (inputDate !== null) {
-        const year = inputDate[0].substring(0, 4);
-        const month = inputDate[0].substring(4, 6);
-        const day = inputDate[0].substring(6, 8);
+  return list(
+    '/',
+    file => {
+      const fileName = file.name;
+      const containsSpecifiedName = fileName && fileNames.some(name => fileName.includes(name));
+      const containTodayDate = fileName && fileName.includes(todayDate);
 
-        const dateObj = new Date(`${year}-${month}-${day}`);
+      return containsSpecifiedName && containTodayDate;
+    },
+    state => {
+      // pluck the latest CSV file
+      const latestFiles = state.data;
+      if (latestFiles.length === 0) console.log('No CSV files found, Will send alert email shortly');
 
-        return isNaN(dateObj) ? [] : { input: inputDate[0], formatted: dateObj.toISOString().substring(0, 10) };
-      }
-      return [];
-    })
-    .flat();
+      const foundFiles = latestFiles.map(file => file.name.replace(/\s\d{8}\.csv/, ''));
+      const missingFiles = fileNames.filter(fileName => !foundFiles.includes(fileName));
 
-  if (fileSubmissionDates.length === 0) {
-    console.log('No new CSV files found.');
-    return { ...state, latestFile: [] };
-  } else {
-    const latestFileDate = new Date(
-      Math.max.apply(
-        null,
-        fileSubmissionDates.map(date => Date.parse(date.formatted))
-      )
-    );
+      return { ...state, data: {}, latestFiles, missingFiles, today, todayDate };
+    }
+  )(state);
+});
 
-    const latestInputDate = fileSubmissionDates.filter(
-      date => date.formatted === latestFileDate.toISOString().substring(0, 10)
-    )[0].input;
+fn(state => {
+  const { missingFiles, today } = state;
 
-    const latestFile = state.data.filter(
-      file =>
-        file.name.split('.')[0].toLowerCase().includes(fileNames) &&
-        file.name.split('.')[0].toLowerCase().includes(latestInputDate) &&
-        file.name.split('.')[1] === 'csv'
-    );
+  if (missingFiles.length > 0) {
+    const url = state.configuration.openfnInboxUrl;
+    const data = {
+      missingFiles,
+      missingDate: today.toISOString().slice(0, 10),
+      runStartDate: today.toISOString(),
+      notificationType: 'missing-files',
+    };
+    console.log('The following files are missing for', today.toISOString());
+    console.log(JSON.stringify(missingFiles, null, 2));
 
-    // console.log('submission dates', fileSubmissionDates);
-    // console.log('latest date', latestInputDate);
-    // console.log('latest file', latestFile);
-
-    return { ...state, latestFile };
+    return http
+      .post({ url, data })(state)
+      .then(() => {
+        console.log(`Posted missing to OpenFn Inbox.\n`);
+        return { ...state, references: [], data: {} };
+      });
   }
+  return state;
 });
 
 each(
-  '$.latestFile[*]',
+  '$.latestFiles[*]',
   fn(state => {
     const { configuration, data } = state;
 
