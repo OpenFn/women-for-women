@@ -295,6 +295,7 @@ bulk2(
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
     allowNoOp: true,
+    pollTimeout: 240000
   },
   state => {
     console.log('Bulk upserting donations.');
