@@ -288,14 +288,13 @@ fn(state => {
 });
 
 //Upserting recurring donations
-bulk2(
+bulk(
   'npe03__Recurring_Donation__c', // the sObject
   'upsert', //  the operation
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
-    allowNoOp: true,
-    pollTimeout: 240000
+    allowNoOp: true
   },
   state => {
     console.log('Bulk upserting donations.');
@@ -303,14 +302,13 @@ bulk2(
   }
 );
 
-bulk2(
+bulk(
   'npe03__Recurring_Donation__c',
   'upsert',
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
-    allowNoOp: true,
-    pollTimeout: 240000
+    allowNoOp: true
   },
   state => {
     console.log('Bulk upserting Sponsorship.');
@@ -319,14 +317,13 @@ bulk2(
 );
 
 // Upserting opportunities
-bulk2(
+bulk(
   'Opportunity', // the sObject
   'upsert', // the operation
   {
     extIdField: 'CG_Pledged_Donation_ID__c',
     failOnError: false,
-    allowNoOp: true,
-    pollTimeout: 240000
+    allowNoOp: true
   },
   state => {
     console.log('Bulk upserting Pledged opps.');
@@ -335,11 +332,7 @@ bulk2(
 );
 
 fn(state => {
-  // const errors = state.references.flat().filter(item => !item.success);
-  const errors = state.references
-    .filter(ref => ref.failedResults && ref.failedResults.length > 0)
-    .map(ref => ref.failedResults)
-    .flat();
+  const errors = state.references.flat().filter(item => !item.success);
     
   const checkDupError = errors.filter(err =>
     err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
