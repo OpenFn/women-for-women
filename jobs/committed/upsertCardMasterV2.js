@@ -288,7 +288,7 @@ fn(state => {
 });
 
 //Upserting recurring donations
-bulk(
+bulk2(
   'npe03__Recurring_Donation__c', // the sObject
   'upsert', //  the operation
   {
@@ -302,7 +302,7 @@ bulk(
   }
 );
 
-bulk(
+bulk2(
   'npe03__Recurring_Donation__c',
   'upsert',
   {
@@ -317,7 +317,7 @@ bulk(
 );
 
 // Upserting opportunities
-bulk(
+bulk2(
   'Opportunity', // the sObject
   'upsert', // the operation
   {
