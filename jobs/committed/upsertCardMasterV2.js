@@ -335,8 +335,12 @@ bulk2(
 );
 
 fn(state => {
-  const errors = state.references.flat().filter(item => !item.success);
-
+  // const errors = state.references.flat().filter(item => !item.success);
+  const errors = state.references
+    .filter(ref => ref.failedResults && ref.failedResults.length > 0)
+    .map(ref => ref.failedResults)
+    .flat();
+    
   const checkDupError = errors.filter(err =>
     err.errors[0].includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c')
   );
