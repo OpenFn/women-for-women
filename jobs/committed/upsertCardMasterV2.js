@@ -262,7 +262,7 @@ fn(state => {
     return [...new Set(arr)];
   }
 
-  const cleanedDonations = removeDuplicates(allDonations);
+  const cleanedDonations = removeDuplicates(allDonations).filter(x => x.Occurrence !== '');
   //console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', cleanedDonations);
 
