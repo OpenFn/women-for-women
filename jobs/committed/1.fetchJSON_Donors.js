@@ -45,7 +45,7 @@ fn(state => {
       .post({ url, data })(state)
       .then(() => {
         console.log(`Posted missing to OpenFn Inbox.\n`);
-        return { ...state, references: [], data: {} };
+        return { ...state, references: [], data: {}, missingFiles: [] };
       });
   }
   return state;
@@ -124,6 +124,7 @@ each(
         console.log('Duplicate rows detected in Committed Giving:');
         duplicates.forEach(d => console.log(d));
         console.log('End of duplicates rows.');
+
         throw new Error(`Aborting run; duplicates detected.`);
       }
       return { configuration, references: [], data: {} };
