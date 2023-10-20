@@ -2,6 +2,7 @@ fn(state => {
   return list('/')(state).then(state => {
     const partialFilenames = [
       'wfwi Donors 20231018',
+      'wfwi Donors 20231019',
       // 'wfwi Card Master 20231018',
       // 'wfwi Direct Debits 20231018',
       // 'wfwi Transactions - Cards 20231018',

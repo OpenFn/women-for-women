@@ -171,6 +171,7 @@ fn(state => {
 
   const donations = state.data.json
     .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
+    .filter(x => x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited!=='')
     .filter(
       x =>
         (x.Occurrence === 'Monthly' && x.LastCredited !== 'MISSING') ||
@@ -261,13 +262,14 @@ fn(state => {
     return [...new Set(arr)];
   }
 
-  const cleanedDonations = removeDuplicates(allDonations);
+  const cleanedDonations = removeDuplicates(allDonations).filter(x => x.Occurrence !== '' || 
+  x.Occurrence === 'None' && x.LastCredited==='');
   //console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', cleanedDonations);
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x.NextDate)}`;
 
-  const opportunities = cleanedDonations.map(x => ({
+  const opportunities = cleanedDonations.filter(x =>x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited !== '').map(x => ({
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     CG_Pledged_Donation_ID__c: mapPledged(
       x.CardMasterID,
