@@ -45,7 +45,7 @@ fn(state => {
       .post({ url, data })(state)
       .then(() => {
         console.log(`Posted missing to OpenFn Inbox.\n`);
-        return { ...state, references: [], data: {} };
+        return { ...state, references: [], data: {}, missingFiles: [] };
       });
   }
   return state;
