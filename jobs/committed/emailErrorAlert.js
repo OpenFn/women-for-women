@@ -1,12 +1,8 @@
 fn(state => {
-  const { error } = state;
+  const { duplicates } = state.data;
 
-  const start = error.findIndex(line => line == 'Duplicate rows detected in Committed Giving:') + 1;
-  const end = error.findIndex(line => line == 'End of duplicates rows.');
-  const duplicateEmails = error.slice(start, end);
-
-  console.log('duplicatEmails', duplicateEmails);
-  return { ...state, duplicateEmails };
+  console.log('duplicates', duplicates);
+  return { ...state, duplicates };
 });
 
 send(state => ({
@@ -20,7 +16,7 @@ send(state => ({
     Duplicate donors were detected in the latest Committed Giving export. Please review the duplicates in Committed Giving to merge the records.
           <br/><br/>
     Error: Potential duplicate rows detected in Committed Giving. See rows: ${JSON.stringify(
-      state.duplicateEmails || [],
+      state.duplicates || [],
       null,
       2
     )}
