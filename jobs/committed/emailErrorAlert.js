@@ -9,7 +9,7 @@ send(state => ({
   from: 'WfWI Notifications <notifications@womenforwomen.org>',
   // 'h:Reply-To': 'aleksa@openfn.org',
   sender: 'WfWI Notifications',
-  to: 'LGreening@womenforwomen.org, rmustakova@womenforwomen.org, jvieyres@womenforwomen.org',
+  to: 'aissatou@openfn.org',
   cc: 'aleksa@openfn.org',
   subject: 'Committed Giving Data Sync: Duplicate donors detected',
   html: `Dear admins, <br/><br/>
