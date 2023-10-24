@@ -319,6 +319,9 @@ fn(state => {
 // );
 
 // Upserting opportunities
+
+console.log("here");
+
 bulk(
   'Opportunity', // the sObject
   'upsert', // the operation
