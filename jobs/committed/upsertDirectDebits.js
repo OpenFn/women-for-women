@@ -206,16 +206,16 @@ fn(state => {
 });
 
 //Upserting donation
-// bulk(
-//   'npe03__Recurring_Donation__c', // the sObject
-//   'upsert', //  the operation
-//   {
-//     extIdField: 'Committed_Giving_ID__c',
-//     failOnError: true,
-//     allowNoOp: true,
-//   },
-//   state => state.donations
-// );
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true,
+  },
+  state => state.donations
+);
 
 // Upserting opportunities
 bulk(
