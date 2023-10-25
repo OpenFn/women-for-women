@@ -57,7 +57,7 @@ The CSV files map to these Salesforce objects as shown below:
 
 3. **Opportunity**: 
 
- For card master, configured External ID `CG_Pledged_Donation_ID__c` comes from `CardMasterID`, `RecurringCancelDate, `Occurrence`, `LastCredited`, `NextDate`
+ For card master, configured External ID `CG_Pledged_Donation_ID__c` comes from `CardMasterID`, `RecurringCancelDate`, `Occurrence`, `LastCredited`, `NextDate`
  
  For transaction cards, configured External ID `CG_Pledged_Donation_ID__c` comes from `CardMasterID`+`Transaction Date`+ "Pledged". 
 
@@ -67,7 +67,7 @@ The CSV files map to these Salesforce objects as shown below:
 
 
 ### OpenFn Jobs
-1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
+1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`, `Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
 
 2. The `upsertDonors.js` job  checks for duplicates and upserts Salesforce objects `Contact`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDonors.js
 
@@ -92,7 +92,7 @@ A message filter trigger has been configured for each above. The job will run wh
 
 ## Email Alerts
 
-**OpenFn will send automated email notifiers if: **
+**OpenFn will send automated email notifiers if:**
 1. Duplicate donors were detected in the latest Committed Giving export → this requires WFW UK team action; they must merge dupe donors in CG
 2. Any of the Committed Giving file exports were not uploaded to the SFTP server before the daily OpenFn sync at 10 PM UTC → this alert will be sent to the CG support team (WFW admins may want to follow-up on this to make sure there is a response)
 
@@ -100,7 +100,7 @@ A message filter trigger has been configured for each above. The job will run wh
 ### Administrator Notes
 1. This integration automates a complex donor duplicate-check flow before upserting Salesforce `Contacts`. Please see [this diagram: CG <> Salesforce Contact Integration Flow] https://lucid.app/lucidchart/4d0b44a8-3299-431f-84b5-4b00bc713cd7/edit?beaconFlowId=BD5CBE391A037FF2&page=yw0MswWCJIR2#  for a summary of the WfWI CG Contacts Duplicate Checking & Sync Logic. 
 
-2. We assume that Committed Giving will name the CSV files with the following keywords: `
+2. We assume that Committed Giving will name the CSV files with the following keywords: 
       `wfwi donors'
       'wfwi card master'
       'wfwi direct debits'
