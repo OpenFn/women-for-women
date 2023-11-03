@@ -14,9 +14,11 @@ Women for Women International would like to integrate Committed Giving with Sale
 
 ### Functional Summary
 Flow: Committed Giving --> Salesforce
-1. Weekly, OpenFn will extract CSV exports of donation data from sftp server, convert to JSON.
+1. Weekly, OpenFn will extract CSV exports of donation data from SFTP server, convert to JSON.
 2. OpenFn will map the converted CSVs to relevant Salesforce objects according to data element mapping specifications defined by WfWI.
-3. OpenFn to perform duplicate checking before upserting data in Salesfroce.
+3. OpenFn to perform duplicate checking before upserting data in Salesforce.
+4. Manage “pledged” Opportunities for Recurring Donations in Salesforce (scheduling and closing where appropriate, according to business rules defined by the WFW UK Fundraising team). 
+
 
 ## 2. Technical Overview
 ### Data Flow
@@ -24,17 +26,17 @@ See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a74
 
 ### Data Mappings
 The CSV files map to these Salesforce objects as shown below:
-1. `Donors` CSV triggers `upsertDonors.js` job, that checks for duplicates and upserts Salesforce objects `Contact` (This also looksup `Accounts`). 
+1. `Donors` CSV triggers `upsertDonors.js` job, which checks for duplicates and upserts Salesforce objects `Contact` (This also looks up `Accounts`). 
 
-2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce object `Recurring Donations`.
+2. `Direct Debit`	CSV triggers `upsertDirectDebits.js` job, which upserts Salesforce objects `Recurring Donations` and `Opportunity`.
 
-3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job, which upserts Salesforce objects `Recurring Donation`. 
+3. `Transaction-DD`	CSV triggers `upsertTransactionDD.js` job, which upserts Salesforce objects `Recurring Donation` and `Opportunity`. 
 
 4. `Custom DD details`	CSV triggers `upsertCustomDD.js` job, which upserts Salesforce object `Opportunity`.
 
-5. `Card master` CSV triggers `upsertCardMaster.js` job, which upserts Salesforce object `Recurring Donation`.
+5. `Card master` CSV triggers `upsertCardMaster.js` job, which upserts Salesforce objects `Recurring Donation` and `Opportunity`.
 
-6. `Transaction-card` CSV triggers `upsertTransactionCards.js` job, which upserts Salesforce object `Recurring Donation` and `Opportunity`.
+6. `Transaction-card` CSV triggers `upsertTransactionCards.js` job, which upserts Salesforce objects `Recurring Donation` and `Opportunity`.
 
 7. `Custom CC details` CSV triggers `upsertCustomCC.js` job, which upserts Salesforce object `Opportunity`
 
@@ -50,44 +52,55 @@ The CSV files map to these Salesforce objects as shown below:
    
    For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`.
    
-   For transactions cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`+`TransactionReference`.
+   For transactions card, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`+`TransactionReference`.
 
 
 3. **Opportunity**: 
 
- For transaction cards, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`CardMasterID`+`TransactionReference` . 
+ For card master, configured External ID `CG_Pledged_Donation_ID__c` comes from `CardMasterID`, `RecurringCancelDate`, `Occurrence`, `LastCredited`, `NextDate`
  
- For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `PrimKey`+`DDRefforBank`+`Date`.
+ For transaction cards, configured External ID `CG_Pledged_Donation_ID__c` comes from `CardMasterID`+`Transaction Date`+ "Pledged". 
+
+ For direct debits, configured External ID `Committed_Giving_ID__c` comes from `DDid`+`CancelDate`+`PaymentFrequency`+`LastClaimDate`+`NextDate`.
+ 
+ For transactions DD, configured External ID `Committed_Giving_ID__c` comes from `DDid`+`Date`+"Pledged".
 
 
 ### OpenFn Jobs
-1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`	`Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
+1. Job 1 gets the CSV files from Committed Giving and converts them to JSON. CSV files include: `Donors`, `Direct Debit`, `Transaction-card`,	`Transaction-DD`, `Custom CC details`	and `Custom DD details`	. See link to this job: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/1.fetchJSON.js 
 
 2. The `upsertDonors.js` job  checks for duplicates and upserts Salesforce objects `Contact`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDonors.js
 
-3. The`upsertDirectDebits.js` job upserts Salesforce object `Recurring Donations`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDirectDebits.js
+3. The`upsertDirectDebits.js` job upserts Salesforce objects `Recurring Donations` and `Opportunity. This job also does the following: 1) marks Open Ended Status as "Closed" on Recurring Donations to deactivate NPSP automation 2)schedules future “pledged” Opportunities & 3) closes future “pledged” Opportunities for canceled recurring donations. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertDirectDebits.js
 
-4. The `upsertTransactionDD.js` job upserts Salesforce objects `Recurring Donation`. Salesforce authomatically creates related `Opportunity` and `Payment`. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionDD.js
+4. The `upsertTransactionDD.js` job upserts Salesforce objects `Recurring Donation`. Salesforce automatically creates related `Opportunity` and `Payment`. This job also 1)marks “pledged” Opportunities for “unpaid” transactions as “Closed Lost” & 2)marks “pledged” Opportunities for “paid” transactions as “Closed Won”. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionDD.js
 
 5. The `upsertCustomDD.js` job  upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomDD.js
 
-6. The `upsertCardMaster.js` job,  upserts Salesforce object `Recurring Donation` then Salesforce automatically  creates related Salesforce Objects `Opportunity` and `Payment`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCardMaster.js
+6. The `upsertCardMaster.js` job,  upserts the Salesforce object `Recurring Donation` then Salesforce automatically  creates related Salesforce Objects `Opportunity` and `Payment`. This also job does the following: 1) marks Open Ended Status as "Closed" on Recurring Donations to deactivate NPSP automation 2)schedules future “pledged” Opportunities & 3) closes future “pledged” Opportunities for canceled recurring donations. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCardMaster.js
 
-7. The`upsertTransactionCards.js`  upserts Salesforce object `Recurring Donation` of Type `Sponsorship`, if the amount is a multiple of 22. Otherwise, it upserts Salesforce objects `Recurring Donation` of Type `Recurring Donation` and creates Salesforce object `Opportunity` with `Stage` of `Closed Won`.  In addition, if the amount is NOT a multiple of 22 and the count of transactions on a card master is more than one, it creates Salesforce object `Opportunity` with a `Donation Type` of `General Giving` and `Stage` of `Closed Won`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionCards.js
+7. The`upsertTransactionCards.js`  upserts Salesforce object `Recurring Donation` of Type `Sponsorship`, if the amount is a multiple of 22. Otherwise, it upserts Salesforce objects `Recurring Donation` of Type `Recurring Donation` and creates Salesforce object `Opportunity` with `Stage` of `Closed Won`.  In addition, if the amount is NOT a multiple of 22 and the count of transactions on a card master is more than one, it creates the Salesforce object `Opportunity` with a `Donation Type` of `General Giving` and `Stage` of `Closed Won`. This job also 1)marks “pledged” Opportunities for “unpaid” transactions as “Closed Lost” & 2)marks “pledged” Opportunities for “paid” transactions as “Closed Won”. Link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertTransactionCards.js
 
 8. The `upsertCustomCC.js` job upserts Salesforce object `Opportunity`. link here: https://github.com/OpenFn/women-for-women/blob/master/jobs/committed/upsertCustomCC.js
 
 ### Flow Triggers
 Trigger Type: Message Filter
-A message filter trigger has been configured for each above. The job will run when a CSV file with the matching message filter is recieved in the project inbox. 
+A message filter trigger has been configured for each above. The job will run when a CSV file with the matching message filter is received in the project inbox. 
 
 ### OpenFn Adaptors
  SFTP adaptor and Salesforce adaptor
 
+## Email Alerts
+
+**OpenFn will send automated email notifiers if:**
+1. Duplicate donors were detected in the latest Committed Giving export → this requires WFW UK team action; they must merge dupe donors in CG
+2. Any of the Committed Giving file exports were not uploaded to the SFTP server before the daily OpenFn sync at 10 PM UTC → this alert will be sent to the CG support team (WFW admins may want to follow-up on this to make sure there is a response)
+
+
 ### Administrator Notes
 1. This integration automates a complex donor duplicate-check flow before upserting Salesforce `Contacts`. Please see [this diagram: CG <> Salesforce Contact Integration Flow] https://lucid.app/lucidchart/4d0b44a8-3299-431f-84b5-4b00bc713cd7/edit?beaconFlowId=BD5CBE391A037FF2&page=yw0MswWCJIR2#  for a summary of the WfWI CG Contacts Duplicate Checking & Sync Logic. 
 
-2. We assume that Committed Giving will name the CSV files with the following keywords: `
+2. We assume that Committed Giving will name the CSV files with the following keywords: 
       `wfwi donors'
       'wfwi card master'
       'wfwi direct debits'
@@ -108,7 +121,7 @@ A message filter trigger has been configured for each above. The job will run wh
 [See here](https://www.youtube.com/watch?v=WKgb-UiTcMg&feature=youtu.be&hd=1) for the video walkthrough of the OpenFn setup. 
 
 ### Functional Summary
-This solution enables Women for Women adminstrators to automate employee registration processes to save time syncing data between their `BambooHR` system and `Microsoft Azure AD` (via the `Microsoft Graph API`). 
+This solution enables Women for Women administrators to automate employee registration processes to save time syncing data between their `BambooHR` system and `Microsoft Azure AD` (via the `Microsoft Graph API`). 
 
 OpenFn configured a prototype integration to pilot this data flow by first focusing on automation for new Employee registrations & updates. In subsequent phases, we may expand this automation to handle other employee scenarios (i.e., employee termination, contractor employees, etc.).
 
@@ -176,7 +189,7 @@ OpenFn is leveraging the adaptor `language-http` to connect with the `Microsoft 
 Discussed functionality may include: 
 1. Additional automated actions when a user is terminated (consider integration with Jira or Microsoft form to trigger this? 
 2. Syncing of profile photos
-3. Two way sync capabilities
+3. Two-way sync capabilities
 4. Conversion of special characters
 
 ## 3. Questions? 

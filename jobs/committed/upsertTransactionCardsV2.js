@@ -211,12 +211,14 @@ bulk(
 );
 
 fn(state => {
+
   const errors = state.references
     .flat()
     .filter(item => !item.success)
     .map(er => er.errors)
     .flat();
-
+  
+  //We ignore the follow errors because we assume the Pledged Opp has already been converted to Closed and we do not need to insert it again. 
   const checkDupError = errors.filter(
     err =>
       err.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c') ||
