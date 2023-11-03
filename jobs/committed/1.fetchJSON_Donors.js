@@ -124,7 +124,20 @@ each(
         console.log('Duplicate rows detected in Committed Giving:');
         duplicates.forEach(d => console.log(d));
         console.log('End of duplicates rows.');
-        throw new Error(`Aborting run; duplicates detected.`);
+
+        await http
+          .post({
+            url: configuration.openfnInboxUrl,
+            data: {
+              duplicates,
+              notificationType: 'duplicate-emails',
+            },
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
+          })(state)
+          .then(res => {
+            throw new Error(`Aborting run; duplicates detected.`);
+          });
       }
       return { configuration, references: [], data: {} };
     });
