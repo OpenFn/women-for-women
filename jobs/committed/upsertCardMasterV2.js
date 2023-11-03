@@ -290,37 +290,36 @@ fn(state => {
 });
 
 //Upserting recurring donations
-// bulk(
-//   'npe03__Recurring_Donation__c', // the sObject
-//   'upsert', //  the operation
-//   {
-//     extIdField: 'Committed_Giving_ID__c',
-//     failOnError: true,
-//     allowNoOp: true
-//   },
-//   state => {
-//     console.log('Bulk upserting donations.');
-//     return state.donations;
-//   }
-// );
+bulk(
+  'npe03__Recurring_Donation__c', // the sObject
+  'upsert', //  the operation
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true
+  },
+  state => {
+    console.log('Bulk upserting donations.');
+    return state.donations;
+  }
+);
 
-// bulk(
-//   'npe03__Recurring_Donation__c',
-//   'upsert',
-//   {
-//     extIdField: 'Committed_Giving_ID__c',
-//     failOnError: true,
-//     allowNoOp: true
-//   },
-//   state => {
-//     console.log('Bulk upserting Sponsorship.');
-//     return state.sponsorships;
-//   }
-// );
+bulk(
+  'npe03__Recurring_Donation__c',
+  'upsert',
+  {
+    extIdField: 'Committed_Giving_ID__c',
+    failOnError: true,
+    allowNoOp: true
+  },
+  state => {
+    console.log('Bulk upserting Sponsorship.');
+    return state.sponsorships;
+  }
+);
 
 // Upserting opportunities
 
-console.log("here");
 
 bulk(
   'Opportunity', // the sObject
