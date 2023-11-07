@@ -94,7 +94,7 @@ A message filter trigger has been configured for each above. The job will run wh
 
 **OpenFn will send automated email notifiers if:**
 1. Duplicate donors were detected in the latest Committed Giving export → this requires WFW UK team action; they must merge dupe donors in CG
-2. Any of the Committed Giving file exports were not uploaded to the SFTP server before the daily OpenFn sync at 10 PM UTC → this alert will be sent to the CG support team (WFW admins may want to follow-up on this to make sure there is a response)
+2. Any of the Committed Giving file exports were not uploaded to the SFTP server before the daily OpenFn sync at 10 PM UTC → this alert will be sent to the CG support team (WFW admins may want to follow up on this to make sure there is a response). An email alert will not be triggered if an empty file is posted to the SFTP server (only if the file is missing altogether).
 
 
 ### Administrator Notes
