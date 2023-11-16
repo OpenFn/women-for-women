@@ -16,6 +16,10 @@ fn(state => {
     return parts ? `${year}-${month}-${day}` : null;
   };
 
+  const firstLetterUppercased = val => {
+    if (!val) return val;
+    return val[0].toUpperCase() + val.substring(1);
+  };
   const baseMapping = (x, address, EmailSF) => {
     // DATA CLEANING LOGIC =====================================================
     let zipCode = x.Postcode || '';
@@ -91,15 +95,14 @@ fn(state => {
           ? x.EmailAddress
           : `${x.PrimKey}@incomplete.com`
         : `${x.PrimKey}@incomplete.com`;
-
     // ======================================================================
     // Contact field mappings
     return {
       Committed_Giving_ID__c: x.PrimKey,
       wfw_Legacy_Supporter_ID__c: x.PersonRef && x.PersonRef !== '' ? x.PersonRef : undefined,
       Salutation: x.Title,
-      FirstName: x.FirstName[0].toUpperCase() + x.FirstName.substring(1),
-      LastName: x.Surname[0].toUpperCase() + x.Surname.substring(1),
+      FirstName: firstLetterUppercased(x.FirstName),
+      LastName: firstLetterUppercased(x.Surname),
       MailingStreet: address === 'Blank' || address === 'No Address' ? undefined : address,
       MailingCity: x.Address5 ? x.Address5.trim() : x.Address5,
       MailingState: x.Address6 ? x.Address6.trim() : x.Address6,
@@ -138,6 +141,7 @@ fn(state => {
     dupErrorsFirstNameAddress,
     formatDate,
     baseMapping,
+    firstLetterUppercased,
   };
 });
 
@@ -146,10 +150,7 @@ beta.each(
   fn(async state => {
     const removeSlash = val => val && val.replace(/'/g, "\\'");
     const trimValue = val => val && val.replace(/\s/g, '');
-    const firstLetterUppercased = val => {
-      if (!val) return val;
-      return val[0].toUpperCase() + val.substring(1);
-    };
+    const { firstLetterUppercased } = state;
 
     const { PersonRef, LastChangedDateTime, Surname, PrimKey } = state.data;
 
