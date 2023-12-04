@@ -171,7 +171,7 @@ fn(state => {
 
   const donations = state.data.json
     .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
-    .filter(x => x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited!=='')
+    .filter(x => x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited !== '')
     .filter(
       x =>
         (x.Occurrence === 'Monthly' && x.LastCredited !== 'MISSING') ||
@@ -262,29 +262,37 @@ fn(state => {
     return [...new Set(arr)];
   }
 
-  const cleanedDonations = removeDuplicates(allDonations).filter(x => x.Occurrence !== '' || 
-  x.Occurrence === 'None' && x.LastCredited==='');
+  const cleanedDonations = removeDuplicates(allDonations).filter(
+    x => x.Occurrence !== '' || (x.Occurrence === 'None' && x.LastCredited === '')
+  );
   //console.log('# pledged opportunities to schedule ::', allDonations.length);
   console.log('pledged opportunities to schedule ::', cleanedDonations);
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x.NextDate)}`;
 
-  const opportunities = cleanedDonations.filter(x =>x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited !== '').map(x => ({
-    'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-    CG_Pledged_Donation_ID__c: mapPledged(
-      x.CardMasterID,
-      x.RecurringCancelDate,
-      x.Occurrence,
-      x.LastCredited,
-      x.NextDate
-    ),
-    Committed_Giving_ID__c: selectGivingId(x),
-    StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
-    CloseDate: x.RecurringCancelDate === '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
-    Amount: x['Amount'],
-    Name: x.CardMasterID,
-    'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
-  }));
+  const opportunities = cleanedDonations
+    .filter(x => x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited !== '')
+    .map(x => ({
+      'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
+      CG_Pledged_Donation_ID__c: mapPledged(
+        x.CardMasterID,
+        x.RecurringCancelDate,
+        x.Occurrence,
+        x.LastCredited,
+        x.NextDate
+      ),
+      Committed_Giving_ID__c: selectGivingId(x),
+      StageName: x.RecurringCancelDate !== '' ? 'Closed Lost' : 'Pledged',
+      CloseDate: x.RecurringCancelDate === '' ? formatDateYMD(x.NextDate) : formatDateYMD(x.RecurringCancelDate),
+      Amount: x['Amount'],
+      Name: x.CardMasterID,
+      'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
+      E_mail_Mailing_ID__c: x.EmailMailingID,
+      Campaign_name__c: x.Campaign,
+      Campaign_Source__c: x.CampaignSource,
+      Campaign_Content__c: x.CampaignContent,
+      Campaign_Medium__c: x.CampaignMedium,
+    }));
 
   return { ...state, opportunities };
 });
@@ -296,7 +304,7 @@ bulk(
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
-    allowNoOp: true
+    allowNoOp: true,
   },
   state => {
     console.log('Bulk upserting donations.');
@@ -310,7 +318,7 @@ bulk(
   {
     extIdField: 'Committed_Giving_ID__c',
     failOnError: true,
-    allowNoOp: true
+    allowNoOp: true,
   },
   state => {
     console.log('Bulk upserting Sponsorship.');
@@ -320,14 +328,13 @@ bulk(
 
 // Upserting opportunities
 
-
 bulk(
   'Opportunity', // the sObject
   'upsert', // the operation
   {
     extIdField: 'CG_Pledged_Donation_ID__c',
     failOnError: false,
-    allowNoOp: true
+    allowNoOp: true,
   },
   state => {
     console.log('Bulk upserting Pledged opps.');
@@ -352,7 +359,7 @@ fn(state => {
     if (errors.length === checkDupError.length) {
       console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
     } else {
-      throw new Error('Errors detected, scroll up to see the resutls')
+      throw new Error('Errors detected, scroll up to see the resutls');
     }
   }
 

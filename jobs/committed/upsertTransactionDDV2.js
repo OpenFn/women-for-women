@@ -61,6 +61,11 @@ fn(state => {
       Payment_Type__c: state.selectAmount(x) > 0 ? 'Payment' : 'Refund',
       'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.DDId || x.DDid}`,
       Method_of_Payment__c: 'Direct Debit',
+      E_mail_Mailing_ID__c: x.EmailMailingID,
+      Campaign_name__c: x.Campaign,
+      Campaign_Source__c: x.CampaignSource,
+      Campaign_Content__c: x.CampaignContent,
+      Campaign_Medium__c: x.CampaignMedium,
     };
   };
 
@@ -87,7 +92,7 @@ bulk(
 );
 
 fn(state => {
- const errors = state.references
+  const errors = state.references
     .flat()
     .filter(item => !item.success)
     .map(er => er.errors)

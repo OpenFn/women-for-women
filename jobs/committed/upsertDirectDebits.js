@@ -200,6 +200,11 @@ fn(state => {
       Amount: x['Current amount'],
       Name: x.DDRefforBank,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
+      E_mail_Mailing_ID__c: x.EmailMailingID,
+      Campaign_name__c: x.Campaign,
+      Campaign_Source__c: x.CampaignSource,
+      Campaign_Content__c: x.CampaignContent,
+      Campaign_Medium__c: x.Campaign_Medium__c,
     }));
 
   return { ...state, opportunities };
