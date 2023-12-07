@@ -25,6 +25,8 @@ Flow: Committed Giving --> Salesforce
 See data flow here https://lucid.app/lucidchart/34c8100a-42d2-47ab-8a5a-6c406a744ed8/edit?beaconFlowId=53F1EDFE7A9CEC2A&page=0_0#
 
 ### Data Mappings
+[See the V2 spec](https://docs.google.com/spreadsheets/d/1_vg4OUB2S0wFLj7a_7xlbxTweAQSL4WjPJLdvvazkow/edit#gid=544330146) for the latest detailed documentation on the current field mapping logic. 
+
 The CSV files map to these Salesforce objects as shown below:
 1. `Donors` CSV triggers `upsertDonors.js` job, which checks for duplicates and upserts Salesforce objects `Contact` (This also looks up `Accounts`). 
 
