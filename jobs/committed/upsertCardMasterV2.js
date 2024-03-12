@@ -95,7 +95,8 @@ fn(state => {
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return 'Active';
       //e. if no LastCredited date, but occurrnece is defined...then active = true
-      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return 'Active';
+      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly' || x.Occurrence === 'Annually'))
+        return 'Active';
     }
   };
 
@@ -117,7 +118,8 @@ fn(state => {
       if (x.LastCredited && new Date(x.LastCredited) >= new Date(new Date().setMonth(new Date().getMonth() - 3)))
         return true;
       //e. if no LastCredited date, but occurrnece is defined...then active = true
-      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly')) return true;
+      if (!x.EndDate && (x.Occurrence === 'Monthly' || x.Occurrence === 'Yearly' || x.Occurrence === 'Annually'))
+        return true;
     }
   };
 
@@ -138,25 +140,20 @@ fn(state => {
       npsp__PaymentMethod__c: 'Credit Card',
       Closeout_Date__c: x.RecurringCancelDate !== '' ? mapCancelDate(x.RecurringCancelDate) : x.RecurringCancelDate,
       npe03__Open_Ended_Status__c: 'Closed',
-      of_Sisters_Requested__c:
-        x['Amount'] == '22.00'
-          ? 1
-          : x['Amount'] % 264 === 0 || x.Occurrence === 'Yearly'
-          ? Math.floor(Math.abs(x['Amount'] / 264))
-          : x.Occurrence === 'Quarterly'
-          ? Math.floor(Math.abs(x['Amount'] / 66))
-          : x['Amount'] % 22 === 0 || x.Occurrence === 'Monthly'
-          ? Math.floor(Math.abs(x['Amount'] / 22))
-          : undefined,
+      of_Sisters_Requested__c: x['No of Sisters'] ? x['No of Sisters'] : undefined,
       Expiration_Month__c: checkMonth(x.CCExpiry), //Parse month; SF expects text, but output should still be a number like '2' for February
       Expiration_Year__c: checkYear(x.CCExpiry), //Parse year; SF expects integer like '2021'
     };
   };
 
-  // Filter all csv rows that have Amount (x.Amount) that is a multiple of 22
-  const multipleOf22 = state.data.json.filter(x => Number(selectAmount(x)) % 22 === 0);
+  // OLD LOGIC: Filter all csv rows that have Amount (x.Amount) that is a multiple of 22
+  //const multipleOf22 = state.data.json.filter(x => Number(selectAmount(x)) % 22 === 0);
+  //===== NEW LOGIC AS OF MARCH 2024 =====================//
+  //Filter all csv rows that have Sponsorship Campaign Code
 
-  const sponsorships = multipleOf22.map(x => {
+  const sponsors = state.data.json.filter(x => x.CampaignCode === 'Sponsorship');
+
+  const sponsorships = sponsors.map(x => {
     return {
       ...baseMapping(x),
       ...{
@@ -167,10 +164,11 @@ fn(state => {
     };
   });
 
-  const multipleOf22IDs = multipleOf22.map(x => x.Name);
+  //const multipleOf22IDs = sponsors.map(x => x.Name);
+  const sponsorIDs = sponsors.map(x => x.Name);
 
   const donations = state.data.json
-    .filter(x => !multipleOf22IDs.includes(x.CardMasterID))
+    .filter(x => !sponsorIDs.includes(x.CardMasterID))
     .filter(x => x.Occurrence !== '' && x.Occurrence !== 'None' && x.LastCredited !== '')
     .filter(
       x =>
@@ -182,16 +180,24 @@ fn(state => {
       return {
         ...baseMapping(x),
         ...{
-          Type__c: Number(selectAmount(x)) % 22 === 0 ? 'Sponsorship' : 'Recurring Donation',
+          Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
+          Stand_With_Her_Subtype__c:
+            x.CampaignCode === 'Sponsorship'
+              ? 'Sister Tier'
+              : x.CampaignCode === 'Classroom'
+              ? 'Classroom Tier'
+              : 'None',
           'npe03__Recurring_Donation_Campaign__r.Source_Code__c':
-            Number(selectAmount(x)) % 22 === 0 ? 'UKWEBSP' : 'UKWEBRG',
+            x.PromoCode || (x.CampaignCode === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG'),
+          // 'npe03__Recurring_Donation_Campaign__r.Source_Code__c':
+          //   Number(selectAmount(x)) % 22 === 0 ? 'UKWEBSP' : 'UKWEBRG',
         },
       };
     });
 
   //combine all recurring donations into 1 array --> to later map to pledged Opps
-  const sponsorshipsRaw = multipleOf22;
-  const donationsRaw = state.data.json.filter(x => !multipleOf22IDs.includes(x.CardMasterID));
+  const sponsorshipsRaw = sponsors;
+  const donationsRaw = state.data.json.filter(x => !sponsorIDs.includes(x.CardMasterID));
   const allDonations = sponsorshipsRaw.concat(donationsRaw);
 
   return { ...state, sponsorships, donations, allDonations, formatDate };

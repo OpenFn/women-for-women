@@ -66,8 +66,12 @@ fn(state => {
         Committed_Giving_Direct_Debit_ID__c: x.DDId,
         'npe03__Contact__r.Committed_Giving_Id__c': x.PrimKey,
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
-        Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
-        'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG',
+        Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
+        Stand_With_Her_Subtype__c:
+          x.CampaignCode === 'Sponsorship' ? 'Sister Tier' : x.CampaignCode === 'Classroom' ? 'Classroom Tier' : 'None',
+        'npe03__Recurring_Donation_Campaign__r.Source_Code__c':
+          x.PromoCode || (x.CampaignCode === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG'),
+        //'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG',
         npe03__Amount__c: x['CurrentAmount'],
         npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : undefined, //Nov 2022 Request: To not uncheck Active, only add Closeout Date
@@ -81,25 +85,7 @@ fn(state => {
           ? mapCancelDate(x.CancelDate, x.PaymentFrequency, x.LastClaimDate)
           : formatEmpty(x.CancelDate),
         npe03__Open_Ended_Status__c: 'Closed',
-        of_Sisters_Requested__c:
-          x['CurrentAmount'] == '22.00'
-            ? 1
-            : (x['CurrentAmount'] % 264 === 0 && x.PaymentFrequency === 'Annually') ||
-              (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship')
-            ? Math.floor(Math.abs(x['CurrentAmount'] / 264))
-            : x['CurrentAmount'] % 132 === 0 && x.PaymentFrequency === 'Semi Annually' && x.TransType === 'Sponsorship'
-            ? Math.floor(Math.abs(x['CurrentAmount'] / 132))
-            : x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship'
-            ? Math.floor(Math.abs(x['CurrentAmount'] / 66))
-            : x['CurrentAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship')
-            ? Math.floor(Math.abs(x['CurrentAmount'] / 22))
-            : undefined,
-        // Use for TransType re-processing if CG provides the incorrect value
-        // of_Sisters_Requested__c: (x['FirstAmount'] == '22' ? 1 :
-        // x['FirstAmount'] % 264 === 0 || (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 264)) :
-        //     (x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 66)) :
-        //       x['FirstAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship') ? Math.floor(Math.abs(x['FirstAmount'] / 22)) :
-        //       undefined),
+        of_Sisters_Requested__c: x['No of Sisters'] ? x['No of Sisters'] : undefined,
       };
     });
 
