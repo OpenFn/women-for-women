@@ -15,10 +15,10 @@ fn(state => {
   };
 
   const selectAmount = item => {
-    if (item['Current amount']) {
-      return isNaN(item['Current amount'])
-        ? item['Current amount'].replace(/[^-.0-9]/g, '')
-        : parseInt(item['Current amount']);
+    if (item['CurrentAmount']) {
+      return isNaN(item['CurrentAmount'])
+        ? item['CurrentAmount'].replace(/[^-.0-9]/g, '')
+        : parseInt(item['CurrentAmount']);
     }
     return undefined;
   };
@@ -68,7 +68,7 @@ fn(state => {
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
         Type__c: x.TransType === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.TransType === 'Sponsorship' ? 'UKWEBSP' : 'UKWEBRG',
-        npe03__Amount__c: x['Current amount'],
+        npe03__Amount__c: x['CurrentAmount'],
         npsp__Status__c: x.Status === 'Live' ? 'Active' : 'Closed',
         Active__c: x.Status === 'Live' ? true : undefined, //Nov 2022 Request: To not uncheck Active, only add Closeout Date
         Closeout_Reason__c: x.CancelReason,
@@ -82,17 +82,17 @@ fn(state => {
           : formatEmpty(x.CancelDate),
         npe03__Open_Ended_Status__c: 'Closed',
         of_Sisters_Requested__c:
-          x['Current amount'] == '22.00'
+          x['CurrentAmount'] == '22.00'
             ? 1
-            : (x['Current amount'] % 264 === 0 && x.PaymentFrequency === 'Annually') ||
+            : (x['CurrentAmount'] % 264 === 0 && x.PaymentFrequency === 'Annually') ||
               (x.PaymentFrequency === 'Annually' && x.TransType === 'Sponsorship')
-            ? Math.floor(Math.abs(x['Current amount'] / 264))
-            : x['Current amount'] % 132 === 0 && x.PaymentFrequency === 'Semi Annually' && x.TransType === 'Sponsorship'
-            ? Math.floor(Math.abs(x['Current amount'] / 132))
+            ? Math.floor(Math.abs(x['CurrentAmount'] / 264))
+            : x['CurrentAmount'] % 132 === 0 && x.PaymentFrequency === 'Semi Annually' && x.TransType === 'Sponsorship'
+            ? Math.floor(Math.abs(x['CurrentAmount'] / 132))
             : x.PaymentFrequency === 'Quarterly' && x.TransType === 'Sponsorship'
-            ? Math.floor(Math.abs(x['Current amount'] / 66))
-            : x['Current amount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship')
-            ? Math.floor(Math.abs(x['Current amount'] / 22))
+            ? Math.floor(Math.abs(x['CurrentAmount'] / 66))
+            : x['CurrentAmount'] % 22 === 0 || (x.PaymentFrequency === 'Monthly' && x.TransType === 'Sponsorship')
+            ? Math.floor(Math.abs(x['CurrentAmount'] / 22))
             : undefined,
         // Use for TransType re-processing if CG provides the incorrect value
         // of_Sisters_Requested__c: (x['FirstAmount'] == '22' ? 1 :
@@ -197,9 +197,14 @@ fn(state => {
       CG_Pledged_Donation_ID__c: mapPledged(x.DDId, x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
       StageName: x.CancelDate !== '' ? 'Closed Lost' : 'Pledged',
       CloseDate: setCloseDate(x.CancelDate, x.PaymentFrequency, x.LastClaimDate, x.NextDate),
-      Amount: x['Current amount'],
+      Amount: x['CurrentAmount'],
       Name: x.DDRefforBank,
       'npsp__Primary_Contact__r.Committed_Giving_ID__c': `${x.PrimKey}`,
+      E_mail_Mailing_ID__c: x.EmailMailingID,
+      Campaign_name__c: x.Campaign,
+      Campaign_Source__c: x.CampaignSource,
+      Campaign_Content__c: x.CampaignContent,
+      Campaign_Medium__c: x.CampaignMedium,
     }));
 
   return { ...state, opportunities };

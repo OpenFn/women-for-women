@@ -1,9 +1,9 @@
 fn(state => {
   const { missingDate, missingFiles } = state.data;
 
-  const cc = 'aleksa@openfn.org';
+  const cc = 'aleksa@openfn.org, aissatou@openfn.org, klewis@womenforwomen.org';
   const replyTo = 'support@openfn.org';
-  const to = 'aissatou@openfn.org';
+  const to = 'Monika.Wyszomirska@committedgiving.com, team@committedgiving.com';
 
   const email = {
     from: 'WfWI Notifications <notifications@womenforwomen.org>',

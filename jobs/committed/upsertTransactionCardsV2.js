@@ -102,6 +102,11 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': selectRDId(x),
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
+    E_mail_Mailing_ID__c: x.EmailMailingID,
+    Campaign_name__c: x.Campaign,
+    Campaign_Source__c: x.CampaignSource,
+    Campaign_Content__c: x.CampaignContent,
+    Campaign_Medium__c: x.CampaignMedium,
   }));
 
   const recurringDonations = cardMasterIDGreaterThan1.map(x => {
@@ -144,6 +149,11 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
     Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
+    E_mail_Mailing_ID__c: x.EmailMailingID,
+    Campaign_name__c: x.Campaign,
+    Campaign_Source__c: x.CampaignSource,
+    Campaign_Content__c: x.CampaignContent,
+    Campaign_Medium__c: x.CampaignMedium,
   }));
 
   // 1st type of opportunities in this array ==> Regular once-off OR recurring donations to insert
@@ -168,6 +178,11 @@ fn(state => {
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c':
       x.CampaignCode === 'Regular Giving' ? `${x.PrimKey}${x.CardMasterID}` : undefined,
     'RecordType.Name': 'Individual Giving',
+    E_mail_Mailing_ID__c: x.EmailMailingID,
+    Campaign_name__c: x.Campaign,
+    Campaign_Source__c: x.CampaignSource,
+    Campaign_Content__c: x.CampaignContent,
+    Campaign_Medium__c: x.CampaignMedium,
   }));
 
   console.log('Count of new "RDs" to upsert:', uniqueRDs.length);
@@ -211,14 +226,13 @@ bulk(
 );
 
 fn(state => {
-
   const errors = state.references
     .flat()
     .filter(item => !item.success)
     .map(er => er.errors)
     .flat();
-  
-  //We ignore the follow errors because we assume the Pledged Opp has already been converted to Closed and we do not need to insert it again. 
+
+  //We ignore the follow errors because we assume the Pledged Opp has already been converted to Closed and we do not need to insert it again.
   const checkDupError = errors.filter(
     err =>
       err.includes('DUPLICATE_VALUE:duplicate value found: Committed_Giving_ID__c') ||
@@ -229,9 +243,9 @@ fn(state => {
     if (errors.length === checkDupError.length) {
       console.log('Ingoring DUPLICATE_VALUE:duplicate value found');
     } else {
-      throw new Error('Errors detected, scroll up to see the resutls')
+      throw new Error('Errors detected, scroll up to see the resutls');
     }
   }
 
-    return { ...state, opportunities: [] };
+  return { ...state, opportunities: [] };
 });
