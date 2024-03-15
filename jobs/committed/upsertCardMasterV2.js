@@ -158,6 +158,12 @@ fn(state => {
       ...baseMapping(x),
       ...{
         Type__c: 'Sponsorship',
+        Stand_With_Her_Subtype__c:
+            x.CampaignCode === 'Sponsorship'
+              ? 'Sister Tier'
+              : x.CampaignCode === 'Classroom'
+              ? 'Classroom Tier'
+              : 'None',
         'npe03__Recurring_Donation_Campaign__r.Source_Code__c': 'UKWEBSP',
         'Sponsor__r.Committed_Giving_Id__c': x.PrimKey,
       },
