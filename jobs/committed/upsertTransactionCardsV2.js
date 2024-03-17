@@ -38,14 +38,21 @@ fn(state => {
     return undefined;
   };
 
-  const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
+  //=== OLD LOGIC when sponsorship calculated based on amount ==//
+  //const multipleOf22 = item => Number(selectAmount(item)) % 22 === 0;
 
   // We build arrays of transactions with amount multiple of 22 and not multiple.
-  const transactionsMultipleOf22 = state.data.json.filter(x => multipleOf22(x));
-  const transactionsNotMultipleOf22 = state.data.json.filter(x => !multipleOf22(x));
+  // const transactionsMultipleOf22 = state.data.json.filter(x => multipleOf22(x));
+  // const transactionsNotMultipleOf22 = state.data.json.filter(x => !multipleOf22(x));
+  //==========================//
+
+  //=== NEW LOGIC AS OF MARCH 2024 ===========================//
+  const sponsor = item => item.CampaignCode === 'Sponsorship';
+  const transactionsSponsor = state.data.json.filter(x => sponsor(x));
+  const transactionsNotSponsor = state.data.json.filter(x => !sponsor(x));
 
   // We group transactions by 'CardMasterID'
-  let arrayReduced = reduceArray(transactionsNotMultipleOf22, 'CardMasterID');
+  let arrayReduced = reduceArray(transactionsNotSponsor, 'CardMasterID');
   const groupedCardMaster = [];
   for (key in arrayReduced) groupedCardMaster.push(arrayReduced[key]);
 
@@ -55,21 +62,21 @@ fn(state => {
 
   const cgIDLess1s = cardMasterIDLessThan1.map(cm => cm.CardMasterID);
 
-  const cardMasterIDGreaterThan1 = transactionsNotMultipleOf22.filter(x => !cgIDLess1s.includes(x.CardMasterID));
+  const cardMasterIDGreaterThan1 = transactionsNotSponsor.filter(x => !cgIDLess1s.includes(x.CardMasterID));
 
   return {
     ...state,
-    transactionsMultipleOf22,
+    transactionsSponsor,
     cardMasterIDLessThan1,
     cardMasterIDGreaterThan1,
     formatDate,
     selectAmount,
-    multipleOf22,
+    sponsor,
   };
 });
 
 fn(state => {
-  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsMultipleOf22 } = state;
+  const { cardMasterIDGreaterThan1, cardMasterIDLessThan1, transactionsSponsor } = state;
 
   const selectGivingId = x => `${x.PrimKey}${x.CardMasterID}${formatDateYMD(x['Transaction Date'])}`;
 
@@ -84,7 +91,7 @@ fn(state => {
     return year + '-' + month + '-' + day;
   };
 
-  const opportunities = transactionsMultipleOf22.map(x => ({
+  const opportunities = transactionsSponsor.map(x => ({
     CG_Pledged_Donation_ID__c: `${x.CardMasterID}_${formatDateYMD(x['Transaction Date'])}_Pledged`,
     Name: x.TransactionReference,
     'npsp__Primary_Contact__r.Committed_Giving_ID__c': x.PrimKey,
@@ -100,7 +107,7 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode || 'UKWEB',
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': selectRDId(x),
-    Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
+    Donation_Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
     E_mail_Mailing_ID__c: x.EmailMailingID,
     Campaign_name__c: x.Campaign,
@@ -110,21 +117,24 @@ fn(state => {
   }));
 
   const recurringDonations = cardMasterIDGreaterThan1.map(x => {
-    let npe03__Installment_Period__c = '';
-    if ((state.multipleOf22(x) && state.selectAmount(x) < 264) || state.selectAmount(x) < 22) {
-      npe03__Installment_Period__c = 'Monthly';
-    } else if (state.selectAmount(x) > 22 && !state.multipleOf22(x)) {
-      npe03__Installment_Period__c = 'Yearly';
-    }
+    //TODO: ADD x.Occurrence to source file
+    // let npe03__Installment_Period__c = '';
+    // if (x.Occurrence==='Monthly') {
+    //   npe03__Installment_Period__c = 'Monthly';
+    // } else if (state.selectAmount(x) > 22 && !state.multipleOf22(x)) {
+    //   npe03__Installment_Period__c = 'Yearly';
+    // }
     return {
       Committed_Giving_ID__c: selectRDId(x),
       'npe03__Contact__r.Committed_Giving_ID__c': x.PrimKey,
-      Type__c: 'Recurring Donation',
-      'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.PromoCode,
+      Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
+      Stand_With_Her_Subtype__c:
+        x.CampaignCode === 'Sponsorship' ? 'Sister Tier' : x.CampaignCode === 'Classroom' ? 'Classroom Tier' : 'None',
+      'npe03__Recurring_Donation_Campaign__r.Source_Code__c': x.PromoCode || 'UKWEBRG',
       npe03__Amount__c: state.selectAmount(x),
       npsp__PaymentMethod__c: 'Credit Card',
       npe03__Date_Established__c: state.formatDate(x['Transaction Date']),
-      npe03__Installment_Period__c,
+      npe03__Installment_Period__c: x.Occurrence === 'Yearly' ? 'Yearly' : 'Monthly',
       //CG_Credit_Card_ID__c: x.CardMasterID,
     };
   });
@@ -147,7 +157,7 @@ fn(state => {
     CG_Credit_Card_Master_ID__c: x.CardMasterID,
     'Campaign.Source_Code__c': x.PromoCode,
     'npe03__Recurring_Donation__r.Committed_Giving_ID__c': `${x.PrimKey}${x.CardMasterID}`,
-    Donation_Type__c: state.multipleOf22(x) ? 'Sponsorship' : 'Recurring Donation',
+    Donation_Type__c: x.CampaignCode === 'Sponsorship' ? 'Sponsorship' : 'Recurring Donation',
     'RecordType.Name': 'Individual Giving',
     E_mail_Mailing_ID__c: x.EmailMailingID,
     Campaign_name__c: x.Campaign,
@@ -165,7 +175,8 @@ fn(state => {
     Amount: state.selectAmount(x),
     Payment_Type__c: state.selectAmount(x) < 0 ? 'Refund' : 'Payment',
     'RecordType.Name': 'Individual Giving',
-    Donation_Type__c: x.CampaignCode === 'Regular Giving' ? 'Recurring Donation' : 'General Donation',
+    Donation_Type__c:
+      x.CampaignCode === 'Regular Giving' || x.CampaignCode === 'Classroom' ? 'Recurring Donation' : 'General Donation',
     StageName: 'Closed Won',
     npsp__Acknowledgment_Status__c: x.Status === 'Paid' ? 'Acknowledged' : x.Status,
     Transaction_Reference_Id__c: x.TransactionReference,
